@@ -1,53 +1,86 @@
-# 基于Text组件及通用属性实现文字特效
+# text-effects-master-upgraded-multidevice-freeflow
 
-### 介绍
+This directory keeps the free-flow version of the project.
+The previous projects are preserved, and this folder contains the new code that adds a continuation framework on top of the multi-device layout version.
 
-本示例基于Text组件及通用属性实现多种文字特效。帮助开发者在ArkTS页面开发中实现文字渐变、歌词滚动、文字倒影、跑马灯渐变等多种文字效果。
+## What changed
 
-### 效果预览
-|                               文字特效                               |
-|:--------------------------------------------------------------:|
-| <img src="./screenshots/device/text_effects.gif" width="320"/> |
+This version keeps the original 4 text effects and adds a first-pass HarmonyOS free-flow implementation:
 
-**使用说明**
+- multi-device UI support remains in place
+- the main `EntryAbility` is marked as `continuable`
+- the app requests `ohos.permission.DISTRIBUTED_DATASYNC`
+- the current text content and selected effect can be packed into continuation data
+- the landing device can restore that state when the continuation starts
+- the page now provides a `Start Free Flow` action and a live status area
 
-1. 启动应用，查看多种文字特效，包含文字渐变、歌词滚动、文字倒影、跑马灯渐变等效果。
+## Key files
 
-### 工程目录
+- [AppScope/app.json5](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/AppScope/app.json5:1)
+  Adds `reqPermissions` for `ohos.permission.DISTRIBUTED_DATASYNC`.
 
-```
-├──entry/src/main/ets/
-│  ├──constants
-│  │  └──Constants.ets                  // 公共常量类
-│  ├──entryability
-│  │  └──EntryAbility.ets               // 程序入口类
-│  ├──page                  
-│  │  └──Index.ets                      // 首页
-│  └──view
-│     ├──TextGradientView.ets           // 文字渐变     
-│     ├──TextMarqueeView.ets            // 跑马灯渐变
-│     ├──TextReflectionView.ets         // 文字倒影       
-│     └──TextScrollingView.ets          // 歌词滚动
-└──entry/src/main/resource              // 应用静态资源目录
-```
+- [entry/src/main/module.json5](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/entry/src/main/module.json5:1)
+  Adds `continuable: true` to `EntryAbility`.
 
-### 具体实现
+- [entry/src/main/ets/entryability/EntryAbility.ets](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/entry/src/main/ets/entryability/EntryAbility.ets:1)
+  Registers continuation, activates mission continuation, writes continuation payload in `onContinue`, and restores state from continuation input.
 
-1. 文字渐变效果通过blendMode混合属性及linearGradient线性渐变属性实现。
-2. 歌词滚动效果使用blendMode混合属性及linearGradient线性渐变属性及显式动画实现。
-3. 文字倒影效果使用rotate旋转属性及linearGradient线性渐变属性实现。
-4. 跑马灯渐变效果使用Text组件textOverflow超长文本显示属性及linearGradient线性渐变属性实现。
+- [entry/src/main/ets/manager/FlowManager.ets](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/entry/src/main/ets/manager/FlowManager.ets:1)
+  Centralizes free-flow state, status text, continuation token management, payload serialization, and UI subscriptions.
 
-### 相关权限
+- [entry/src/main/ets/model/TextEffectFlowState.ets](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/entry/src/main/ets/model/TextEffectFlowState.ets:1)
+  Defines the minimal business state that is transferred across devices.
 
-不涉及
+- [entry/src/main/ets/pages/Index.ets](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/entry/src/main/ets/pages/Index.ets:1)
+  Syncs with `FlowManager`, keeps the responsive layout, and adds the free-flow control card.
 
-### 约束与限制
+## Current free-flow scope
 
-1. 本示例仅支持标准系统上运行，支持设备：华为手机。
+The continuation payload currently contains:
 
-2. HarmonyOS系统：HarmonyOS 5.0.5 Release及以上。
+- `inputText`
+- `selectedEffect`
 
-3. DevEco Studio版本：DevEco Studio 5.0.5 Release及以上。
+It intentionally does not migrate device-local values such as:
 
-4. HarmonyOS SDK版本：HarmonyOS 5.0.5 Release SDK及以上。
+- current window width
+- current responsive layout branch
+
+Those values are recalculated on the destination device.
+
+## Runtime flow
+
+1. The app starts and registers with `continuationManager`.
+2. The mission continuation state is set to active.
+3. The page shows a `Start Free Flow` button.
+4. When continuation starts, `onContinue()` writes the text and selected effect into `wantParam`.
+5. When the target device launches with continuation data, the app restores the state and refreshes the UI.
+
+## Notes
+
+This is a framework-level implementation, not a fully verified production flow yet.
+Actual continuation behavior still depends on your local HarmonyOS environment, permissions, distributed device availability, and DevEco Studio / SDK version.
+
+## Suggested verification
+
+Test at least these points:
+
+1. The project builds in DevEco Studio.
+2. The app starts on both source and target HarmonyOS devices.
+3. The `Start Free Flow` button opens the device-selection flow.
+4. After continuation, the target device restores the same text content.
+5. After continuation, the target device restores the same selected text effect.
+
+## Related docs in this folder
+
+- [MULTI_DEVICE_GUIDE.md](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/MULTI_DEVICE_GUIDE.md)
+- [FREE_FLOW_WORK_GUIDE.md](C:/Users/31293/Desktop/workplace/text-effects-master-upgraded-multidevice-freeflow/FREE_FLOW_WORK_GUIDE.md)
+
+## Folder relationship
+
+- original project:
+  `C:\Users\31293\Desktop\workplace\text-effects-master-upgraded`
+- multi-device version:
+  `C:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice`
+- free-flow version:
+  `C:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice-freeflow`

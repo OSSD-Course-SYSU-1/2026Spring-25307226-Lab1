@@ -1,33 +1,49 @@
 if (!("finalizeConstruction" in ViewPU.prototype)) {
     Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
 }
-interface TextRefectionView_Params {
+interface TextReflectionView_Params {
     message?: ResourceStr;
+    fontSize?: number;
+    reflectionHeight?: number;
 }
 import Constants from "@bundle:com.example.texteffects/entry/ets/constants/Constants";
-export default class TextRefectionView extends ViewPU {
+export default class TextReflectionView extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
         if (typeof paramsLambda === "function") {
             this.paramsGenerator_ = paramsLambda;
         }
         this.__message = new SynchedPropertyObjectOneWayPU(params.message, this, "message");
+        this.__fontSize = new SynchedPropertySimpleOneWayPU(params.fontSize, this, "fontSize");
+        this.__reflectionHeight = new SynchedPropertySimpleOneWayPU(params.reflectionHeight, this, "reflectionHeight");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
-    setInitiallyProvidedValue(params: TextRefectionView_Params) {
+    setInitiallyProvidedValue(params: TextReflectionView_Params) {
         if (params.message === undefined) {
             this.__message.set('');
         }
+        if (params.fontSize === undefined) {
+            this.__fontSize.set(30);
+        }
+        if (params.reflectionHeight === undefined) {
+            this.__reflectionHeight.set(74);
+        }
     }
-    updateStateVars(params: TextRefectionView_Params) {
+    updateStateVars(params: TextReflectionView_Params) {
         this.__message.reset(params.message);
+        this.__fontSize.reset(params.fontSize);
+        this.__reflectionHeight.reset(params.reflectionHeight);
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__message.purgeDependencyOnElmtId(rmElmtId);
+        this.__fontSize.purgeDependencyOnElmtId(rmElmtId);
+        this.__reflectionHeight.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__message.aboutToBeDeleted();
+        this.__fontSize.aboutToBeDeleted();
+        this.__reflectionHeight.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -38,6 +54,20 @@ export default class TextRefectionView extends ViewPU {
     set message(newValue: ResourceStr) {
         this.__message.set(newValue);
     }
+    private __fontSize: SynchedPropertySimpleOneWayPU<number>;
+    get fontSize() {
+        return this.__fontSize.get();
+    }
+    set fontSize(newValue: number) {
+        this.__fontSize.set(newValue);
+    }
+    private __reflectionHeight: SynchedPropertySimpleOneWayPU<number>;
+    get reflectionHeight() {
+        return this.__reflectionHeight.get();
+    }
+    set reflectionHeight(newValue: number) {
+        this.__reflectionHeight.set(newValue);
+    }
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Stack.create();
@@ -46,20 +76,20 @@ export default class TextRefectionView extends ViewPU {
                 colors: [[Color.Transparent, 0], [Color.Transparent, 0.50],
                     [Color.Red, 0.50], [{ "id": 16777233, "type": 10001, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" }, 1]]
             });
-            Stack.height({ "id": 16777239, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Stack.height(this.reflectionHeight);
             Stack.alignContent(Alignment.Top);
             Stack.blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN);
         }, Stack);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.message);
-            Text.fontSize({ "id": 16777236, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontSize(this.fontSize);
             Text.fontColor(Color.Red);
             Text.fontWeight(FontWeight.Bold);
         }, Text);
         Text.pop();
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.message);
-            Text.fontSize({ "id": 16777236, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontSize(this.fontSize);
             Text.fontColor(Color.Red);
             Text.fontWeight(FontWeight.Bold);
             Text.rotate({

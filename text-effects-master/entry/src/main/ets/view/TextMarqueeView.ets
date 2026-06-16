@@ -16,17 +16,20 @@
 import Constants from '../constants/Constants';
 
 @Component
-export default struct TextGradientView {
+export default struct TextMarqueeView {
   @Prop message: ResourceStr = '';
+  @Prop fontSize: number = 30;
+  @Prop textWidth: string = Constants.MARQUEE_TEXT_WIDTH;
 
   build() {
     Row() {
       Column() {
         Text(this.message)
-          .width($r('app.string.ninety_percent'))
+          .width(this.textWidth)
           .fontColor(Color.Black)
-          .fontSize($r('app.float.content_font_size'))
+          .fontSize(this.fontSize)
           .fontWeight(FontWeight.Bold)
+          .maxLines(1)
           .textOverflow({ overflow: TextOverflow.MARQUEE })
       }
       .blendMode(BlendMode.SRC_IN, BlendApplyType.OFFSCREEN)

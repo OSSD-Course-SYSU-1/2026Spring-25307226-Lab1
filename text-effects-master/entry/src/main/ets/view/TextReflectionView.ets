@@ -16,17 +16,19 @@
 import Constants from '../constants/Constants';
 
 @Component
-export default struct TextRefectionView {
+export default struct TextReflectionView {
   @Prop message: ResourceStr = '';
+  @Prop fontSize: number = 30;
+  @Prop reflectionHeight: number = 74;
 
   build() {
     Stack() {
       Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
+        .fontSize(this.fontSize)
         .fontColor(Color.Red)
         .fontWeight(FontWeight.Bold)
       Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
+        .fontSize(this.fontSize)
         .fontColor(Color.Red)
         .fontWeight(FontWeight.Bold)
         .rotate({
@@ -44,7 +46,7 @@ export default struct TextRefectionView {
       colors: [[Color.Transparent, 0], [Color.Transparent, 0.50],
         [Color.Red, 0.50], [$r('app.color.text_reflection_color'), 1]]
     })
-    .height($r('app.float.text_refection_height'))
+    .height(this.reflectionHeight)
     .alignContent(Alignment.Top)
     .blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN)
   }

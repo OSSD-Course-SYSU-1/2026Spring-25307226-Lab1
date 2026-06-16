@@ -18,14 +18,17 @@ import Constants from '../constants/Constants';
 @Component
 export default struct TextScrollingView {
   @Prop message: ResourceStr = '';
+  @Prop fontSize: number = 30;
+  @Prop duration: number = Constants.TEXT_SCROLL_DURATION;
   @State value: number = 0;
 
   build() {
     Row() {
       Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
+        .fontSize(this.fontSize)
         .fontColor(Color.Black)
         .fontWeight(FontWeight.Bold)
+        .maxLines(1)
         .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
     }
     .linearGradient({
@@ -39,7 +42,7 @@ export default struct TextScrollingView {
     })
     .onAppear(() => {
       this.getUIContext().animateTo({
-        duration: Constants.TEXT_SCROLL_DURATION,
+        duration: this.duration,
         finishCallbackType: FinishCallbackType.LOGICALLY,
         curve: Curve.Linear,
         iterations: -1,

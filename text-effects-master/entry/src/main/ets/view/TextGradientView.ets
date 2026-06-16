@@ -16,12 +16,14 @@
 @Component
 export default struct TextGradientView {
   @Prop message: ResourceStr = '';
+  @Prop fontSize: number = 30;
 
   build() {
     Row() {
       Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
+        .fontSize(this.fontSize)
         .fontWeight(FontWeight.Bold)
+        .maxLines(1)
         .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
     }
     .linearGradient({

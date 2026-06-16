@@ -1,33 +1,49 @@
 if (!("finalizeConstruction" in ViewPU.prototype)) {
     Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
 }
-interface TextGradientView_Params {
+interface TextMarqueeView_Params {
     message?: ResourceStr;
+    fontSize?: number;
+    textWidth?: string;
 }
 import Constants from "@bundle:com.example.texteffects/entry/ets/constants/Constants";
-export default class TextGradientView extends ViewPU {
+export default class TextMarqueeView extends ViewPU {
     constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
         super(parent, __localStorage, elmtId, extraInfo);
         if (typeof paramsLambda === "function") {
             this.paramsGenerator_ = paramsLambda;
         }
         this.__message = new SynchedPropertyObjectOneWayPU(params.message, this, "message");
+        this.__fontSize = new SynchedPropertySimpleOneWayPU(params.fontSize, this, "fontSize");
+        this.__textWidth = new SynchedPropertySimpleOneWayPU(params.textWidth, this, "textWidth");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
-    setInitiallyProvidedValue(params: TextGradientView_Params) {
+    setInitiallyProvidedValue(params: TextMarqueeView_Params) {
         if (params.message === undefined) {
             this.__message.set('');
         }
+        if (params.fontSize === undefined) {
+            this.__fontSize.set(30);
+        }
+        if (params.textWidth === undefined) {
+            this.__textWidth.set(Constants.MARQUEE_TEXT_WIDTH);
+        }
     }
-    updateStateVars(params: TextGradientView_Params) {
+    updateStateVars(params: TextMarqueeView_Params) {
         this.__message.reset(params.message);
+        this.__fontSize.reset(params.fontSize);
+        this.__textWidth.reset(params.textWidth);
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__message.purgeDependencyOnElmtId(rmElmtId);
+        this.__fontSize.purgeDependencyOnElmtId(rmElmtId);
+        this.__textWidth.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__message.aboutToBeDeleted();
+        this.__fontSize.aboutToBeDeleted();
+        this.__textWidth.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -37,6 +53,20 @@ export default class TextGradientView extends ViewPU {
     }
     set message(newValue: ResourceStr) {
         this.__message.set(newValue);
+    }
+    private __fontSize: SynchedPropertySimpleOneWayPU<number>;
+    get fontSize() {
+        return this.__fontSize.get();
+    }
+    set fontSize(newValue: number) {
+        this.__fontSize.set(newValue);
+    }
+    private __textWidth: SynchedPropertySimpleOneWayPU<string>;
+    get textWidth() {
+        return this.__textWidth.get();
+    }
+    set textWidth(newValue: string) {
+        this.__textWidth.set(newValue);
     }
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -57,10 +87,11 @@ export default class TextGradientView extends ViewPU {
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.message);
-            Text.width({ "id": 16777221, "type": 10003, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.width(this.textWidth);
             Text.fontColor(Color.Black);
-            Text.fontSize({ "id": 16777236, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontSize(this.fontSize);
             Text.fontWeight(FontWeight.Bold);
+            Text.maxLines(1);
             Text.textOverflow({ overflow: TextOverflow.MARQUEE });
         }, Text);
         Text.pop();

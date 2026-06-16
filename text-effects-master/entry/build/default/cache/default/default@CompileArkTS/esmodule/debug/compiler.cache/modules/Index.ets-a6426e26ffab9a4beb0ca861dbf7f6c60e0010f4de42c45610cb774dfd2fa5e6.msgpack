@@ -1,4 +1,4 @@
-Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ=ìif (!("finalizeConstruction" in ViewPU.prototype)) {
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚXuif (!("finalizeConstruction" in ViewPU.prototype)) {
     Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
 }
 /*
@@ -26,8 +26,9 @@ class Index extends ViewPU {
         if (typeof paramsLambda === "function") {
             this.paramsGenerator_ = paramsLambda;
         }
-        this.__inputText = new ObservedPropertySimplePU('è¿™æ˜¯ä¸€æ®µæ–‡å­—ç¤ºä¾‹', this, "inputText");
+        this.__inputText = new ObservedPropertySimplePU('This is a text example.', this, "inputText");
         this.__selectedEffect = new ObservedPropertySimplePU(0, this, "selectedEffect");
+        this.__containerWidth = new ObservedPropertySimplePU(0, this, "containerWidth");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
@@ -38,16 +39,21 @@ class Index extends ViewPU {
         if (params.selectedEffect !== undefined) {
             this.selectedEffect = params.selectedEffect;
         }
+        if (params.containerWidth !== undefined) {
+            this.containerWidth = params.containerWidth;
+        }
     }
     updateStateVars(params) {
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__inputText.purgeDependencyOnElmtId(rmElmtId);
         this.__selectedEffect.purgeDependencyOnElmtId(rmElmtId);
+        this.__containerWidth.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__inputText.aboutToBeDeleted();
         this.__selectedEffect.aboutToBeDeleted();
+        this.__containerWidth.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -63,31 +69,150 @@ class Index extends ViewPU {
     set selectedEffect(newValue) {
         this.__selectedEffect.set(newValue);
     }
-    sectionTitle(title, parent = null) {
+    get containerWidth() {
+        return this.__containerWidth.get();
+    }
+    set containerWidth(newValue) {
+        this.__containerWidth.set(newValue);
+    }
+    isDesktopLayout() {
+        return this.containerWidth >= Constants.DESKTOP_BREAKPOINT;
+    }
+    isTabletLayout() {
+        return this.containerWidth >= Constants.TABLET_BREAKPOINT &&
+            this.containerWidth < Constants.DESKTOP_BREAKPOINT;
+    }
+    getSectionSpacing() {
+        return this.isDesktopLayout() ? 20 : 16;
+    }
+    getPagePadding() {
+        if (this.isDesktopLayout()) {
+            return 32;
+        }
+        if (this.isTabletLayout()) {
+            return 24;
+        }
+        return 16;
+    }
+    getCardPadding() {
+        if (this.isDesktopLayout()) {
+            return 24;
+        }
+        if (this.isTabletLayout()) {
+            return 20;
+        }
+        return 14;
+    }
+    getTitleFontSize() {
+        if (this.isDesktopLayout()) {
+            return 22;
+        }
+        if (this.isTabletLayout()) {
+            return 20;
+        }
+        return 18;
+    }
+    getContentFontSize() {
+        if (this.isDesktopLayout()) {
+            return 48;
+        }
+        if (this.isTabletLayout()) {
+            return 38;
+        }
+        return 30;
+    }
+    getPreviewHeight() {
+        if (this.isDesktopLayout()) {
+            return 320;
+        }
+        if (this.isTabletLayout()) {
+            return 220;
+        }
+        return 160;
+    }
+    getReflectionHeight() {
+        if (this.isDesktopLayout()) {
+            return 128;
+        }
+        if (this.isTabletLayout()) {
+            return 100;
+        }
+        return 74;
+    }
+    getInputHeight() {
+        if (this.isDesktopLayout()) {
+            return 60;
+        }
+        if (this.isTabletLayout()) {
+            return 54;
+        }
+        return 48;
+    }
+    getButtonHeight() {
+        return this.isDesktopLayout() ? 44 : 40;
+    }
+    getButtonFontSize() {
+        return this.isDesktopLayout() ? 16 : 14;
+    }
+    getPreviewPadding() {
+        return this.isDesktopLayout() ? 24 : 16;
+    }
+    getScrollDuration() {
+        if (this.isDesktopLayout()) {
+            return 7000;
+        }
+        if (this.isTabletLayout()) {
+            return 6000;
+        }
+        return Constants.TEXT_SCROLL_DURATION;
+    }
+    getMarqueeTextWidth() {
+        if (this.isDesktopLayout()) {
+            return '72%';
+        }
+        if (this.isTabletLayout()) {
+            return '82%';
+        }
+        return Constants.MARQUEE_TEXT_WIDTH;
+    }
+    getContentMaxWidth() {
+        return this.isDesktopLayout() ? Constants.DESKTOP_MAX_WIDTH : Constants.TABLET_MAX_WIDTH;
+    }
+    getPreviewText() {
+        return this.inputText.length > 0 ? this.inputText : 'Type text to preview.';
+    }
+    sectionTitle(title, subtitle, parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create();
-            Row.width(Constants.FULL_PERCENT);
-            Row.margin({ bottom: 8 });
-        }, Row);
+            Column.create({ space: 4 });
+            Column.width(Constants.FULL_PERCENT);
+            Column.alignItems(HorizontalAlign.Start);
+        }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(title);
-            Text.fontSize({ "id": 16777240, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontSize(this.getTitleFontSize());
             Text.fontColor({ "id": 16777234, "type": 10001, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            Text.fontWeight(Constants.FONT_WEIGHT_500);
+            Text.fontWeight(FontWeight.Medium);
         }, Text);
         Text.pop();
-        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(subtitle);
+            Text.fontSize(14);
+            Text.fontColor('#5F6B7A');
+            Text.lineHeight(20);
+        }, Text);
+        Text.pop();
+        Column.pop();
     }
     effectButton(title, index, parent = null) {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Button.createWithLabel(title);
-            Button.fontSize(14);
+            Button.layoutWeight(1);
+            Button.height(this.getButtonHeight());
+            Button.fontSize(this.getButtonFontSize());
             Button.fontWeight(FontWeight.Medium);
-            Button.backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF');
-            Button.fontColor(this.selectedEffect === index ? Color.White : '#333333');
-            Button.borderRadius(18);
-            Button.height(36);
-            Button.padding({ left: 14, right: 14 });
+            Button.type(ButtonType.Capsule);
+            Button.backgroundColor(this.selectedEffect === index ? '#234AD9' : '#E8EDF8');
+            Button.fontColor(this.selectedEffect === index ? Color.White : '#233142');
             Button.onClick(() => {
                 this.selectedEffect = index;
             });
@@ -102,18 +227,23 @@ class Index extends ViewPU {
                     {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             if (isInitialRender) {
-                                let componentCall = new TextGradientView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 67, col: 7 });
+                                let componentCall = new TextGradientView(this, {
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize()
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 187, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
-                                        message: this.inputText
+                                        message: this.getPreviewText(),
+                                        fontSize: this.getContentFontSize()
                                     };
                                 };
                                 componentCall.paramsGenerator_ = paramsLambda;
                             }
                             else {
                                 this.updateStateVarsOfChildByElmtId(elmtId, {
-                                    message: this.inputText
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize()
                                 });
                             }
                         }, { name: "TextGradientView" });
@@ -125,18 +255,26 @@ class Index extends ViewPU {
                     {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             if (isInitialRender) {
-                                let componentCall = new TextScrollingView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 69, col: 7 });
+                                let componentCall = new TextScrollingView(this, {
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    duration: this.getScrollDuration()
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 192, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
-                                        message: this.inputText
+                                        message: this.getPreviewText(),
+                                        fontSize: this.getContentFontSize(),
+                                        duration: this.getScrollDuration()
                                     };
                                 };
                                 componentCall.paramsGenerator_ = paramsLambda;
                             }
                             else {
                                 this.updateStateVarsOfChildByElmtId(elmtId, {
-                                    message: this.inputText
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    duration: this.getScrollDuration()
                                 });
                             }
                         }, { name: "TextScrollingView" });
@@ -148,18 +286,26 @@ class Index extends ViewPU {
                     {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             if (isInitialRender) {
-                                let componentCall = new TextReflectionView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 71, col: 7 });
+                                let componentCall = new TextReflectionView(this, {
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    reflectionHeight: this.getReflectionHeight()
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 198, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
-                                        message: this.inputText
+                                        message: this.getPreviewText(),
+                                        fontSize: this.getContentFontSize(),
+                                        reflectionHeight: this.getReflectionHeight()
                                     };
                                 };
                                 componentCall.paramsGenerator_ = paramsLambda;
                             }
                             else {
                                 this.updateStateVarsOfChildByElmtId(elmtId, {
-                                    message: this.inputText
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    reflectionHeight: this.getReflectionHeight()
                                 });
                             }
                         }, { name: "TextReflectionView" });
@@ -171,18 +317,26 @@ class Index extends ViewPU {
                     {
                         this.observeComponentCreation2((elmtId, isInitialRender) => {
                             if (isInitialRender) {
-                                let componentCall = new TextMarqueeView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 73, col: 7 });
+                                let componentCall = new TextMarqueeView(this, {
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    textWidth: this.getMarqueeTextWidth()
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 204, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
-                                        message: this.inputText
+                                        message: this.getPreviewText(),
+                                        fontSize: this.getContentFontSize(),
+                                        textWidth: this.getMarqueeTextWidth()
                                     };
                                 };
                                 componentCall.paramsGenerator_ = paramsLambda;
                             }
                             else {
                                 this.updateStateVarsOfChildByElmtId(elmtId, {
-                                    message: this.inputText
+                                    message: this.getPreviewText(),
+                                    fontSize: this.getContentFontSize(),
+                                    textWidth: this.getMarqueeTextWidth()
                                 });
                             }
                         }, { name: "TextMarqueeView" });
@@ -191,6 +345,82 @@ class Index extends ViewPU {
             }
         }, If);
         If.pop();
+    }
+    selectorCard(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 16 });
+            Column.width(Constants.FULL_PERCENT);
+            Column.padding(this.getCardPadding());
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Column.backgroundColor(Color.White);
+        }, Column);
+        this.sectionTitle.bind(this)('Choose an effect', 'The same text can switch across four visual styles.');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 10 });
+            Column.width(Constants.FULL_PERCENT);
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 10 });
+            Row.width(Constants.FULL_PERCENT);
+        }, Row);
+        this.effectButton.bind(this)('Gradient', 0);
+        this.effectButton.bind(this)('Highlight', 1);
+        Row.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 10 });
+            Row.width(Constants.FULL_PERCENT);
+        }, Row);
+        this.effectButton.bind(this)('Reflection', 2);
+        this.effectButton.bind(this)('Marquee', 3);
+        Row.pop();
+        Column.pop();
+        Column.pop();
+    }
+    inputCard(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 16 });
+            Column.width(Constants.FULL_PERCENT);
+            Column.padding(this.getCardPadding());
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Column.backgroundColor(Color.White);
+        }, Column);
+        this.sectionTitle.bind(this)('Input text', 'Type any content and the preview will update immediately.');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            TextInput.create({ placeholder: 'Type text to preview.', text: this.inputText });
+            TextInput.width(Constants.FULL_PERCENT);
+            TextInput.height(this.getInputHeight());
+            TextInput.fontSize(this.getButtonFontSize() + 1);
+            TextInput.backgroundColor('#F5F7FB');
+            TextInput.borderRadius(14);
+            TextInput.padding({ left: 14, right: 14 });
+            TextInput.onChange((value) => {
+                this.inputText = value;
+            });
+        }, TextInput);
+        Column.pop();
+    }
+    previewCard(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 16 });
+            Column.width(Constants.FULL_PERCENT);
+            Column.padding(this.getCardPadding());
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Column.backgroundColor(Color.White);
+        }, Column);
+        this.sectionTitle.bind(this)('Live preview', 'The preview area grows with the screen size for tablets and desktop windows.');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width(Constants.FULL_PERCENT);
+            Column.height(this.getPreviewHeight());
+            Column.justifyContent(FlexAlign.Center);
+            Column.alignItems(HorizontalAlign.Center);
+            Column.padding(this.getPreviewPadding());
+            Column.borderRadius(18);
+            Column.backgroundColor('#F4F6FA');
+        }, Column);
+        this.effectPreview.bind(this)();
+        Column.pop();
+        Column.pop();
     }
     initialRender() {
         this.observeComponentCreation2((elmtId, isInitialRender) => {
@@ -202,101 +432,68 @@ class Index extends ViewPU {
             Navigation.mode(NavigationMode.Stack);
         }, Navigation);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Scroll.create();
+            Scroll.scrollBar(BarState.Auto);
+            Scroll.width(Constants.FULL_PERCENT);
+            Scroll.height(Constants.FULL_PERCENT);
+        }, Scroll);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
             Column.create();
             Column.width(Constants.FULL_PERCENT);
-            Column.height(Constants.FULL_PERCENT);
+            Column.constraintSize({ maxWidth: this.getContentMaxWidth() });
+            Column.alignItems(HorizontalAlign.Center);
             Column.padding({
-                left: { "id": 16777235, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" },
-                right: { "id": 16777235, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" },
-                top: 20
+                left: this.getPagePadding(),
+                right: this.getPagePadding(),
+                top: this.getPagePadding(),
+                bottom: this.getPagePadding()
+            });
+            Column.onAreaChange((_, value) => {
+                this.containerWidth = Number(value.width);
             });
         }, Column);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.create();
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.backgroundColor(Color.White);
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.width(Constants.FULL_PERCENT);
-            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
-            Column.margin({ bottom: 16 });
-        }, Column);
-        this.sectionTitle.bind(this)('ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©');
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create({ space: 8 });
-            Row.width(Constants.FULL_PERCENT);
-            Row.justifyContent(FlexAlign.Start);
-        }, Row);
-        this.effectButton.bind(this)('æ¸å˜', 0);
-        this.effectButton.bind(this)('æ»šåŠ¨', 1);
-        this.effectButton.bind(this)('å€’å½±', 2);
-        this.effectButton.bind(this)('è·‘é©¬ç¯', 3);
-        Row.pop();
-        // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            If.create();
+            if (this.isDesktopLayout()) {
+                this.ifElseBranchUpdateFunction(0, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Row.create({ space: this.getSectionSpacing() });
+                        Row.width(Constants.FULL_PERCENT);
+                        Row.alignItems(VerticalAlign.Top);
+                    }, Row);
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create({ space: this.getSectionSpacing() });
+                        Column.layoutWeight(4);
+                        Column.alignItems(HorizontalAlign.Start);
+                    }, Column);
+                    this.selectorCard.bind(this)();
+                    this.inputCard.bind(this)();
+                    Column.pop();
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create();
+                        Column.layoutWeight(6);
+                    }, Column);
+                    this.previewCard.bind(this)();
+                    Column.pop();
+                    Row.pop();
+                });
+            }
+            else {
+                this.ifElseBranchUpdateFunction(1, () => {
+                    this.observeComponentCreation2((elmtId, isInitialRender) => {
+                        Column.create({ space: this.getSectionSpacing() });
+                        Column.width(Constants.FULL_PERCENT);
+                    }, Column);
+                    this.selectorCard.bind(this)();
+                    this.inputCard.bind(this)();
+                    this.previewCard.bind(this)();
+                    Column.pop();
+                });
+            }
+        }, If);
+        If.pop();
         Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.create();
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.backgroundColor(Color.White);
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.width(Constants.FULL_PERCENT);
-            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-            Column.margin({ bottom: 16 });
-        }, Column);
-        this.sectionTitle.bind(this)('ç¬¬äºŒè¡Œï¼šè¾“å…¥éœ€è¦å¤„ç†çš„æ–‡æœ¬');
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            TextInput.create({ placeholder: 'è¯·è¾“å…¥æ–‡å­—å†…å®¹', text: this.inputText });
-            TextInput.width(Constants.FULL_PERCENT);
-            TextInput.height(48);
-            TextInput.fontSize(16);
-            TextInput.backgroundColor('#F8F9FA');
-            TextInput.borderRadius(12);
-            TextInput.padding({ left: 12, right: 12 });
-            TextInput.onChange((value) => {
-                this.inputText = value;
-            });
-        }, TextInput);
-        // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-        Column.pop();
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.create();
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.backgroundColor(Color.White);
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.width(Constants.FULL_PERCENT);
-            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-            Column.margin({ bottom: 16 });
-        }, Column);
-        this.sectionTitle.bind(this)('ç¬¬ä¸‰è¡Œï¼šæ–‡å­—ç‰¹æ•ˆå¤„ç†ç»“æžœ');
-        this.observeComponentCreation2((elmtId, isInitialRender) => {
-            Row.create();
-            Row.width(Constants.FULL_PERCENT);
-            Row.height(96);
-            Row.justifyContent(FlexAlign.Center);
-            Row.alignItems(VerticalAlign.Center);
-            Row.backgroundColor('#F8F9FA');
-            Row.borderRadius(12);
-            Row.padding(12);
-        }, Row);
-        this.effectPreview.bind(this)();
-        Row.pop();
-        // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-        Column.pop();
-        Column.pop();
+        Scroll.pop();
         Navigation.pop();
     }
     rerender() {
@@ -307,7 +504,7 @@ class Index extends ViewPU {
     }
 }
 registerNamedRoute(() => new Index(undefined, {}), "", { bundleName: "com.example.texteffects", moduleName: "entry", pagePath: "pages/Index", pageFullPath: "entry/src/main/ets/pages/Index", integratedHsp: "false", moduleType: "followWithHap" });
-//# sourceMappingURL=Index.js.mapÂ•ÙUC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\constants\Constants.etsÙWC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextGradientView.etsÙVC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextMarqueeView.etsÙYC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextReflectionView.etsÙXC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextScrollingView.etsÙMC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\pages\Index.etsÔrB›ªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ0C:\Users\31293\Desktop\text-effects-master\entryÙ*C:\Users\31293\Desktop\text-effects-master¥entry¥1.0.0Ô  Ù0C:\Users\31293\Desktop\text-effects-master\entryÔrCÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ/*
+//# sourceMappingURL=Index.js.mapÂ•ÙtC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\constants\Constants.etsÙvC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextGradientView.etsÙuC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextMarqueeView.etsÙxC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextReflectionView.etsÙwC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextScrollingView.etsÙlC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\pages\Index.etsÔrB›ªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙOC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entryÙIC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice¥entry¥1.0.0Ô  ÙOC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entryÔrCÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ#/*
  * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -331,40 +528,160 @@ import TextScrollingView from '../view/TextScrollingView';
 @Entry
 @Component
 struct Index {
-  @State inputText: string = 'è¿™æ˜¯ä¸€æ®µæ–‡å­—ç¤ºä¾‹';
+  @State inputText: string = 'This is a text example.';
   @State selectedEffect: number = 0;
+  @State containerWidth: number = 0;
 
-  @Styles
-  cardStyle() {
-    .borderRadius($r('app.float.row_border_radius'))
-    .backgroundColor(Color.White)
-    .padding($r('app.float.row_padding'))
-    .width(Constants.FULL_PERCENT)
-    .margin({ bottom: 16 })
+  private isDesktopLayout(): boolean {
+    return this.containerWidth >= Constants.DESKTOP_BREAKPOINT;
+  }
+
+  private isTabletLayout(): boolean {
+    return this.containerWidth >= Constants.TABLET_BREAKPOINT &&
+      this.containerWidth < Constants.DESKTOP_BREAKPOINT;
+  }
+
+  private getSectionSpacing(): number {
+    return this.isDesktopLayout() ? 20 : 16;
+  }
+
+  private getPagePadding(): number {
+    if (this.isDesktopLayout()) {
+      return 32;
+    }
+    if (this.isTabletLayout()) {
+      return 24;
+    }
+    return 16;
+  }
+
+  private getCardPadding(): number {
+    if (this.isDesktopLayout()) {
+      return 24;
+    }
+    if (this.isTabletLayout()) {
+      return 20;
+    }
+    return 14;
+  }
+
+  private getTitleFontSize(): number {
+    if (this.isDesktopLayout()) {
+      return 22;
+    }
+    if (this.isTabletLayout()) {
+      return 20;
+    }
+    return 18;
+  }
+
+  private getContentFontSize(): number {
+    if (this.isDesktopLayout()) {
+      return 48;
+    }
+    if (this.isTabletLayout()) {
+      return 38;
+    }
+    return 30;
+  }
+
+  private getPreviewHeight(): number {
+    if (this.isDesktopLayout()) {
+      return 320;
+    }
+    if (this.isTabletLayout()) {
+      return 220;
+    }
+    return 160;
+  }
+
+  private getReflectionHeight(): number {
+    if (this.isDesktopLayout()) {
+      return 128;
+    }
+    if (this.isTabletLayout()) {
+      return 100;
+    }
+    return 74;
+  }
+
+  private getInputHeight(): number {
+    if (this.isDesktopLayout()) {
+      return 60;
+    }
+    if (this.isTabletLayout()) {
+      return 54;
+    }
+    return 48;
+  }
+
+  private getButtonHeight(): number {
+    return this.isDesktopLayout() ? 44 : 40;
+  }
+
+  private getButtonFontSize(): number {
+    return this.isDesktopLayout() ? 16 : 14;
+  }
+
+  private getPreviewPadding(): number {
+    return this.isDesktopLayout() ? 24 : 16;
+  }
+
+  private getScrollDuration(): number {
+    if (this.isDesktopLayout()) {
+      return 7000;
+    }
+    if (this.isTabletLayout()) {
+      return 6000;
+    }
+    return Constants.TEXT_SCROLL_DURATION;
+  }
+
+  private getMarqueeTextWidth(): string {
+    if (this.isDesktopLayout()) {
+      return '72%';
+    }
+    if (this.isTabletLayout()) {
+      return '82%';
+    }
+    return Constants.MARQUEE_TEXT_WIDTH;
+  }
+
+  private getContentMaxWidth(): number {
+    return this.isDesktopLayout() ? Constants.DESKTOP_MAX_WIDTH : Constants.TABLET_MAX_WIDTH;
+  }
+
+  private getPreviewText(): string {
+    return this.inputText.length > 0 ? this.inputText : 'Type text to preview.';
   }
 
   @Builder
-  sectionTitle(title: string) {
-    Row() {
+  sectionTitle(title: string, subtitle: string) {
+    Column({ space: 4 }) {
       Text(title)
-        .fontSize($r('app.float.title_font_size'))
+        .fontSize(this.getTitleFontSize())
         .fontColor($r('app.color.title_font_color'))
-        .fontWeight(Constants.FONT_WEIGHT_500)
+        .fontWeight(FontWeight.Medium)
+
+      Text(subtitle)
+        .fontSize(14)
+        .fontColor('#5F6B7A')
+        .lineHeight(20)
     }
     .width(Constants.FULL_PERCENT)
-    .margin({ bottom: 8 })
+    .alignItems(HorizontalAlign.Start)
   }
 
   @Builder
   effectButton(title: string, index: number) {
     Button(title)
-      .fontSize(14)
+      .layoutWeight(1)
+      .height(this.getButtonHeight())
+      .fontSize(this.getButtonFontSize())
       .fontWeight(FontWeight.Medium)
-      .backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF')
-      .fontColor(this.selectedEffect === index ? Color.White : '#333333')
-      .borderRadius(18)
-      .height(36)
-      .padding({ left: 14, right: 14 })
+      .type(ButtonType.Capsule)
+      .backgroundColor(this.selectedEffect === index ? '#234AD9' : '#E8EDF8')
+      .fontColor(this.selectedEffect === index ? Color.White : '#233142')
       .onClick(() => {
         this.selectedEffect = index;
       })
@@ -373,72 +690,146 @@ struct Index {
   @Builder
   effectPreview() {
     if (this.selectedEffect === 0) {
-      TextGradientView({ message: this.inputText })
+      TextGradientView({
+        message: this.getPreviewText(),
+        fontSize: this.getContentFontSize()
+      })
     } else if (this.selectedEffect === 1) {
-      TextScrollingView({ message: this.inputText })
+      TextScrollingView({
+        message: this.getPreviewText(),
+        fontSize: this.getContentFontSize(),
+        duration: this.getScrollDuration()
+      })
     } else if (this.selectedEffect === 2) {
-      TextReflectionView({ message: this.inputText })
+      TextReflectionView({
+        message: this.getPreviewText(),
+        fontSize: this.getContentFontSize(),
+        reflectionHeight: this.getReflectionHeight()
+      })
     } else {
-      TextMarqueeView({ message: this.inputText })
+      TextMarqueeView({
+        message: this.getPreviewText(),
+        fontSize: this.getContentFontSize(),
+        textWidth: this.getMarqueeTextWidth()
+      })
     }
+  }
+
+  @Builder
+  selectorCard() {
+    Column({ space: 16 }) {
+      this.sectionTitle('Choose an effect', 'The same text can switch across four visual styles.')
+
+      Column({ space: 10 }) {
+        Row({ space: 10 }) {
+          this.effectButton('Gradient', 0)
+          this.effectButton('Highlight', 1)
+        }
+        .width(Constants.FULL_PERCENT)
+
+        Row({ space: 10 }) {
+          this.effectButton('Reflection', 2)
+          this.effectButton('Marquee', 3)
+        }
+        .width(Constants.FULL_PERCENT)
+      }
+      .width(Constants.FULL_PERCENT)
+    }
+    .width(Constants.FULL_PERCENT)
+    .padding(this.getCardPadding())
+    .borderRadius($r('app.float.row_border_radius'))
+    .backgroundColor(Color.White)
+  }
+
+  @Builder
+  inputCard() {
+    Column({ space: 16 }) {
+      this.sectionTitle('Input text', 'Type any content and the preview will update immediately.')
+
+      TextInput({ placeholder: 'Type text to preview.', text: this.inputText })
+        .width(Constants.FULL_PERCENT)
+        .height(this.getInputHeight())
+        .fontSize(this.getButtonFontSize() + 1)
+        .backgroundColor('#F5F7FB')
+        .borderRadius(14)
+        .padding({ left: 14, right: 14 })
+        .onChange((value: string) => {
+          this.inputText = value;
+        })
+    }
+    .width(Constants.FULL_PERCENT)
+    .padding(this.getCardPadding())
+    .borderRadius($r('app.float.row_border_radius'))
+    .backgroundColor(Color.White)
+  }
+
+  @Builder
+  previewCard() {
+    Column({ space: 16 }) {
+      this.sectionTitle('Live preview', 'The preview area grows with the screen size for tablets and desktop windows.')
+
+      Column() {
+        this.effectPreview()
+      }
+      .width(Constants.FULL_PERCENT)
+      .height(this.getPreviewHeight())
+      .justifyContent(FlexAlign.Center)
+      .alignItems(HorizontalAlign.Center)
+      .padding(this.getPreviewPadding())
+      .borderRadius(18)
+      .backgroundColor('#F4F6FA')
+    }
+    .width(Constants.FULL_PERCENT)
+    .padding(this.getCardPadding())
+    .borderRadius($r('app.float.row_border_radius'))
+    .backgroundColor(Color.White)
   }
 
   build() {
     Navigation() {
-      Column() {
-        // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+      Scroll() {
         Column() {
-          this.sectionTitle('ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©')
-          Row({ space: 8 }) {
-            this.effectButton('æ¸å˜', 0)
-            this.effectButton('æ»šåŠ¨', 1)
-            this.effectButton('å€’å½±', 2)
-            this.effectButton('è·‘é©¬ç¯', 3)
-          }
-          .width(Constants.FULL_PERCENT)
-          .justifyContent(FlexAlign.Start)
-        }
-        .cardStyle()
+          if (this.isDesktopLayout()) {
+            Row({ space: this.getSectionSpacing() }) {
+              Column({ space: this.getSectionSpacing() }) {
+                this.selectorCard()
+                this.inputCard()
+              }
+              .layoutWeight(4)
+              .alignItems(HorizontalAlign.Start)
 
-        // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
-        Column() {
-          this.sectionTitle('ç¬¬äºŒè¡Œï¼šè¾“å…¥éœ€è¦å¤„ç†çš„æ–‡æœ¬')
-          TextInput({ placeholder: 'è¯·è¾“å…¥æ–‡å­—å†…å®¹', text: this.inputText })
+              Column() {
+                this.previewCard()
+              }
+              .layoutWeight(6)
+            }
             .width(Constants.FULL_PERCENT)
-            .height(48)
-            .fontSize(16)
-            .backgroundColor('#F8F9FA')
-            .borderRadius(12)
-            .padding({ left: 12, right: 12 })
-            .onChange((value: string) => {
-              this.inputText = value;
-            })
-        }
-        .cardStyle()
-
-        // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åŽçš„æ–‡å­—ç‰¹æ•ˆç»“æžœ
-        Column() {
-          this.sectionTitle('ç¬¬ä¸‰è¡Œï¼šæ–‡å­—ç‰¹æ•ˆå¤„ç†ç»“æžœ')
-          Row() {
-            this.effectPreview()
+            .alignItems(VerticalAlign.Top)
+          } else {
+            Column({ space: this.getSectionSpacing() }) {
+              this.selectorCard()
+              this.inputCard()
+              this.previewCard()
+            }
+            .width(Constants.FULL_PERCENT)
           }
-          .width(Constants.FULL_PERCENT)
-          .height(96)
-          .justifyContent(FlexAlign.Center)
-          .alignItems(VerticalAlign.Center)
-          .backgroundColor('#F8F9FA')
-          .borderRadius(12)
-          .padding(12)
         }
-        .cardStyle()
+        .width(Constants.FULL_PERCENT)
+        .constraintSize({ maxWidth: this.getContentMaxWidth() })
+        .alignItems(HorizontalAlign.Center)
+        .padding({
+          left: this.getPagePadding(),
+          right: this.getPagePadding(),
+          top: this.getPagePadding(),
+          bottom: this.getPagePadding()
+        })
+        .onAreaChange((_, value) => {
+          this.containerWidth = Number(value.width);
+        })
       }
+      .scrollBar(BarState.Auto)
       .width(Constants.FULL_PERCENT)
       .height(Constants.FULL_PERCENT)
-      .padding({
-        left: $r('app.float.area_padding_left'),
-        right: $r('app.float.area_padding_left'),
-        top: 20
-      })
     }
     .height(Constants.FULL_PERCENT)
     .width(Constants.FULL_PERCENT)
@@ -447,52 +838,87 @@ struct Index {
     .mode(NavigationMode.Stack)
   }
 }
-ÀÔrD•º../view/TextReflectionView¸../view/TextGradientView·../view/TextMarqueeView¶../constants/Constants¹../view/TextScrollingViewÔrE—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙYC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextReflectionView.etsAÃªoh-resolveÂEAÂÙWC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextGradientView.etsAÃªoh-resolveÂEAÂÙVC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextMarqueeView.etsAÃªoh-resolveÂEAÂÙUC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\constants\Constants.etsAÃªoh-resolveÂEAÂÙXC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextScrollingView.etsAÃªoh-resolveÂ“ÔrF–§version¤fileªsourceRoot§sources¥names¨mappings¨Index.js ‘©Index.etsÜ-‘”    ‘” –”   ” ” ” ”. .”/ /–”   ” ” ” ”7 7”8 8–”   ” ” ” ”5 5”6 6–”   ” ” ” ”; ;”< <–”   ” ” ” ”9 9”: :’” ” ‘”  ’”8 ”ÌB '’”= "”> #‘” :’” 	” ’” 	” ’” 	” ’” 	” ”” %” %” %” %’” &” &˜” &” &” ,” ,
-” ,” ,”  ,”, ,!š” &” &” -” -” -” -” -”! -”" -”$ -”” '” '
-” '” '”” '” '
-” (	” (”” '” '
-” )	” )˜” '” '
-” *	” *” *”% *”& *”5 *-’” '” '
-’” &” &‘” .–” 1” 1” 1” 1” 1” 1+”” 2” 2
-”# 2”( 2–” 2” 2
-” 3” 3” 3” 3˜” 2” 2
-” 4” 4” 4”( 4”) 4”/ 4#Ü ” 2” 2
-” 5”" 5”# 5”' 5”( 5”6 5*”; 5/”Ì@ 54”ÌA 55”ÌB 56”ÌC 57”ÌL 5Ì@”ÌM 5ÌA”ÌN 5ÌB”ÌO 5ÌC”ÌX 5ÌLÜ ” 2” 2
-” 6” 6” 6”! 6”" 6”0 6$”5 6)”: 6.”; 6/”< 60”= 61”ÌB 66”ÌC 67”ÌH 6<”ÌI 6=”ÌJ 6>”ÌK 6?”ÌT 6ÌH–” 2” 2
-” 7” 7”  7”" 7–” 2” 2
-” 8” 8” 8” 8ž” 2” 2
-” 9” 9” 9” 9”! 9”# 9”% 9”' 9”, 9 ”. 9"”0 9$”2 9&—” 2” 2
-” :” :” :” :”  :—” ;” ;” ;”# ;”& ;”+ ;#”, ;$’” <” <’” 2” 2
-‘” =’” Ì@” Ì@˜” ÌA” ÌA” ÌA” ÌA”# ÌA”( ÌA ”) ÌA!”+ ÌA#š”8 ÌB”ÌH ÌB”ÌO ÌB”ÌQ ÌB”ÌX ÌB ”ÌZ ÌB"”Ì^ ÌB&”Ì_ ÌB'”Ìh ÌB0”Ìj ÌB2–”( ÌB”/ ÌB ”1 ÌB"”5 ÌB&”6 ÌB'”? ÌB0–”$ ÌB”+ ÌB ”- ÌB"”1 ÌB&”2 ÌB'”; ÌB0‘” ÌC˜” ÌC” ÌC” ÌC” ÌC”( ÌC"”- ÌC'”. ÌC(”0 ÌC*š”8 ÌD”ÌI ÌD”ÌP ÌD”ÌR ÌD”ÌY ÌD!”Ì[ ÌD#”Ì_ ÌD'”Ì` ÌD(”Ìi ÌD1”Ìk ÌD3–”( ÌD”/ ÌD!”1 ÌD#”5 ÌD'”6 ÌD(”? ÌD1–”$ ÌD”+ ÌD!”- ÌD#”1 ÌD'”2 ÌD(”; ÌD1‘” ÌE˜” ÌE” ÌE” ÌE” ÌE”( ÌE"”- ÌE'”. ÌE(”0 ÌE*š”8 ÌF”ÌJ ÌF”ÌQ ÌF”ÌS ÌF”ÌZ ÌF"”Ì\ ÌF$”Ì` ÌF(”Ìa ÌF)”Ìj ÌF2”Ìl ÌF4–”( ÌF”/ ÌF"”1 ÌF$”5 ÌF(”6 ÌF)”? ÌF2–”$ ÌF”+ ÌF"”- ÌF$”1 ÌF(”2 ÌF)”; ÌF2‘” ÌG‘” ÌGš”8 ÌH”ÌG ÌH”ÌN ÌH”ÌP ÌH”ÌW ÌH”ÌY ÌH!”Ì] ÌH%”Ì^ ÌH&”Ìg ÌH/”Ìi ÌH1–”( ÌH”/ ÌH”1 ÌH!”5 ÌH%”6 ÌH&”? ÌH/–”$ ÌH”+ ÌH”- ÌH!”1 ÌH%”2 ÌH&”; ÌH/‘” ÌI‘” ÌJ‘” ÌL’” ÌM” ÌM˜” ÌM” ÌM” Ì…” Ì…” Ì…”' Ì…”( Ì…”4 Ì…"˜” ÌM” ÌM” Ì†” Ì†
-” Ì†”& Ì†”' Ì†”3 Ì†!”” ÌM” ÌM” Ì‡” Ì‡
-”” ÌM” ÌM” Ìˆ”& Ìˆ˜” ÌM” ÌM” Ì‰” Ì‰	” Ì‰
-”* Ì‰”+ Ì‰”0 Ì‰’” ÌN” ÌN˜” ÌN” ÌN” Ì}” Ì}” Ì}”" Ì}”# Ì}”/ Ì}#˜” ÌN” ÌN” Ì~” Ì~” Ì~”# Ì~”$ Ì~”0 Ì~$•” ÌN” ÌN” Ì” Ì” Ì“” Ì€” Ì€”Ìƒ Ì€/“” Ì” Ì”Ì„ Ì0”” Ì‚” Ì‚” Ì‚” Ì‚‘” Ìƒ’” ÌO” ÌO’” ÌP” ÌP’” ÌO” ÌO”” ÌP” ÌP” ” ’” ÌO” ÌO˜” ÌP” ÌP” ”" ”# ”( ”) ”.  ’” ÌO” ÌO”” ÌP” ÌP” ” ’” ÌO” ÌO˜” ÌP” ÌP”  ”  
-”  ”"  ”#  ”/  !’” ÌO” ÌOš” ÌP” ÌP” !” !” !” !”" !”$ !”& !”( !—” ÌQ
-” ÌQ” ÌQ” ÌQ”% ÌQ”1 ÌQ(”2 ÌQ)˜” ÌR
-” ÌR” ÌR” ÌR” ÌR”  ÌR”! ÌR”# ÌR˜” ÌR
-” ÌR” ÌX” ÌX” ÌX” ÌX”  ÌX”, ÌX'˜” ÌR
-” ÌR” ÌY” ÌY” ÌY”( ÌY#”) ÌY$”. ÌY)™” ÌS” ÌS” ÌS” ÌS”% ÌS”) ÌS"”+ ÌS$”, ÌS%”- ÌS&™” ÌT” ÌT” ÌT” ÌT”% ÌT”) ÌT"”+ ÌT$”, ÌT%”- ÌT&™” ÌU” ÌU” ÌU” ÌU”% ÌU”) ÌU"”+ ÌU$”, ÌU%”- ÌU&™” ÌV” ÌV” ÌV” ÌV”% ÌV”* ÌV#”, ÌV%”- ÌV&”. ÌV'’” ÌR
-” ÌR’” ÌO” ÌO’” ÌP” ÌP’” Ì]”$ Ì] ’” Ì^” Ì^’” Ì]”$ Ì] ”” Ì^” Ì^” ” ’” Ì]”$ Ì] ˜” Ì^” Ì^” ”" ”# ”( ”) ”.  ’” Ì]”$ Ì] ”” Ì^” Ì^” ” ’” Ì]”$ Ì] ˜” Ì^” Ì^”  ”  
-”  ”"  ”#  ”/  !’” Ì]”$ Ì] š” Ì^” Ì^” !” !” !” !”" !”$ !”& !”( !—” Ì_
-” Ì_” Ì_” Ì_”% Ì_”4 Ì_+”5 Ì_,ž” Ì`
-” Ì`” Ì`” Ì`”* Ì`!”, Ì`#”5 Ì`,”7 Ì`.”; Ì`2”= Ì`4”ÌA Ì`8”ÌB Ì`9”ÌK Ì`ÌB”ÌM Ì`ÌD˜” Ì`
-” Ì`” Ìa” Ìa” Ìa”% Ìa”& Ìa”2 Ìa)–” Ì`
-” Ì`” Ìb” Ìb” Ìb” Ìb–” Ì`
-” Ì`” Ìc” Ìc” Ìc”! Ìc–” Ì`
-” Ì`” Ìd”% Ìd”& Ìd”/ Ìd&–” Ì`
-” Ì`” Ìe”" Ìe”# Ìe”% Ìež” Ì`
-” Ì`” Ìf” Ìf” Ìf”  Ìf”$ Ìf”& Ìf”( Ìf”* Ìf!”/ Ìf&”1 Ìf(”3 Ìf*”5 Ìf,™” Ì`
-” Ì`” Ìg” Ìg” Ìg”  Ìg”% Ìg$”' Ìg&”) Ìg(—” Ìh” Ìh” Ìh” Ìh”! Ìh”& Ìh$”' Ìh%’” Ìi” Ìi’” Ì]”  Ì] ’” Ì^” Ì^’” Ìm” Ìm’” Ìn” Ìn’” Ìm” Ìm”” Ìn” Ìn” ” ’” Ìm” Ìm˜” Ìn” Ìn” ”" ”# ”( ”) ”.  ’” Ìm” Ìm”” Ìn” Ìn” ” ’” Ìm” Ìm˜” Ìn” Ìn”  ”  
-”  ”"  ”#  ”/  !’” Ìm” Ìmš” Ìn” Ìn” !” !” !” !”" !”$ !”& !”( !—” Ìo
-” Ìo” Ìo” Ìo”% Ìo”3 Ìo*”4 Ìo+’” Ìp
-” Ìp˜” Ìp
-” Ìp” Ìs” Ìs” Ìs” Ìs”  Ìs”, Ìs'–” Ìp
-” Ìp” Ìt” Ìt” Ìt” Ìt˜” Ìp
-” Ìp” Ìu” Ìu” Ìu”( Ìu#”) Ìu$”/ Ìu*˜” Ìp
-” Ìp” Ìv” Ìv” Ìv”( Ìv#”) Ìv$”/ Ìv*–” Ìp
-” Ìp” Ìw” Ìw”  Ìw”) Ìw$–” Ìp
-” Ìp” Ìx” Ìx” Ìx” Ìx–” Ìp
-” Ìp” Ìy” Ìy” Ìy” Ìy•” Ìq” Ìq” Ìq” Ìq”' Ìq ’” Ìp
-” Ìp’” Ìm” Ìm’” Ìn” Ìn’” ÌN” ÌN’” ÌM” ÌM‘” ÌŠÔrG–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ6‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ÀÔrD•¸../view/TextGradientView·../view/TextMarqueeViewº../view/TextReflectionView¶../constants/Constants¹../view/TextScrollingViewÔrE—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙvC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextGradientView.etsAÃªoh-resolveÂEAÂÙuC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextMarqueeView.etsAÃªoh-resolveÂEAÂÙxC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextReflectionView.etsAÃªoh-resolveÂEAÂÙtC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\constants\Constants.etsAÃªoh-resolveÂEAÂÙwC:\Users\31293\Desktop\workplace\text-effects-master-upgraded-multidevice\entry\src\main\ets\view\TextScrollingView.etsAÃªoh-resolveÂ“ÔrF–§version¤fileªsourceRoot§sources¥names¨mappings¨Index.js ‘©Index.etsÜò‘”    ‘” –”   ” ” ” ”. .”/ /–”   ” ” ” ”7 7”8 8–”   ” ” ” ”5 5”6 6–”   ” ” ” ”; ;”< <–”   ” ” ” ”9 9”: :’” ” ‘”  ’”8 ”ÌQ 6’”= "”> #’”= "”> #‘” :’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 	” ’” 
+” š” ” ” ” ”" ”& "”/ +”0 ,”ÌB >”ÌC ?’” ” ’”  
+”  ™” !” !” !” !”" !”& !"”/ !+”0 !,”ÌA !=™” "” "
+” "” "”" "”+ "%”, "&”> "8”? "9’” #” #’” %
+” %Ÿ” &” &” &” &”# &”% &!”& &"”' &#”( &$”* &&”+ &'”, &(”- &)”/ &+”0 &,’” '” '’” )
+” )—” *” *” *” *”  *”" *”$ * ”” +” +” +” +‘”	 ,—” -” -” -” -” -”! -”# -”” .” .” .” .‘”	 /”” 0” 0” 0” 0’” 1” 1’” 3
+” 3—” 4” 4” 4” 4”  4”" 4”$ 4 ”” 5” 5” 5” 5‘”	 6—” 7” 7” 7” 7” 7”! 7”# 7”” 8” 8” 8” 8‘”	 9”” :” :” :” :’” ;” ;’” =
+” =—” >” >” >” >”  >”" >”$ > ”” ?” ?” ?” ?‘”	 Ì@—” ÌA” ÌA” ÌA” ÌA” ÌA”! ÌA”# ÌA”” ÌB” ÌB” ÌB” ÌB‘”	 ÌC”” ÌD” ÌD” ÌD” ÌD’” ÌE” ÌE’” ÌG
+” ÌG—” ÌH” ÌH” ÌH” ÌH”  ÌH”" ÌH”$ ÌH ”” ÌI” ÌI” ÌI” ÌI‘”	 ÌJ—” ÌK” ÌK” ÌK” ÌK” ÌK”! ÌK”# ÌK”” ÌL” ÌL” ÌL” ÌL‘”	 ÌM”” ÌN” ÌN” ÌN” ÌN’” ÌO” ÌO’” ÌQ
+” ÌQ—” ÌR” ÌR” ÌR” ÌR”  ÌR”" ÌR”$ ÌR ”” ÌS” ÌS” ÌS” ÌS‘”	 ÌT—” ÌU” ÌU” ÌU” ÌU” ÌU”! ÌU”# ÌU”” ÌV” ÌV” ÌV” ÌV‘”	 ÌW”” ÌX” ÌX” ÌX” ÌX’” ÌY” ÌY’” Ì[
+” Ì[—” Ì\” Ì\” Ì\” Ì\”  Ì\”" Ì\”$ Ì\ ”” Ì]” Ì]” Ì]” Ì]‘”	 Ì^—” Ì_” Ì_” Ì_” Ì_” Ì_”! Ì_”# Ì_”” Ì`” Ì`” Ì`” Ì`‘”	 Ìa”” Ìb” Ìb” Ìb” Ìb’” Ìc” Ìc’” Ìe
+” Ìe—” Ìf” Ìf” Ìf” Ìf”  Ìf”" Ìf”$ Ìf ”” Ìg” Ìg” Ìg” Ìg‘”	 Ìh—” Ìi” Ìi” Ìi” Ìi” Ìi”! Ìi”# Ìi”” Ìj” Ìj” Ìj” Ìj‘”	 Ìk”” Ìl” Ìl” Ìl” Ìl’” Ìm” Ìm’” Ìo
+” ÌoŸ” Ìp” Ìp” Ìp” Ìp”# Ìp”% Ìp!”& Ìp"”' Ìp#”( Ìp$”* Ìp&”+ Ìp'”, Ìp(”- Ìp)”/ Ìp+”0 Ìp,’” Ìq” Ìq’” Ìs
+” ÌsŸ” Ìt” Ìt” Ìt” Ìt”# Ìt”% Ìt!”& Ìt"”' Ìt#”( Ìt$”* Ìt&”+ Ìt'”, Ìt(”- Ìt)”/ Ìt+”0 Ìt,’” Ìu” Ìu’” Ìw
+” ÌwŸ” Ìx” Ìx” Ìx” Ìx”# Ìx”% Ìx!”& Ìx"”' Ìx#”( Ìx$”* Ìx&”+ Ìx'”, Ìx(”- Ìx)”/ Ìx+”0 Ìx,’” Ìy” Ìy’” Ì{
+” Ì{—” Ì|” Ì|” Ì|” Ì|”  Ì|”" Ì|”$ Ì| ”” Ì}” Ì}” Ì}” Ì}‘”	 Ì~—” Ì” Ì” Ì” Ì” Ì”! Ì”# Ì”” Ì€” Ì€” Ì€” Ì€‘”	 Ì–” Ì‚” Ì‚” Ì‚” Ì‚”- Ì‚)”. Ì‚*’” Ìƒ” Ìƒ’” Ì…
+” Ì…—” Ì†” Ì†” Ì†” Ì†”  Ì†”" Ì†”$ Ì† ”” Ì‡” Ì‡” Ì‡” Ì‡‘”	 Ìˆ—” Ì‰” Ì‰” Ì‰” Ì‰” Ì‰”! Ì‰”# Ì‰”” ÌŠ” ÌŠ” ÌŠ” ÌŠ‘”	 Ì‹–” ÌŒ” ÌŒ” ÌŒ” ÌŒ”+ ÌŒ'”, ÌŒ(’” Ì” Ì’” Ì
+” ÌÜ ” Ì” Ì” Ì” Ì”# Ì”% Ì!”& Ì"”' Ì#”( Ì$”1 Ì-”2 Ì.”ÌC Ì?”ÌD ÌÌ@”ÌE ÌÌA”ÌF ÌÌB”ÌO ÌÌK”ÌP ÌÌL”Ì` ÌÌ\”Ìa ÌÌ]’” Ì‘” Ì‘’” Ì“
+” Ì“Ü ” Ì”” Ì”” Ì”” Ì”” Ì”” Ì””$ Ì” ”' Ì”#”( Ì”$”) Ì”%”* Ì”&”+ Ì”'”/ Ì”+”0 Ì”,”9 Ì”5”: Ì”6”; Ì”7”< Ì”8”ÌS Ì”ÌO”ÌT Ì”ÌP’” Ì•” Ì•–” Ì˜” Ì˜” Ì˜” Ì˜” Ì˜”  Ì˜.˜” Ì™” Ì™
+” Ì™” Ì™”! Ì™”# Ì™”$ Ì™”& Ì™˜” Ì™” Ì™
+” Ì¤” Ì¤
+” Ì¤”" Ì¤”# Ì¤”/ Ì¤!˜” Ì™” Ì™
+” Ì¥” Ì¥” Ì¥”- Ì¥”. Ì¥ ”3 Ì¥%”” Ìš” Ìš
+” Ìš” Ìš™” Ìš” Ìš
+” Ì›	” Ì›” Ì›” Ì›” Ì›”/ Ì›'”1 Ì›)”” Ìš” Ìš
+” Ìœ	” Ìœ˜” Ìš” Ìš
+” Ì	” Ì” Ì”& Ì”' Ì”- Ì%’” Ìš” Ìš
+”” ÌŸ” ÌŸ
+” ÌŸ”  ÌŸ–” ÌŸ” ÌŸ
+” Ì 	” Ì ” Ì ” Ì –” ÌŸ” ÌŸ
+” Ì¡	” Ì¡” Ì¡”$ Ì¡–” ÌŸ” ÌŸ
+” Ì¢	” Ì¢” Ì¢” Ì¢’” ÌŸ” ÌŸ
+’” Ì™” Ì™
+‘” Ì¦–” Ì©” Ì©” Ì©” Ì©” Ì©” Ì©+”” Ìª” Ìª
+”# Ìª”( Ìª–” Ìª” Ìª
+” Ì«” Ì«”  Ì«”! Ì«™” Ìª” Ìª
+” Ì¬” Ì¬” Ì¬” Ì¬” Ì¬”. Ì¬"”0 Ì¬$™” Ìª” Ìª
+” Ì­” Ì­” Ì­”  Ì­”! Ì­”2 Ì­&”4 Ì­(˜” Ìª” Ìª
+” Ì®” Ì®” Ì®”( Ì®”) Ì®”/ Ì®#˜” Ìª” Ìª
+” Ì¯” Ì¯” Ì¯”" Ì¯”# Ì¯”* Ì¯Ü ” Ìª” Ìª
+” Ì°”" Ì°”# Ì°”' Ì°”( Ì°”6 Ì°*”; Ì°/”Ì@ Ì°4”ÌA Ì°5”ÌB Ì°6”ÌC Ì°7”ÌL Ì°Ì@”ÌM Ì°ÌA”ÌN Ì°ÌB”ÌO Ì°ÌC”ÌX Ì°ÌLÜ ” Ìª” Ìª
+” Ì±” Ì±” Ì±”! Ì±”" Ì±”0 Ì±$”5 Ì±)”: Ì±.”; Ì±/”< Ì±0”= Ì±1”ÌB Ì±6”ÌC Ì±7”ÌH Ì±<”ÌI Ì±=”ÌJ Ì±>”ÌK Ì±?”ÌT Ì±ÌH—” Ìª” Ìª
+” Ì²” Ì²” Ì²” Ì²”  Ì²—” Ì³” Ì³” Ì³”# Ì³”& Ì³”+ Ì³#”, Ì³$’” Ì´” Ì´’” Ìª” Ìª
+‘” Ìµ’” Ì¸” Ì¸˜” Ì¹” Ì¹” Ì¹” Ì¹”# Ì¹”( Ì¹ ”) Ì¹!”+ Ì¹#“”8 Ìº”ÌH Ìº”ÌO Ìº—”$ Ì»”+ Ì»”- Ì»”1 Ì»”2 Ì»”Ì@ Ì»$”ÌB Ì»&—”$ Ì¼”, Ì¼”. Ì¼”2 Ì¼”3 Ì¼”ÌE Ì¼)”ÌG Ì¼+‘”! Ì½—”( Ì»”/ Ì»”1 Ì»”5 Ì»”6 Ì»”ÌD Ì»$”ÌF Ì»&—”( Ì¼”0 Ì¼”2 Ì¼”6 Ì¼”7 Ì¼”ÌI Ì¼)”ÌK Ì¼+—”$ Ì»”+ Ì»”- Ì»”1 Ì»”2 Ì»”Ì@ Ì»$”ÌB Ì»&—”$ Ì¼”, Ì¼”. Ì¼”2 Ì¼”3 Ì¼”ÌE Ì¼)”ÌG Ì¼+‘” Ì¾˜” Ì¾” Ì¾” Ì¾” Ì¾”( Ì¾"”- Ì¾'”. Ì¾(”0 Ì¾*“”8 Ì¿”ÌI Ì¿”ÌP Ì¿—”$ ÌÀ”+ ÌÀ”- ÌÀ”1 ÌÀ”2 ÌÀ”Ì@ ÌÀ$”ÌB ÌÀ&—”$ ÌÁ”, ÌÁ”. ÌÁ”2 ÌÁ”3 ÌÁ”ÌE ÌÁ)”ÌG ÌÁ+—”$ ÌÂ”, ÌÂ”. ÌÂ”2 ÌÂ”3 ÌÂ”ÌD ÌÂ(”ÌF ÌÂ*‘”! ÌÃ—”( ÌÀ”/ ÌÀ”1 ÌÀ”5 ÌÀ”6 ÌÀ”ÌD ÌÀ$”ÌF ÌÀ&—”( ÌÁ”0 ÌÁ”2 ÌÁ”6 ÌÁ”7 ÌÁ”ÌI ÌÁ)”ÌK ÌÁ+—”( ÌÂ”0 ÌÂ”2 ÌÂ”6 ÌÂ”7 ÌÂ”ÌH ÌÂ(”ÌJ ÌÂ*—”$ ÌÀ”+ ÌÀ”- ÌÀ”1 ÌÀ”2 ÌÀ”Ì@ ÌÀ$”ÌB ÌÀ&—”$ ÌÁ”, ÌÁ”. ÌÁ”2 ÌÁ”3 ÌÁ”ÌE ÌÁ)”ÌG ÌÁ+—”$ ÌÂ”, ÌÂ”. ÌÂ”2 ÌÂ”3 ÌÂ”ÌD ÌÂ(”ÌF ÌÂ*‘” ÌÄ˜” ÌÄ” ÌÄ” ÌÄ” ÌÄ”( ÌÄ"”- ÌÄ'”. ÌÄ(”0 ÌÄ*“”8 ÌÅ”ÌJ ÌÅ”ÌQ ÌÅ—”$ ÌÆ”+ ÌÆ”- ÌÆ”1 ÌÆ”2 ÌÆ”Ì@ ÌÆ$”ÌB ÌÆ&—”$ ÌÇ”, ÌÇ”. ÌÇ”2 ÌÇ”3 ÌÇ”ÌE ÌÇ)”ÌG ÌÇ+—”$ ÌÈ”4 ÌÈ”6 ÌÈ”: ÌÈ”; ÌÈ”ÌN ÌÈ2”ÌP ÌÈ4‘”! ÌÉ—”( ÌÆ”/ ÌÆ”1 ÌÆ”5 ÌÆ”6 ÌÆ”ÌD ÌÆ$”ÌF ÌÆ&—”( ÌÇ”0 ÌÇ”2 ÌÇ”6 ÌÇ”7 ÌÇ”ÌI ÌÇ)”ÌK ÌÇ+—”( ÌÈ”8 ÌÈ”: ÌÈ”> ÌÈ”? ÌÈ”ÌR ÌÈ2”ÌT ÌÈ4—”$ ÌÆ”+ ÌÆ”- ÌÆ”1 ÌÆ”2 ÌÆ”Ì@ ÌÆ$”ÌB ÌÆ&—”$ ÌÇ”, ÌÇ”. ÌÇ”2 ÌÇ”3 ÌÇ”ÌE ÌÇ)”ÌG ÌÇ+—”$ ÌÈ”4 ÌÈ”6 ÌÈ”: ÌÈ”; ÌÈ”ÌN ÌÈ2”ÌP ÌÈ4‘” ÌÊ‘” ÌÊ“”8 ÌË”ÌG ÌË”ÌN ÌË—”$ ÌÌ”+ ÌÌ”- ÌÌ”1 ÌÌ”2 ÌÌ”Ì@ ÌÌ$”ÌB ÌÌ&—”$ ÌÍ”, ÌÍ”. ÌÍ”2 ÌÍ”3 ÌÍ”ÌE ÌÍ)”ÌG ÌÍ+—”$ ÌÎ”- ÌÎ”/ ÌÎ”3 ÌÎ”4 ÌÎ”ÌG ÌÎ+”ÌI ÌÎ-‘”! ÌÏ—”( ÌÌ”/ ÌÌ”1 ÌÌ”5 ÌÌ”6 ÌÌ”ÌD ÌÌ$”ÌF ÌÌ&—”( ÌÍ”0 ÌÍ”2 ÌÍ”6 ÌÍ”7 ÌÍ”ÌI ÌÍ)”ÌK ÌÍ+—”( ÌÎ”1 ÌÎ”3 ÌÎ”7 ÌÎ”8 ÌÎ”ÌK ÌÎ+”ÌM ÌÎ-—”$ ÌÌ”+ ÌÌ”- ÌÌ”1 ÌÌ”2 ÌÌ”Ì@ ÌÌ$”ÌB ÌÌ&—”$ ÌÍ”, ÌÍ”. ÌÍ”2 ÌÍ”3 ÌÍ”ÌE ÌÍ)”ÌG ÌÍ+—”$ ÌÎ”- ÌÎ”/ ÌÎ”3 ÌÎ”4 ÌÎ”ÌG ÌÎ+”ÌI ÌÎ-‘” ÌÐ‘” ÌÑ’” ÌÔ” ÌÔ˜” ÌÕ” ÌÕ
+” ÌÕ” ÌÕ”! ÌÕ”# ÌÕ”% ÌÕ”' ÌÕ˜” ÌÕ” ÌÕ
+” Ìç” Ìç
+” Ìç”" Ìç”# Ìç”/ Ìç!™” ÌÕ” ÌÕ
+” Ìè” Ìè” Ìè” Ìè”  Ìè”. Ìè ”0 Ìè"”” ÌÕ” ÌÕ
+” Ìé” Ìé˜” ÌÕ” ÌÕ
+” Ìê”" Ìê”# Ìê”( Ìê”) Ìê”. Ìê ™” ÌÖ” ÌÖ
+” ÌÖ” ÌÖ”% ÌÖ”7 ÌÖ*”9 ÌÖ,”Ìn ÌÖÌa”Ìo ÌÖÌb˜” ÌØ” ÌØ” ÌØ” ÌØ”! ÌØ”# ÌØ”% ÌØ”' ÌØ˜” ÌØ” ÌØ” Ìå” Ìå” Ìå”" Ìå”# Ìå”/ Ìå#˜” ÌÙ” ÌÙ” ÌÙ” ÌÙ” ÌÙ”  ÌÙ”" ÌÙ”$ ÌÙ˜” ÌÙ” ÌÙ” ÌÝ	” ÌÝ” ÌÝ” ÌÝ”  ÌÝ”, ÌÝ%™” ÌÚ
+” ÌÚ” ÌÚ” ÌÚ”% ÌÚ”/ ÌÚ&”1 ÌÚ(”2 ÌÚ)”3 ÌÚ*™” ÌÛ
+” ÌÛ” ÌÛ” ÌÛ”% ÌÛ”0 ÌÛ'”2 ÌÛ)”3 ÌÛ*”4 ÌÛ+’” ÌÙ” ÌÙ˜” Ìß” Ìß” Ìß” Ìß” Ìß”  Ìß”" Ìß”$ Ìß˜” Ìß” Ìß” Ìã	” Ìã” Ìã” Ìã”  Ìã”, Ìã%™” Ìà
+” Ìà” Ìà” Ìà”% Ìà”1 Ìà(”3 Ìà*”4 Ìà+”5 Ìà,™” Ìá
+” Ìá” Ìá” Ìá”% Ìá”. Ìá%”0 Ìá'”1 Ìá(”2 Ìá)’” Ìß” Ìß’” ÌØ” ÌØ’” ÌÕ” ÌÕ
+‘” Ìë’” Ìî” Ìî˜” Ìï” Ìï
+” Ìï” Ìï”! Ìï”# Ìï”% Ìï”' Ìï˜” Ìï” Ìï
+” Ìý” Ìý
+” Ìý”" Ìý”# Ìý”/ Ìý!™” Ìï” Ìï
+” Ìþ” Ìþ” Ìþ” Ìþ”  Ìþ”. Ìþ ”0 Ìþ"”” Ìï” Ìï
+” Ìÿ” Ìÿ˜” Ìï” Ìï
+” Í ”" Í ”# Í ”( Í ”) Í ”. Í  ™” Ìð” Ìð
+” Ìð” Ìð”% Ìð”1 Ìð$”3 Ìð&”Ìn ÌðÌa”Ìo ÌðÌbž” Ìò” Ìò” Ìò” Ìò”* Ìò”, Ìò”ÌC Ìò6”ÌE Ìò8”ÌI Ìò<”ÌK Ìò>”ÌO ÌòÌB”ÌP ÌòÌC”ÌY ÌòÌL”Ì[ ÌòÌN˜” Ìò” Ìò” Ìó	” Ìó” Ìó”% Ìó”& Ìó”2 Ìó%™” Ìò” Ìò” Ìô	” Ìô” Ìô”! Ìô”" Ìô”0 Ìô#”2 Ìô%›” Ìò” Ìò” Ìõ	” Ìõ” Ìõ”# Ìõ”$ Ìõ”5 Ìõ(”7 Ìõ*”: Ìõ-”; Ìõ.–” Ìò” Ìò” Ìö	”% Ìö”& Ìö”/ Ìö"–” Ìò” Ìò” Ì÷	”" Ì÷”# Ì÷”% Ì÷ž” Ìò” Ìò” Ìø	” Ìø” Ìø”  Ìø”$ Ìø”& Ìø”( Ìø”* Ìø”/ Ìø"”1 Ìø$”3 Ìø&”5 Ìø(™” Ìò” Ìò” Ìù	” Ìù” Ìù”  Ìù”% Ìù ”' Ìù"”) Ìù$—” Ìú
+” Ìú” Ìú” Ìú”! Ìú”& Ìú ”' Ìú!’” Ìû” Ìû	’” Ìï” Ìï
+‘” Í’” Í” Í˜” Í” Í
+” Í” Í”! Í”# Í”% Í”' Í˜” Í” Í
+” Í” Í
+” Í”" Í”# Í”/ Í!™” Í” Í
+” Í” Í” Í” Í”  Í”. Í ”0 Í"”” Í” Í
+” Í” Í˜” Í” Í
+” Í”" Í”# Í”( Í”) Í”. Í ™” Í” Í
+” Í” Í”% Í”3 Í&”5 Í(”Ìƒ ÍÌv”Ì„ ÍÌw’” Í” Í˜” Í” Í” Í” Í” Í”" Í”# Í”/ Í#™” Í” Í” Í” Í” Í” Í” Í”/ Í#”1 Í%˜” Í” Í” Í”! Í”" Í”+ Í”, Í ”2 Í&˜” Í” Í” Í” Í” Í”- Í!”. Í"”4 Í(™” Í” Í” Í” Í” Í” Í”  Í”1 Í%”3 Í'–” Í” Í” Í” Í”  Í”" Í–” Í” Í” Í”" Í”# Í”, Í •” Í	” Í	” Í	” Í	”' Í	’” Í” Í’” Í” Í
+‘” Í‘” Í’” Í” Í˜” Í” Í” ÍG” ÍG” ÍG”' ÍG”( ÍG”4 ÍG"˜” Í” Í” ÍH” ÍH
+” ÍH”& ÍH”' ÍH”3 ÍH!”” Í” Í” ÍI” ÍI
+”” Í” Í” ÍJ”& ÍJ˜” Í” Í” ÍK” ÍK	” ÍK
+”* ÍK”+ ÍK”0 ÍK’” Í” Í˜” Í” Í” ÍC” ÍC” ÍC”% ÍC”& ÍC”* ÍC˜” Í” Í” ÍD” ÍD” ÍD”" ÍD”# ÍD”/ ÍD#˜” Í” Í” ÍE” ÍE” ÍE”# ÍE”$ ÍE”0 ÍE$’” Í” Í˜” Í” Í” Í6	” Í6” Í6”" Í6”# Í6”/ Í6%” Í” Í” Í7	”! Í7”" Í7”$ Í7”, Í7"”. Í7$”2 Í7(”3 Í7)”ÌE Í7;”ÌG Í7=”ÌI Í7?˜” Í” Í” Í8	” Í8” Í8”- Í8#”. Í8$”4 Í8*•” Í” Í” Í9	” Í9” Í9—” Í:
+” Í:” Í:” Í:” Í:”) Í:#”+ Í:%—” Í;
+” Í;” Í;” Í;” Í;”* Í;$”, Í;&—” Í<
+” Í<” Í<” Í<” Í<”( Í<"”* Í<$—” Í=
+” Í=” Í=” Í=” Í=”+ Í=%”- Í='‘” Í>	›” Í” Í” Í?	” Í?”  Í?”! Í?”" Í?”$ Í?”) Í?”+ Í?!”- Í?#œ” Í@
+” Í@” Í@”# Í@”& Í@ ”, Í@&”- Í@'”2 Í@,”3 Í@-”8 Í@2”9 Í@3”: Í@4’” ÍA” ÍA	—” Í
+” Í” Í” Í”$ Í"”& Í$”( Í&›” Í” Í”# Í”% Í”* Í”, Í”0 Í”1 Í”ÌB Í/”ÌD Í1”ÌF Í3˜” Í” Í” Í+”! Í+”" Í+”+ Í+”, Í+”8 Í+)˜” Í” Í” Í,”& Í,”' Í,”4 Í,%”5 Í,&”8 Í,)›” Í” Í”& Í”( Í”- Í”/ Í”3 Í"”4 Í#”ÌE Í4”ÌG Í6”ÌI Í8–” Í” Í” Í#”+ Í#”, Í#”- Í#˜” Í” Í” Í$”) Í$”* Í$”9 Í$)”: Í$*”? Í$/•” Í ” Í ” Í ”% Í !”2 Í #•” Í!” Í!” Í!”" Í!”/ Í! ’” Í” Í’” Í&” Í&–” Í&” Í&” Í)”+ Í)”, Í)”- Í)•” Í'” Í'” Í'”$ Í' ”1 Í'"’” Í&” Í&’” Í” Í‘” Í-‘” Í-›” Í.” Í.”& Í.”( Í.”- Í.”/ Í.”3 Í. ”4 Í.!”ÌE Í.2”ÌG Í.4”ÌI Í.6˜” Í.” Í.” Í3”$ Í3”% Í3”. Í3”/ Í3”; Í3)•” Í/” Í/” Í/”% Í/”2 Í/!•” Í0” Í0” Í0”" Í0”/ Í0•” Í1” Í1” Í1”$ Í1”1 Í1 ’” Í.” Í.‘” Í4’” Í” Í’” Í” Í’” Í” Í‘” ÍLÔrG–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜû‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
  ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  ÌŽ ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ìž ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌÐ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  ÌÝ ‘”  ÌÞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìð ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìý ‘”  Ìþ ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
- ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ÔrH’§missing¦pluginÃ¦genAbcÂÔ  ÔrI”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrJ•¤type¥start£endªspecifiers¦source±ImportDeclarationÍîÍ‘ÔrK”¤type¥start£end¥local¶ImportDefaultSpecifierÍõÍþÔrL”¤type¥start£end¤nameªIdentifierÍõÍþ©ConstantsÔrM•¤type¥start£end¥value£raw§LiteralÍÍ¶../constants/Constants¸'../constants/Constants'J±ImportDeclarationÍÍW‘K¶ImportDefaultSpecifierÍ&Í6LªIdentifierÍ&Í6°TextGradientViewM§LiteralÍ<ÍV¸../view/TextGradientViewº'../view/TextGradientView'J±ImportDeclarationÍYÍ‘K¶ImportDefaultSpecifierÍ`ÍoLªIdentifierÍ`Ío¯TextMarqueeViewM§LiteralÍuÍŽ·../view/TextMarqueeView¹'../view/TextMarqueeView'J±ImportDeclarationÍ‘ÍÍ‘K¶ImportDefaultSpecifierÍ˜ÍªLªIdentifierÍ˜Íª²TextReflectionViewM§LiteralÍ°ÍÌº../view/TextReflectionView¼'../view/TextReflectionView'J±ImportDeclarationÍÏÍ	‘K¶ImportDefaultSpecifierÍÖÍçLªIdentifierÍÖÍç±TextScrollingViewM§LiteralÍíÍ¹../view/TextScrollingView»'../view/TextScrollingView'
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ‘”  Í6 ‘”  Í7 ‘”  Í8 ‘”  Í9 ‘”  Í: ‘”  Í; ‘”  Í< ‘”  Í= ‘”  Í> ‘”  Í? ‘”  Í@ ‘”  ÍA ‘”  ÍB ‘”  ÍC ‘”  ÍD ‘”  ÍE ‘”  ÍF ‘”  ÍG ‘”  ÍH ‘”  ÍI ‘”  ÍJ ‘”  ÍK ‘”  ÍL ‘”  ÍM ‘”  ÍN ‘”  ÍO ‘”  ÍP ‘”  ÍQ ‘”  ÍR ‘”  ÍS ‘”  ÍT ‘”  ÍU ‘”  ÍV ‘”  ÍW ‘”  ÍX ‘”  ÍY ‘”  ÍZ ‘”  Í[ ‘”  Í\ ‘”  Í] ‘”  Í^ ‘”  Í_ ‘”  Í` ‘”  Ía ‘”  Íb ‘”  Íc ‘”  Íd ‘”  Íe ‘”  Íf ‘”  Íg ‘”  Íh ‘”  Íi ‘”  Íj ‘”  Ík ‘”  Íl ‘”  Ím ‘”  Ín ‘”  Ío ‘”  Íp ‘”  Íq ‘”  Ír ‘”  Ís ‘”  Ít ‘”  Íu ‘”  Ív ‘”  Íw ‘”  Íx ‘”  Íy ‘”  Íz ‘”  Í{ ‘”  Í| ‘”  Í} ‘”  Í~ ‘”  Í ‘”  Í€ ‘”  Í ‘”  Í‚ ‘”  Íƒ ‘”  Í„ ‘”  Í… ‘”  Í† ‘”  Í‡ ‘”  Íˆ ‘”  Í‰ ‘”  ÍŠ ‘”  Í‹ ‘”  ÍŒ ‘”  Í ‘”  ÍŽ ‘”  Í ‘”  Í ‘”  Í‘ ‘”  Í’ ‘”  Í“ ‘”  Í” ‘”  Í• ‘”  Í– ‘”  Í— ‘”  Í˜ ‘”  Í™ ‘”  Íš ‘”  Í› ‘”  Íœ ‘”  Í ‘”  Íž ‘”  ÍŸ ‘”  Í  ‘”  Í¡ ‘”  Í¢ ‘”  Í£ ‘”  Í¤ ‘”  Í¥ ‘”  Í¦ ‘”  Í§ ‘”  Í¨ ‘”  Í© ‘”  Íª ‘”  Í« ‘”  Í¬ ‘”  Í­ ‘”  Í® ‘”  Í¯ ‘”  Í° ‘”  Í± ‘”  Í² ‘”  Í³ ‘”  Í´ ‘”  Íµ ‘”  Í¶ ‘”  Í· ‘”  Í¸ ‘”  Í¹ ‘”  Íº ‘”  Í» ‘”  Í¼ ‘”  Í½ ‘”  Í¾ ‘”  Í¿ ‘”  ÍÀ ‘”  ÍÁ ‘”  ÍÂ ‘”  ÍÃ ‘”  ÍÄ ‘”  ÍÅ ‘”  ÍÆ ‘”  ÍÇ ‘”  ÍÈ ‘”  ÍÉ ‘”  ÍÊ ‘”  ÍË ‘”  ÍÌ ‘”  ÍÍ ‘”  ÍÎ ‘”  ÍÏ ‘”  ÍÐ ‘”  ÍÑ ‘”  ÍÒ ‘”  ÍÓ ‘”  ÍÔ ‘”  ÍÕ ‘”  ÍÖ ‘”  Í× ‘”  ÍØ ‘”  ÍÙ ‘”  ÍÚ ‘”  ÍÛ ‘”  ÍÜ ‘”  ÍÝ ‘”  ÍÞ ‘”  Íß ‘”  Íà ‘”  Íá ‘”  Íâ ‘”  Íã ‘”  Íä ‘”  Íå ‘”  Íæ ‘”  Íç ‘”  Íè ‘”  Íé ‘”  Íê ‘”  Íë ‘”  Íì ‘”  Íí ‘”  Íî ‘”  Íï ‘”  Íð ‘”  Íñ ‘”  Íò ‘”  Íó ‘”  Íô ‘”  Íõ ‘”  Íö ‘”  Í÷ ‘”  Íø ‘”  Íù ‘”  Íú ÔrH’§missing¦pluginÃ¦genAbcÂÔ  ÔrI”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrJ•¤type¥start£endªspecifiers¦source±ImportDeclarationÍîÍ‘ÔrK”¤type¥start£end¥local¶ImportDefaultSpecifierÍõÍþÔrL”¤type¥start£end¤nameªIdentifierÍõÍþ©ConstantsÔrM•¤type¥start£end¥value£raw§LiteralÍÍ¶../constants/Constants¸'../constants/Constants'J±ImportDeclarationÍÍW‘K¶ImportDefaultSpecifierÍ&Í6LªIdentifierÍ&Í6°TextGradientViewM§LiteralÍ<ÍV¸../view/TextGradientViewº'../view/TextGradientView'J±ImportDeclarationÍYÍ‘K¶ImportDefaultSpecifierÍ`ÍoLªIdentifierÍ`Ío¯TextMarqueeViewM§LiteralÍuÍŽ·../view/TextMarqueeView¹'../view/TextMarqueeView'J±ImportDeclarationÍ‘ÍÍ‘K¶ImportDefaultSpecifierÍ˜ÍªLªIdentifierÍ˜Íª²TextReflectionViewM§LiteralÍ°ÍÌº../view/TextReflectionView¼'../view/TextReflectionView'J±ImportDeclarationÍÏÍ	‘K¶ImportDefaultSpecifierÍÖÍçLªIdentifierÍÖÍç±TextScrollingViewM§LiteralÍíÍ¹../view/TextScrollingView»'../view/TextScrollingView'

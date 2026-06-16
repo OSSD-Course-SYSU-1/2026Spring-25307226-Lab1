@@ -37,4 +37,24 @@ export default class Constants {
      * Font weight 500.
      */
     static readonly FONT_WEIGHT_500: number = 500;
+    /**
+     * Tablet breakpoint.
+     */
+    static readonly TABLET_BREAKPOINT: number = 600;
+    /**
+     * Desktop breakpoint.
+     */
+    static readonly DESKTOP_BREAKPOINT: number = 1024;
+    /**
+     * Maximum content width for large screens.
+     */
+    static readonly DESKTOP_MAX_WIDTH: number = 1280;
+    /**
+     * Maximum content width for medium screens.
+     */
+    static readonly TABLET_MAX_WIDTH: number = 960;
+    /**
+     * Default marquee text width.
+     */
+    static readonly MARQUEE_TEXT_WIDTH: string = '90%';
 }

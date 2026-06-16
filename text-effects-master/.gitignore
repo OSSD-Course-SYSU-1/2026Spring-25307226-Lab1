@@ -1,0 +1,6 @@
+.idea/
+.hvigor/
+hvigor/.caches/
+entry/build/
+*.log
+*.tmp

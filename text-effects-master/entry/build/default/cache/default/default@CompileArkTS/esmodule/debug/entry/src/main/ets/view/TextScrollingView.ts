@@ -3,6 +3,8 @@ if (!("finalizeConstruction" in ViewPU.prototype)) {
 }
 interface TextScrollingView_Params {
     message?: ResourceStr;
+    fontSize?: number;
+    duration?: number;
     value?: number;
 }
 import Constants from "@bundle:com.example.texteffects/entry/ets/constants/Constants";
@@ -13,6 +15,8 @@ export default class TextScrollingView extends ViewPU {
             this.paramsGenerator_ = paramsLambda;
         }
         this.__message = new SynchedPropertyObjectOneWayPU(params.message, this, "message");
+        this.__fontSize = new SynchedPropertySimpleOneWayPU(params.fontSize, this, "fontSize");
+        this.__duration = new SynchedPropertySimpleOneWayPU(params.duration, this, "duration");
         this.__value = new ObservedPropertySimplePU(0, this, "value");
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
@@ -21,19 +25,31 @@ export default class TextScrollingView extends ViewPU {
         if (params.message === undefined) {
             this.__message.set('');
         }
+        if (params.fontSize === undefined) {
+            this.__fontSize.set(30);
+        }
+        if (params.duration === undefined) {
+            this.__duration.set(Constants.TEXT_SCROLL_DURATION);
+        }
         if (params.value !== undefined) {
             this.value = params.value;
         }
     }
     updateStateVars(params: TextScrollingView_Params) {
         this.__message.reset(params.message);
+        this.__fontSize.reset(params.fontSize);
+        this.__duration.reset(params.duration);
     }
     purgeVariableDependenciesOnElmtId(rmElmtId) {
         this.__message.purgeDependencyOnElmtId(rmElmtId);
+        this.__fontSize.purgeDependencyOnElmtId(rmElmtId);
+        this.__duration.purgeDependencyOnElmtId(rmElmtId);
         this.__value.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__message.aboutToBeDeleted();
+        this.__fontSize.aboutToBeDeleted();
+        this.__duration.aboutToBeDeleted();
         this.__value.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
@@ -44,6 +60,20 @@ export default class TextScrollingView extends ViewPU {
     }
     set message(newValue: ResourceStr) {
         this.__message.set(newValue);
+    }
+    private __fontSize: SynchedPropertySimpleOneWayPU<number>;
+    get fontSize() {
+        return this.__fontSize.get();
+    }
+    set fontSize(newValue: number) {
+        this.__fontSize.set(newValue);
+    }
+    private __duration: SynchedPropertySimpleOneWayPU<number>;
+    get duration() {
+        return this.__duration.get();
+    }
+    set duration(newValue: number) {
+        this.__duration.set(newValue);
     }
     private __value: ObservedPropertySimplePU<number>;
     get value() {
@@ -66,7 +96,7 @@ export default class TextScrollingView extends ViewPU {
             });
             Row.onAppear(() => {
                 this.getUIContext().animateTo({
-                    duration: Constants.TEXT_SCROLL_DURATION,
+                    duration: this.duration,
                     finishCallbackType: FinishCallbackType.LOGICALLY,
                     curve: Curve.Linear,
                     iterations: -1,
@@ -80,9 +110,10 @@ export default class TextScrollingView extends ViewPU {
         }, Row);
         this.observeComponentCreation2((elmtId, isInitialRender) => {
             Text.create(this.message);
-            Text.fontSize({ "id": 16777236, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontSize(this.fontSize);
             Text.fontColor(Color.Black);
             Text.fontWeight(FontWeight.Bold);
+            Text.maxLines(1);
             Text.blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN);
         }, Text);
         Text.pop();
