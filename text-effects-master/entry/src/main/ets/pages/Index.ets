@@ -22,70 +22,113 @@ import TextScrollingView from '../view/TextScrollingView';
 @Entry
 @Component
 struct Index {
-  @State message: ResourceStr = $r('app.string.text_content');
-  @State messageLong: ResourceStr = $r('app.string.text_content_long');
-  @State value: number = 0;
+  @State inputText: string = '这是一段文字示例';
+  @State selectedEffect: number = 0;
 
   @Styles
-  fancy() {
+  cardStyle() {
     .borderRadius($r('app.float.row_border_radius'))
     .backgroundColor(Color.White)
-    .padding({
-      top: $r('app.float.row_padding'),
-      bottom: $r('app.float.row_padding')
-    })
+    .padding($r('app.float.row_padding'))
     .width(Constants.FULL_PERCENT)
+    .margin({ bottom: 16 })
   }
 
   @Builder
-  textBuilder(value: ResourceStr) {
+  sectionTitle(title: string) {
     Row() {
-      Text(value)
-        .fontSize($r("app.float.title_font_size"))
+      Text(title)
+        .fontSize($r('app.float.title_font_size'))
         .fontColor($r('app.color.title_font_color'))
         .fontWeight(Constants.FONT_WEIGHT_500)
-        .margin({ top: $r('app.float.title_margin_bottom') })
-        .lineHeight($r('app.float.title_line_height'))
     }
     .width(Constants.FULL_PERCENT)
-    .height($r('app.float.title_row_height'))
-    .margin({ bottom: $r('app.float.title_row_margin_bottom') })
+    .margin({ bottom: 8 })
+  }
+
+  @Builder
+  effectButton(title: string, index: number) {
+    Button(title)
+      .fontSize(14)
+      .fontWeight(FontWeight.Medium)
+      .backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF')
+      .fontColor(this.selectedEffect === index ? Color.White : '#333333')
+      .borderRadius(18)
+      .height(36)
+      .padding({ left: 14, right: 14 })
+      .onClick(() => {
+        this.selectedEffect = index;
+      })
+  }
+
+  @Builder
+  effectPreview() {
+    if (this.selectedEffect === 0) {
+      TextGradientView({ message: this.inputText })
+    } else if (this.selectedEffect === 1) {
+      TextScrollingView({ message: this.inputText })
+    } else if (this.selectedEffect === 2) {
+      TextReflectionView({ message: this.inputText })
+    } else {
+      TextMarqueeView({ message: this.inputText })
+    }
   }
 
   build() {
     Navigation() {
       Column() {
-        this.textBuilder($r('app.string.text_gradient'))
-        Row() {
-          TextGradientView({ message: this.message })
+        // 第一行：文字特效选择
+        Column() {
+          this.sectionTitle('第一行：文字特效选择')
+          Row({ space: 8 }) {
+            this.effectButton('渐变', 0)
+            this.effectButton('滚动', 1)
+            this.effectButton('倒影', 2)
+            this.effectButton('跑马灯', 3)
+          }
+          .width(Constants.FULL_PERCENT)
+          .justifyContent(FlexAlign.Start)
         }
-        .fancy()
-        .justifyContent(FlexAlign.Center)
+        .cardStyle()
 
-        this.textBuilder($r('app.string.text_scrolling'))
-        Row() {
-          TextScrollingView({ message: this.message })
+        // 第二行：用户输入需要进行文字特效处理的文本
+        Column() {
+          this.sectionTitle('第二行：输入需要处理的文本')
+          TextInput({ placeholder: '请输入文字内容', text: this.inputText })
+            .width(Constants.FULL_PERCENT)
+            .height(48)
+            .fontSize(16)
+            .backgroundColor('#F8F9FA')
+            .borderRadius(12)
+            .padding({ left: 12, right: 12 })
+            .onChange((value: string) => {
+              this.inputText = value;
+            })
         }
-        .fancy()
-        .justifyContent(FlexAlign.Center)
+        .cardStyle()
 
-        this.textBuilder($r('app.string.text_reflection'))
-        Row() {
-          TextReflectionView({ message: this.message })
+        // 第三行：展示处理后的文字特效结果
+        Column() {
+          this.sectionTitle('第三行：文字特效处理结果')
+          Row() {
+            this.effectPreview()
+          }
+          .width(Constants.FULL_PERCENT)
+          .height(96)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(VerticalAlign.Center)
+          .backgroundColor('#F8F9FA')
+          .borderRadius(12)
+          .padding(12)
         }
-        .fancy()
-        .justifyContent(FlexAlign.Center)
-
-        this.textBuilder($r('app.string.text_marquee'))
-        Row() {
-          TextMarqueeView({ message: this.messageLong })
-        }
-        .fancy()
-        .justifyContent(FlexAlign.Center)
+        .cardStyle()
       }
+      .width(Constants.FULL_PERCENT)
+      .height(Constants.FULL_PERCENT)
       .padding({
         left: $r('app.float.area_padding_left'),
-        right: $r('app.float.area_padding_left')
+        right: $r('app.float.area_padding_left'),
+        top: 20
       })
     }
     .height(Constants.FULL_PERCENT)

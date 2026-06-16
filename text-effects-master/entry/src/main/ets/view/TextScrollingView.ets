@@ -17,7 +17,7 @@ import Constants from '../constants/Constants';
 
 @Component
 export default struct TextScrollingView {
-  @State message: ResourceStr = '';
+  @Prop message: ResourceStr = '';
   @State value: number = 0;
 
   build() {

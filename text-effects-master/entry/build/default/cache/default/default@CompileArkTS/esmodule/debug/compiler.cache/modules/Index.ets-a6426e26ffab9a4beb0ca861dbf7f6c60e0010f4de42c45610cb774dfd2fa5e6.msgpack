@@ -1,0 +1,498 @@
+Ôr@Ÿªassertions¤code´customTransformCache¬dependencies¢id¤meta±moduleSideEffects¬originalCode±originalSourcemap«resolvedIds®sourcemapChainµsyntheticNamedExportsµtransformDependencies®transformFiles¨cacheAstÔrAÚ=ìif (!("finalizeConstruction" in ViewPU.prototype)) {
+    Reflect.set(ViewPU.prototype, "finalizeConstruction", () => { });
+}
+/*
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import Constants from '../constants/Constants';
+import TextGradientView from '../view/TextGradientView';
+import TextMarqueeView from '../view/TextMarqueeView';
+import TextReflectionView from '../view/TextReflectionView';
+import TextScrollingView from '../view/TextScrollingView';
+class Index extends ViewPU {
+    constructor(parent, params, __localStorage, elmtId = -1, paramsLambda = undefined, extraInfo) {
+        super(parent, __localStorage, elmtId, extraInfo);
+        if (typeof paramsLambda === "function") {
+            this.paramsGenerator_ = paramsLambda;
+        }
+        this.__inputText = new ObservedPropertySimplePU('è¿™æ˜¯ä¸€æ®µæ–‡å­—ç¤ºä¾‹', this, "inputText");
+        this.__selectedEffect = new ObservedPropertySimplePU(0, this, "selectedEffect");
+        this.setInitiallyProvidedValue(params);
+        this.finalizeConstruction();
+    }
+    setInitiallyProvidedValue(params) {
+        if (params.inputText !== undefined) {
+            this.inputText = params.inputText;
+        }
+        if (params.selectedEffect !== undefined) {
+            this.selectedEffect = params.selectedEffect;
+        }
+    }
+    updateStateVars(params) {
+    }
+    purgeVariableDependenciesOnElmtId(rmElmtId) {
+        this.__inputText.purgeDependencyOnElmtId(rmElmtId);
+        this.__selectedEffect.purgeDependencyOnElmtId(rmElmtId);
+    }
+    aboutToBeDeleted() {
+        this.__inputText.aboutToBeDeleted();
+        this.__selectedEffect.aboutToBeDeleted();
+        SubscriberManager.Get().delete(this.id__());
+        this.aboutToBeDeletedInternal();
+    }
+    get inputText() {
+        return this.__inputText.get();
+    }
+    set inputText(newValue) {
+        this.__inputText.set(newValue);
+    }
+    get selectedEffect() {
+        return this.__selectedEffect.get();
+    }
+    set selectedEffect(newValue) {
+        this.__selectedEffect.set(newValue);
+    }
+    sectionTitle(title, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create();
+            Row.width(Constants.FULL_PERCENT);
+            Row.margin({ bottom: 8 });
+        }, Row);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(title);
+            Text.fontSize({ "id": 16777240, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontColor({ "id": 16777234, "type": 10001, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Text.fontWeight(Constants.FONT_WEIGHT_500);
+        }, Text);
+        Text.pop();
+        Row.pop();
+    }
+    effectButton(title, index, parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel(title);
+            Button.fontSize(14);
+            Button.fontWeight(FontWeight.Medium);
+            Button.backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF');
+            Button.fontColor(this.selectedEffect === index ? Color.White : '#333333');
+            Button.borderRadius(18);
+            Button.height(36);
+            Button.padding({ left: 14, right: 14 });
+            Button.onClick(() => {
+                this.selectedEffect = index;
+            });
+        }, Button);
+        Button.pop();
+    }
+    effectPreview(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            If.create();
+            if (this.selectedEffect === 0) {
+                this.ifElseBranchUpdateFunction(0, () => {
+                    {
+                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                            if (isInitialRender) {
+                                let componentCall = new TextGradientView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 67, col: 7 });
+                                ViewPU.create(componentCall);
+                                let paramsLambda = () => {
+                                    return {
+                                        message: this.inputText
+                                    };
+                                };
+                                componentCall.paramsGenerator_ = paramsLambda;
+                            }
+                            else {
+                                this.updateStateVarsOfChildByElmtId(elmtId, {
+                                    message: this.inputText
+                                });
+                            }
+                        }, { name: "TextGradientView" });
+                    }
+                });
+            }
+            else if (this.selectedEffect === 1) {
+                this.ifElseBranchUpdateFunction(1, () => {
+                    {
+                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                            if (isInitialRender) {
+                                let componentCall = new TextScrollingView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 69, col: 7 });
+                                ViewPU.create(componentCall);
+                                let paramsLambda = () => {
+                                    return {
+                                        message: this.inputText
+                                    };
+                                };
+                                componentCall.paramsGenerator_ = paramsLambda;
+                            }
+                            else {
+                                this.updateStateVarsOfChildByElmtId(elmtId, {
+                                    message: this.inputText
+                                });
+                            }
+                        }, { name: "TextScrollingView" });
+                    }
+                });
+            }
+            else if (this.selectedEffect === 2) {
+                this.ifElseBranchUpdateFunction(2, () => {
+                    {
+                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                            if (isInitialRender) {
+                                let componentCall = new TextReflectionView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 71, col: 7 });
+                                ViewPU.create(componentCall);
+                                let paramsLambda = () => {
+                                    return {
+                                        message: this.inputText
+                                    };
+                                };
+                                componentCall.paramsGenerator_ = paramsLambda;
+                            }
+                            else {
+                                this.updateStateVarsOfChildByElmtId(elmtId, {
+                                    message: this.inputText
+                                });
+                            }
+                        }, { name: "TextReflectionView" });
+                    }
+                });
+            }
+            else {
+                this.ifElseBranchUpdateFunction(3, () => {
+                    {
+                        this.observeComponentCreation2((elmtId, isInitialRender) => {
+                            if (isInitialRender) {
+                                let componentCall = new TextMarqueeView(this, { message: this.inputText }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 73, col: 7 });
+                                ViewPU.create(componentCall);
+                                let paramsLambda = () => {
+                                    return {
+                                        message: this.inputText
+                                    };
+                                };
+                                componentCall.paramsGenerator_ = paramsLambda;
+                            }
+                            else {
+                                this.updateStateVarsOfChildByElmtId(elmtId, {
+                                    message: this.inputText
+                                });
+                            }
+                        }, { name: "TextMarqueeView" });
+                    }
+                });
+            }
+        }, If);
+        If.pop();
+    }
+    initialRender() {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Navigation.create(new NavPathStack(), { moduleName: "entry", pagePath: "entry/src/main/ets/pages/Index", isUserCreateStack: false });
+            Navigation.height(Constants.FULL_PERCENT);
+            Navigation.width(Constants.FULL_PERCENT);
+            Navigation.title({ "id": 16777228, "type": 10003, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Navigation.backgroundColor({ "id": 16777231, "type": 10001, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Navigation.mode(NavigationMode.Stack);
+        }, Navigation);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create();
+            Column.width(Constants.FULL_PERCENT);
+            Column.height(Constants.FULL_PERCENT);
+            Column.padding({
+                left: { "id": 16777235, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" },
+                right: { "id": 16777235, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" },
+                top: 20
+            });
+        }, Column);
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.create();
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.backgroundColor(Color.White);
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.width(Constants.FULL_PERCENT);
+            // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+            Column.margin({ bottom: 16 });
+        }, Column);
+        this.sectionTitle.bind(this)('ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create({ space: 8 });
+            Row.width(Constants.FULL_PERCENT);
+            Row.justifyContent(FlexAlign.Start);
+        }, Row);
+        this.effectButton.bind(this)('æ¸å˜', 0);
+        this.effectButton.bind(this)('æ»šåŠ¨', 1);
+        this.effectButton.bind(this)('å€’å½±', 2);
+        this.effectButton.bind(this)('è·‘é©¬ç¯', 3);
+        Row.pop();
+        // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+        Column.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.create();
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.backgroundColor(Color.White);
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.width(Constants.FULL_PERCENT);
+            // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+            Column.margin({ bottom: 16 });
+        }, Column);
+        this.sectionTitle.bind(this)('ç¬¬äºŒè¡Œï¼šè¾“å…¥éœ€è¦å¤„ç†çš„æ–‡æœ¬');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            TextInput.create({ placeholder: 'è¯·è¾“å…¥æ–‡å­—å†…å®¹', text: this.inputText });
+            TextInput.width(Constants.FULL_PERCENT);
+            TextInput.height(48);
+            TextInput.fontSize(16);
+            TextInput.backgroundColor('#F8F9FA');
+            TextInput.borderRadius(12);
+            TextInput.padding({ left: 12, right: 12 });
+            TextInput.onChange((value) => {
+                this.inputText = value;
+            });
+        }, TextInput);
+        // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+        Column.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.create();
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.backgroundColor(Color.White);
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.padding({ "id": 16777238, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.width(Constants.FULL_PERCENT);
+            // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+            Column.margin({ bottom: 16 });
+        }, Column);
+        this.sectionTitle.bind(this)('ç¬¬ä¸‰è¡Œï¼šæ–‡å­—ç‰¹æ•ˆå¤„ç†ç»“æœ');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Row.create();
+            Row.width(Constants.FULL_PERCENT);
+            Row.height(96);
+            Row.justifyContent(FlexAlign.Center);
+            Row.alignItems(VerticalAlign.Center);
+            Row.backgroundColor('#F8F9FA');
+            Row.borderRadius(12);
+            Row.padding(12);
+        }, Row);
+        this.effectPreview.bind(this)();
+        Row.pop();
+        // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+        Column.pop();
+        Column.pop();
+        Navigation.pop();
+    }
+    rerender() {
+        this.updateDirtyElements();
+    }
+    static getEntryName() {
+        return "Index";
+    }
+}
+registerNamedRoute(() => new Index(undefined, {}), "", { bundleName: "com.example.texteffects", moduleName: "entry", pagePath: "pages/Index", pageFullPath: "entry/src/main/ets/pages/Index", integratedHsp: "false", moduleType: "followWithHap" });
+//# sourceMappingURL=Index.js.mapÂ•ÙUC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\constants\Constants.etsÙWC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextGradientView.etsÙVC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextMarqueeView.etsÙYC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextReflectionView.etsÙXC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextScrollingView.etsÙMC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\pages\Index.etsÔrB›ªmoduleName±isLocalDependency¯isNodeEntryFile§pkgPath±belongProjectPath§pkgNameªpkgVersion±dependencyPkgInfo°belongModulePath§checker¬shouldEmitJs¥entryÃÂÙ0C:\Users\31293\Desktop\text-effects-master\entryÙ*C:\Users\31293\Desktop\text-effects-master¥entry¥1.0.0Ô  Ù0C:\Users\31293\Desktop\text-effects-master\entryÔrCÜ ®¬getNodeCount²getIdentifierCount®getSymbolCount¬getTypeCountµgetInstantiationCountµgetRelationCacheSizes±isUndefinedSymbol±isArgumentsSymbol¯isUnknownSymbol¯getMergedSymbol®getDiagnostics´getGlobalDiagnostics´getRecursionIdentity¶getUnmatchedProperties¹getTypeOfSymbolAtLocation¯getTypeOfSymbolÙ(getSymbolsOfParameterPropertyDeclaration·getDeclaredTypeOfSymbol³getPropertiesOfType±getPropertyOfTypeÙ"getPrivateIdentifierPropertyOfType·getTypeOfPropertyOfType²getIndexInfoOfType³getIndexInfosOfTypeºgetIndexInfosOfIndexSymbol³getSignaturesOfType²getIndexTypeOfType¬getIndexType¬getBaseTypes¸getBaseTypeOfLiteralType®getWidenedType³getTypeFromTypeNode°getParameterTypeÙ$getParameterIdentifierNameAtPosition¸getPromisedTypeOfPromise®getAwaitedType¸getReturnTypeOfSignature®isNullableType¯getNullableType²getNonNullableType²getNonOptionalType°getTypeArguments®typeToTypeNodeÙ$indexInfoToIndexSignatureDeclaration¿signatureToSignatureDeclaration²symbolToEntityName²symbolToExpression¬symbolToNodeÙ!symbolToTypeParameterDeclarations¼symbolToParameterDeclarationºtypeParameterToDeclaration±getSymbolsInScope³getSymbolAtLocation·getIndexInfosAtLocationÙ!getShorthandAssignmentValueSymbolÙ#getExportSpecifierLocalTargetSymbol·getExportSymbolOfSymbol±getTypeAtLocationºgetTypeAtLocationForLinterÙ tryGetTypeAtLocationWithoutCheckºgetTypeOfAssignmentPatternÙ*getPropertySymbolOfDestructuringAssignment±signatureToString¬typeToString®symbolToStringµtypePredicateToString®writeSignature©writeType«writeSymbol²writeTypePredicate¼getAugmentedPropertiesOfType®getRootSymbols²getSymbolOfExpando±getContextualTypeÙ(getContextualTypeForObjectLiteralElementÙ#getContextualTypeForArgumentAtIndexÙ getContextualTypeForJsxAttribute²isContextSensitiveÙ!getTypeOfPropertyOfContextualTypeµgetFullyQualifiedNameÙ#tryGetResolvedSignatureWithoutCheck´getResolvedSignatureÙ/getResolvedSignatureForStringLiteralCompletionsÙ$getResolvedSignatureForSignatureHelpµgetExpandedParameters¹hasEffectiveRestParameterºcontainsArgumentsReference°getConstantValueµisValidPropertyAccessÙ#isValidPropertyAccessForCompletions»getSignatureFromDeclarationºisImplementationOfOverload¹getImmediateAliasedSymbol°getAliasedSymbol¯getEmitResolver²getExportsOfModule¿getExportsAndPropertiesOfModuleÙ forEachExportAndPropertyOfModule¯getSymbolWalker±getAmbientModules¹getJsxIntrinsicTagNamesAt³isOptionalParameter»tryGetMemberInModuleExportsÙ(tryGetMemberInModuleExportsAndProperties´tryFindAmbientModuleÙ(tryFindAmbientModuleWithoutAugmentations¯getApparentType¬getUnionType²isTypeAssignableTo³createAnonymousType¯createSignature¬createSymbol¯createIndexInfoªgetAnyType­getStringType­getNumberType±createPromiseType¯createArrayType¹getElementTypeOfArrayType®getBooleanType¬getFalseType«getTrueType«getVoidType°getUndefinedType«getNullType¯getESSymbolType¬getNeverType¯getOptionalType®getPromiseType²getPromiseLikeType´getAsyncIterableType²isSymbolAccessible«isArrayType«isTupleType¯isArrayLikeTypeÙ#isTypeInvalidDueToUnionDiscriminantºgetExactOptionalProperties¿getAllPossiblePropertiesOfTypesÙ(getSuggestedSymbolForNonexistentPropertyÙ#getSuggestionForNonexistentPropertyÙ,getSuggestedSymbolForNonexistentJSXAttributeÙ&getSuggestedSymbolForNonexistentSymbolÙ!getSuggestionForNonexistentSymbolÙ&getSuggestedSymbolForNonexistentModuleÙ!getSuggestionForNonexistentExportÙ+getSuggestedSymbolForNonexistentClassMember·getBaseConstraintOfType»getDefaultFromTypeParameter«resolveName¯getJsxNamespaceµgetJsxFragmentFactory¸getAccessibleSymbolChain»getTypePredicateOfSignature¹resolveExternalModuleName»resolveExternalModuleSymbol°tryGetThisTypeAt¹getTypeArgumentConstraint¸getSuggestionDiagnostics¸runWithCancellationTokenÙ3getLocalTypeParametersOfClassOrInterfaceOrTypeAlias´isDeclarationVisible´isPropertyAccessible»getTypeOnlyAliasDeclaration¿getMemberOverrideModifierStatusÙ!isTypeParameterPossiblyReferenced²getConstEnumRelate´clearConstEnumRelateµdeleteConstEnumRelateÙ$getTypeArgumentsForResolvedSignatureµgetCheckedSourceFilesÙ"collectHaveTsNoCheckFilesForLinter·clearQualifiedNameCache®isStaticRecord²isStaticSourceFileÔ  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  Ô  ÃÃÚ/*
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import Constants from '../constants/Constants';
+import TextGradientView from '../view/TextGradientView';
+import TextMarqueeView from '../view/TextMarqueeView';
+import TextReflectionView from '../view/TextReflectionView';
+import TextScrollingView from '../view/TextScrollingView';
+
+@Entry
+@Component
+struct Index {
+  @State inputText: string = 'è¿™æ˜¯ä¸€æ®µæ–‡å­—ç¤ºä¾‹';
+  @State selectedEffect: number = 0;
+
+  @Styles
+  cardStyle() {
+    .borderRadius($r('app.float.row_border_radius'))
+    .backgroundColor(Color.White)
+    .padding($r('app.float.row_padding'))
+    .width(Constants.FULL_PERCENT)
+    .margin({ bottom: 16 })
+  }
+
+  @Builder
+  sectionTitle(title: string) {
+    Row() {
+      Text(title)
+        .fontSize($r('app.float.title_font_size'))
+        .fontColor($r('app.color.title_font_color'))
+        .fontWeight(Constants.FONT_WEIGHT_500)
+    }
+    .width(Constants.FULL_PERCENT)
+    .margin({ bottom: 8 })
+  }
+
+  @Builder
+  effectButton(title: string, index: number) {
+    Button(title)
+      .fontSize(14)
+      .fontWeight(FontWeight.Medium)
+      .backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF')
+      .fontColor(this.selectedEffect === index ? Color.White : '#333333')
+      .borderRadius(18)
+      .height(36)
+      .padding({ left: 14, right: 14 })
+      .onClick(() => {
+        this.selectedEffect = index;
+      })
+  }
+
+  @Builder
+  effectPreview() {
+    if (this.selectedEffect === 0) {
+      TextGradientView({ message: this.inputText })
+    } else if (this.selectedEffect === 1) {
+      TextScrollingView({ message: this.inputText })
+    } else if (this.selectedEffect === 2) {
+      TextReflectionView({ message: this.inputText })
+    } else {
+      TextMarqueeView({ message: this.inputText })
+    }
+  }
+
+  build() {
+    Navigation() {
+      Column() {
+        // ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©
+        Column() {
+          this.sectionTitle('ç¬¬ä¸€è¡Œï¼šæ–‡å­—ç‰¹æ•ˆé€‰æ‹©')
+          Row({ space: 8 }) {
+            this.effectButton('æ¸å˜', 0)
+            this.effectButton('æ»šåŠ¨', 1)
+            this.effectButton('å€’å½±', 2)
+            this.effectButton('è·‘é©¬ç¯', 3)
+          }
+          .width(Constants.FULL_PERCENT)
+          .justifyContent(FlexAlign.Start)
+        }
+        .cardStyle()
+
+        // ç¬¬äºŒè¡Œï¼šç”¨æˆ·è¾“å…¥éœ€è¦è¿›è¡Œæ–‡å­—ç‰¹æ•ˆå¤„ç†çš„æ–‡æœ¬
+        Column() {
+          this.sectionTitle('ç¬¬äºŒè¡Œï¼šè¾“å…¥éœ€è¦å¤„ç†çš„æ–‡æœ¬')
+          TextInput({ placeholder: 'è¯·è¾“å…¥æ–‡å­—å†…å®¹', text: this.inputText })
+            .width(Constants.FULL_PERCENT)
+            .height(48)
+            .fontSize(16)
+            .backgroundColor('#F8F9FA')
+            .borderRadius(12)
+            .padding({ left: 12, right: 12 })
+            .onChange((value: string) => {
+              this.inputText = value;
+            })
+        }
+        .cardStyle()
+
+        // ç¬¬ä¸‰è¡Œï¼šå±•ç¤ºå¤„ç†åçš„æ–‡å­—ç‰¹æ•ˆç»“æœ
+        Column() {
+          this.sectionTitle('ç¬¬ä¸‰è¡Œï¼šæ–‡å­—ç‰¹æ•ˆå¤„ç†ç»“æœ')
+          Row() {
+            this.effectPreview()
+          }
+          .width(Constants.FULL_PERCENT)
+          .height(96)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(VerticalAlign.Center)
+          .backgroundColor('#F8F9FA')
+          .borderRadius(12)
+          .padding(12)
+        }
+        .cardStyle()
+      }
+      .width(Constants.FULL_PERCENT)
+      .height(Constants.FULL_PERCENT)
+      .padding({
+        left: $r('app.float.area_padding_left'),
+        right: $r('app.float.area_padding_left'),
+        top: 20
+      })
+    }
+    .height(Constants.FULL_PERCENT)
+    .width(Constants.FULL_PERCENT)
+    .title($r('app.string.title'))
+    .backgroundColor($r('app.color.page_background_color'))
+    .mode(NavigationMode.Stack)
+  }
+}
+ÀÔrD•º../view/TextReflectionView¸../view/TextGradientView·../view/TextMarqueeView¶../constants/Constants¹../view/TextScrollingViewÔrE—ªassertions¨external¢id¤meta±moduleSideEffectsªresolvedByµsyntheticNamedExportsAÂÙYC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextReflectionView.etsAÃªoh-resolveÂEAÂÙWC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextGradientView.etsAÃªoh-resolveÂEAÂÙVC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextMarqueeView.etsAÃªoh-resolveÂEAÂÙUC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\constants\Constants.etsAÃªoh-resolveÂEAÂÙXC:\Users\31293\Desktop\text-effects-master\entry\src\main\ets\view\TextScrollingView.etsAÃªoh-resolveÂ“ÔrF–§version¤fileªsourceRoot§sources¥names¨mappings¨Index.js ‘©Index.etsÜ-‘”    ‘” –”   ” ” ” ”. .”/ /–”   ” ” ” ”7 7”8 8–”   ” ” ” ”5 5”6 6–”   ” ” ” ”; ;”< <–”   ” ” ” ”9 9”: :’” ” ‘”  ’”8 ”ÌB '’”= "”> #‘” :’” 	” ’” 	” ’” 	” ’” 	” ”” %” %” %” %’” &” &˜” &” &” ,” ,
+” ,” ,”  ,”, ,!š” &” &” -” -” -” -” -”! -”" -”$ -”” '” '
+” '” '”” '” '
+” (	” (”” '” '
+” )	” )˜” '” '
+” *	” *” *”% *”& *”5 *-’” '” '
+’” &” &‘” .–” 1” 1” 1” 1” 1” 1+”” 2” 2
+”# 2”( 2–” 2” 2
+” 3” 3” 3” 3˜” 2” 2
+” 4” 4” 4”( 4”) 4”/ 4#Ü ” 2” 2
+” 5”" 5”# 5”' 5”( 5”6 5*”; 5/”Ì@ 54”ÌA 55”ÌB 56”ÌC 57”ÌL 5Ì@”ÌM 5ÌA”ÌN 5ÌB”ÌO 5ÌC”ÌX 5ÌLÜ ” 2” 2
+” 6” 6” 6”! 6”" 6”0 6$”5 6)”: 6.”; 6/”< 60”= 61”ÌB 66”ÌC 67”ÌH 6<”ÌI 6=”ÌJ 6>”ÌK 6?”ÌT 6ÌH–” 2” 2
+” 7” 7”  7”" 7–” 2” 2
+” 8” 8” 8” 8” 2” 2
+” 9” 9” 9” 9”! 9”# 9”% 9”' 9”, 9 ”. 9"”0 9$”2 9&—” 2” 2
+” :” :” :” :”  :—” ;” ;” ;”# ;”& ;”+ ;#”, ;$’” <” <’” 2” 2
+‘” =’” Ì@” Ì@˜” ÌA” ÌA” ÌA” ÌA”# ÌA”( ÌA ”) ÌA!”+ ÌA#š”8 ÌB”ÌH ÌB”ÌO ÌB”ÌQ ÌB”ÌX ÌB ”ÌZ ÌB"”Ì^ ÌB&”Ì_ ÌB'”Ìh ÌB0”Ìj ÌB2–”( ÌB”/ ÌB ”1 ÌB"”5 ÌB&”6 ÌB'”? ÌB0–”$ ÌB”+ ÌB ”- ÌB"”1 ÌB&”2 ÌB'”; ÌB0‘” ÌC˜” ÌC” ÌC” ÌC” ÌC”( ÌC"”- ÌC'”. ÌC(”0 ÌC*š”8 ÌD”ÌI ÌD”ÌP ÌD”ÌR ÌD”ÌY ÌD!”Ì[ ÌD#”Ì_ ÌD'”Ì` ÌD(”Ìi ÌD1”Ìk ÌD3–”( ÌD”/ ÌD!”1 ÌD#”5 ÌD'”6 ÌD(”? ÌD1–”$ ÌD”+ ÌD!”- ÌD#”1 ÌD'”2 ÌD(”; ÌD1‘” ÌE˜” ÌE” ÌE” ÌE” ÌE”( ÌE"”- ÌE'”. ÌE(”0 ÌE*š”8 ÌF”ÌJ ÌF”ÌQ ÌF”ÌS ÌF”ÌZ ÌF"”Ì\ ÌF$”Ì` ÌF(”Ìa ÌF)”Ìj ÌF2”Ìl ÌF4–”( ÌF”/ ÌF"”1 ÌF$”5 ÌF(”6 ÌF)”? ÌF2–”$ ÌF”+ ÌF"”- ÌF$”1 ÌF(”2 ÌF)”; ÌF2‘” ÌG‘” ÌGš”8 ÌH”ÌG ÌH”ÌN ÌH”ÌP ÌH”ÌW ÌH”ÌY ÌH!”Ì] ÌH%”Ì^ ÌH&”Ìg ÌH/”Ìi ÌH1–”( ÌH”/ ÌH”1 ÌH!”5 ÌH%”6 ÌH&”? ÌH/–”$ ÌH”+ ÌH”- ÌH!”1 ÌH%”2 ÌH&”; ÌH/‘” ÌI‘” ÌJ‘” ÌL’” ÌM” ÌM˜” ÌM” ÌM” Ì…” Ì…” Ì…”' Ì…”( Ì…”4 Ì…"˜” ÌM” ÌM” Ì†” Ì†
+” Ì†”& Ì†”' Ì†”3 Ì†!”” ÌM” ÌM” Ì‡” Ì‡
+”” ÌM” ÌM” Ìˆ”& Ìˆ˜” ÌM” ÌM” Ì‰” Ì‰	” Ì‰
+”* Ì‰”+ Ì‰”0 Ì‰’” ÌN” ÌN˜” ÌN” ÌN” Ì}” Ì}” Ì}”" Ì}”# Ì}”/ Ì}#˜” ÌN” ÌN” Ì~” Ì~” Ì~”# Ì~”$ Ì~”0 Ì~$•” ÌN” ÌN” Ì” Ì” Ì“” Ì€” Ì€”Ìƒ Ì€/“” Ì” Ì”Ì„ Ì0”” Ì‚” Ì‚” Ì‚” Ì‚‘” Ìƒ’” ÌO” ÌO’” ÌP” ÌP’” ÌO” ÌO”” ÌP” ÌP” ” ’” ÌO” ÌO˜” ÌP” ÌP” ”" ”# ”( ”) ”.  ’” ÌO” ÌO”” ÌP” ÌP” ” ’” ÌO” ÌO˜” ÌP” ÌP”  ”  
+”  ”"  ”#  ”/  !’” ÌO” ÌOš” ÌP” ÌP” !” !” !” !”" !”$ !”& !”( !—” ÌQ
+” ÌQ” ÌQ” ÌQ”% ÌQ”1 ÌQ(”2 ÌQ)˜” ÌR
+” ÌR” ÌR” ÌR” ÌR”  ÌR”! ÌR”# ÌR˜” ÌR
+” ÌR” ÌX” ÌX” ÌX” ÌX”  ÌX”, ÌX'˜” ÌR
+” ÌR” ÌY” ÌY” ÌY”( ÌY#”) ÌY$”. ÌY)™” ÌS” ÌS” ÌS” ÌS”% ÌS”) ÌS"”+ ÌS$”, ÌS%”- ÌS&™” ÌT” ÌT” ÌT” ÌT”% ÌT”) ÌT"”+ ÌT$”, ÌT%”- ÌT&™” ÌU” ÌU” ÌU” ÌU”% ÌU”) ÌU"”+ ÌU$”, ÌU%”- ÌU&™” ÌV” ÌV” ÌV” ÌV”% ÌV”* ÌV#”, ÌV%”- ÌV&”. ÌV'’” ÌR
+” ÌR’” ÌO” ÌO’” ÌP” ÌP’” Ì]”$ Ì] ’” Ì^” Ì^’” Ì]”$ Ì] ”” Ì^” Ì^” ” ’” Ì]”$ Ì] ˜” Ì^” Ì^” ”" ”# ”( ”) ”.  ’” Ì]”$ Ì] ”” Ì^” Ì^” ” ’” Ì]”$ Ì] ˜” Ì^” Ì^”  ”  
+”  ”"  ”#  ”/  !’” Ì]”$ Ì] š” Ì^” Ì^” !” !” !” !”" !”$ !”& !”( !—” Ì_
+” Ì_” Ì_” Ì_”% Ì_”4 Ì_+”5 Ì_,” Ì`
+” Ì`” Ì`” Ì`”* Ì`!”, Ì`#”5 Ì`,”7 Ì`.”; Ì`2”= Ì`4”ÌA Ì`8”ÌB Ì`9”ÌK Ì`ÌB”ÌM Ì`ÌD˜” Ì`
+” Ì`” Ìa” Ìa” Ìa”% Ìa”& Ìa”2 Ìa)–” Ì`
+” Ì`” Ìb” Ìb” Ìb” Ìb–” Ì`
+” Ì`” Ìc” Ìc” Ìc”! Ìc–” Ì`
+” Ì`” Ìd”% Ìd”& Ìd”/ Ìd&–” Ì`
+” Ì`” Ìe”" Ìe”# Ìe”% Ìe” Ì`
+” Ì`” Ìf” Ìf” Ìf”  Ìf”$ Ìf”& Ìf”( Ìf”* Ìf!”/ Ìf&”1 Ìf(”3 Ìf*”5 Ìf,™” Ì`
+” Ì`” Ìg” Ìg” Ìg”  Ìg”% Ìg$”' Ìg&”) Ìg(—” Ìh” Ìh” Ìh” Ìh”! Ìh”& Ìh$”' Ìh%’” Ìi” Ìi’” Ì]”  Ì] ’” Ì^” Ì^’” Ìm” Ìm’” Ìn” Ìn’” Ìm” Ìm”” Ìn” Ìn” ” ’” Ìm” Ìm˜” Ìn” Ìn” ”" ”# ”( ”) ”.  ’” Ìm” Ìm”” Ìn” Ìn” ” ’” Ìm” Ìm˜” Ìn” Ìn”  ”  
+”  ”"  ”#  ”/  !’” Ìm” Ìmš” Ìn” Ìn” !” !” !” !”" !”$ !”& !”( !—” Ìo
+” Ìo” Ìo” Ìo”% Ìo”3 Ìo*”4 Ìo+’” Ìp
+” Ìp˜” Ìp
+” Ìp” Ìs” Ìs” Ìs” Ìs”  Ìs”, Ìs'–” Ìp
+” Ìp” Ìt” Ìt” Ìt” Ìt˜” Ìp
+” Ìp” Ìu” Ìu” Ìu”( Ìu#”) Ìu$”/ Ìu*˜” Ìp
+” Ìp” Ìv” Ìv” Ìv”( Ìv#”) Ìv$”/ Ìv*–” Ìp
+” Ìp” Ìw” Ìw”  Ìw”) Ìw$–” Ìp
+” Ìp” Ìx” Ìx” Ìx” Ìx–” Ìp
+” Ìp” Ìy” Ìy” Ìy” Ìy•” Ìq” Ìq” Ìq” Ìq”' Ìq ’” Ìp
+” Ìp’” Ìm” Ìm’” Ìn” Ìn’” ÌN” ÌN’” ÌM” ÌM‘” ÌŠÔrG–§version¤file§sources®sourcesContent¥names¨mappingsÀ‘À‘ÀÜ6‘”    ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”  	 ‘”  
+ ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”   ‘”    ‘”  ! ‘”  " ‘”  # ‘”  $ ‘”  % ‘”  & ‘”  ' ‘”  ( ‘”  ) ‘”  * ‘”  + ‘”  , ‘”  - ‘”  . ‘”  / ‘”  0 ‘”  1 ‘”  2 ‘”  3 ‘”  4 ‘”  5 ‘”  6 ‘”  7 ‘”  8 ‘”  9 ‘”  : ‘”  ; ‘”  < ‘”  = ‘”  > ‘”  ? ‘”  Ì@ ‘”  ÌA ‘”  ÌB ‘”  ÌC ‘”  ÌD ‘”  ÌE ‘”  ÌF ‘”  ÌG ‘”  ÌH ‘”  ÌI ‘”  ÌJ ‘”  ÌK ‘”  ÌL ‘”  ÌM ‘”  ÌN ‘”  ÌO ‘”  ÌP ‘”  ÌQ ‘”  ÌR ‘”  ÌS ‘”  ÌT ‘”  ÌU ‘”  ÌV ‘”  ÌW ‘”  ÌX ‘”  ÌY ‘”  ÌZ ‘”  Ì[ ‘”  Ì\ ‘”  Ì] ‘”  Ì^ ‘”  Ì_ ‘”  Ì` ‘”  Ìa ‘”  Ìb ‘”  Ìc ‘”  Ìd ‘”  Ìe ‘”  Ìf ‘”  Ìg ‘”  Ìh ‘”  Ìi ‘”  Ìj ‘”  Ìk ‘”  Ìl ‘”  Ìm ‘”  Ìn ‘”  Ìo ‘”  Ìp ‘”  Ìq ‘”  Ìr ‘”  Ìs ‘”  Ìt ‘”  Ìu ‘”  Ìv ‘”  Ìw ‘”  Ìx ‘”  Ìy ‘”  Ìz ‘”  Ì{ ‘”  Ì| ‘”  Ì} ‘”  Ì~ ‘”  Ì ‘”  Ì€ ‘”  Ì ‘”  Ì‚ ‘”  Ìƒ ‘”  Ì„ ‘”  Ì… ‘”  Ì† ‘”  Ì‡ ‘”  Ìˆ ‘”  Ì‰ ‘”  ÌŠ ‘”  Ì‹ ‘”  ÌŒ ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì ‘”  Ì‘ ‘”  Ì’ ‘”  Ì“ ‘”  Ì” ‘”  Ì• ‘”  Ì– ‘”  Ì— ‘”  Ì˜ ‘”  Ì™ ‘”  Ìš ‘”  Ì› ‘”  Ìœ ‘”  Ì ‘”  Ì ‘”  ÌŸ ‘”  Ì  ‘”  Ì¡ ‘”  Ì¢ ‘”  Ì£ ‘”  Ì¤ ‘”  Ì¥ ‘”  Ì¦ ‘”  Ì§ ‘”  Ì¨ ‘”  Ì© ‘”  Ìª ‘”  Ì« ‘”  Ì¬ ‘”  Ì­ ‘”  Ì® ‘”  Ì¯ ‘”  Ì° ‘”  Ì± ‘”  Ì² ‘”  Ì³ ‘”  Ì´ ‘”  Ìµ ‘”  Ì¶ ‘”  Ì· ‘”  Ì¸ ‘”  Ì¹ ‘”  Ìº ‘”  Ì» ‘”  Ì¼ ‘”  Ì½ ‘”  Ì¾ ‘”  Ì¿ ‘”  ÌÀ ‘”  ÌÁ ‘”  ÌÂ ‘”  ÌÃ ‘”  ÌÄ ‘”  ÌÅ ‘”  ÌÆ ‘”  ÌÇ ‘”  ÌÈ ‘”  ÌÉ ‘”  ÌÊ ‘”  ÌË ‘”  ÌÌ ‘”  ÌÍ ‘”  ÌÎ ‘”  ÌÏ ‘”  ÌĞ ‘”  ÌÑ ‘”  ÌÒ ‘”  ÌÓ ‘”  ÌÔ ‘”  ÌÕ ‘”  ÌÖ ‘”  Ì× ‘”  ÌØ ‘”  ÌÙ ‘”  ÌÚ ‘”  ÌÛ ‘”  ÌÜ ‘”  Ìİ ‘”  ÌŞ ‘”  Ìß ‘”  Ìà ‘”  Ìá ‘”  Ìâ ‘”  Ìã ‘”  Ìä ‘”  Ìå ‘”  Ìæ ‘”  Ìç ‘”  Ìè ‘”  Ìé ‘”  Ìê ‘”  Ìë ‘”  Ìì ‘”  Ìí ‘”  Ìî ‘”  Ìï ‘”  Ìğ ‘”  Ìñ ‘”  Ìò ‘”  Ìó ‘”  Ìô ‘”  Ìõ ‘”  Ìö ‘”  Ì÷ ‘”  Ìø ‘”  Ìù ‘”  Ìú ‘”  Ìû ‘”  Ìü ‘”  Ìı ‘”  Ìş ‘”  Ìÿ ‘”  Í  ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í	 ‘”  Í
+ ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í ‘”  Í  ‘”  Í! ‘”  Í" ‘”  Í# ‘”  Í$ ‘”  Í% ‘”  Í& ‘”  Í' ‘”  Í( ‘”  Í) ‘”  Í* ‘”  Í+ ‘”  Í, ‘”  Í- ‘”  Í. ‘”  Í/ ‘”  Í0 ‘”  Í1 ‘”  Í2 ‘”  Í3 ‘”  Í4 ‘”  Í5 ÔrH’§missing¦pluginÃ¦genAbcÂÔ  ÔrI”²dynamicImportCache¹exportAllDeclarationCache»exportNamedDeclarationCache«importCache•ÔrJ•¤type¥start£endªspecifiers¦source±ImportDeclarationÍîÍ‘ÔrK”¤type¥start£end¥local¶ImportDefaultSpecifierÍõÍşÔrL”¤type¥start£end¤nameªIdentifierÍõÍş©ConstantsÔrM•¤type¥start£end¥value£raw§LiteralÍÍ¶../constants/Constants¸'../constants/Constants'J±ImportDeclarationÍÍW‘K¶ImportDefaultSpecifierÍ&Í6LªIdentifierÍ&Í6°TextGradientViewM§LiteralÍ<ÍV¸../view/TextGradientViewº'../view/TextGradientView'J±ImportDeclarationÍYÍ‘K¶ImportDefaultSpecifierÍ`ÍoLªIdentifierÍ`Ío¯TextMarqueeViewM§LiteralÍuÍ·../view/TextMarqueeView¹'../view/TextMarqueeView'J±ImportDeclarationÍ‘ÍÍ‘K¶ImportDefaultSpecifierÍ˜ÍªLªIdentifierÍ˜Íª²TextReflectionViewM§LiteralÍ°ÍÌº../view/TextReflectionView¼'../view/TextReflectionView'J±ImportDeclarationÍÏÍ	‘K¶ImportDefaultSpecifierÍÖÍçLªIdentifierÍÖÍç±TextScrollingViewM§LiteralÍíÍ¹../view/TextScrollingView»'../view/TextScrollingView'

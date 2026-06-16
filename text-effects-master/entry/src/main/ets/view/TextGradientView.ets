@@ -15,7 +15,7 @@
 
 @Component
 export default struct TextGradientView {
-  @State message: ResourceStr = '';
+  @Prop message: ResourceStr = '';
 
   build() {
     Row() {

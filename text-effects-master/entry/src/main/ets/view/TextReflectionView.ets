@@ -17,7 +17,7 @@ import Constants from '../constants/Constants';
 
 @Component
 export default struct TextRefectionView {
-  @State message: ResourceStr = '';
+  @Prop message: ResourceStr = '';
 
   build() {
     Stack() {

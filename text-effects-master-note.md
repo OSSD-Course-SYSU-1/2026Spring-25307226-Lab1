@@ -1,879 +1,65 @@
-# text-effects-master 项目结构与代码结构超级详细解析
+# text-effects-master 工程优化升级说明文档
 
-> 说明：本文档基于你上传的 `text-effects-master.zip` 项目进行分析。该项目是一个 HarmonyOS / ArkTS 示例工程，主题是“基于 Text 组件及通用属性实现文字特效”，主要展示文字渐变、歌词滚动、文字倒影、跑马灯渐变等效果。
+## 1. 文档说明
 
----
+本文档用于说明本次对 DevEco / HarmonyOS ArkUI 工程 `text-effects-master` 的功能优化内容。说明重点包括：
 
-## 1. 项目总体定位
+1. 与原工程相比新增了哪些功能。
+2. 新功能在界面上表现为什么样子。
+3. 新功能是如何通过代码实现的。
+4. 修改了哪些文件。
+5. 各文件之间是如何关联、调用和传递数据的。
+6. 用户输入、特效选择、结果显示三者之间的完整运行流程。
+7. 后续如果继续扩展新文字特效，应该怎么改。
 
-该项目不是一个复杂的业务型应用，而是一个 **HarmonyOS ArkTS UI 示例工程**。它的核心目标是演示 ArkUI 中 `Text` 组件与若干通用属性的组合使用方法，包括：
+本次升级的核心目标是：
 
-1. `linearGradient`：线性渐变背景或遮罩。
-2. `blendMode`：混合模式，用于实现文字裁剪、渐变填充、透明遮罩等视觉效果。
-3. `rotate`：旋转变换，用于实现倒影。
-4. `textOverflow`：文本超出后的显示方式，用于跑马灯。
-5. `animateTo`：显式动画，用于歌词滚动效果。
-6. `ResourceStr` 与 `$r()`：资源引用机制，用于读取字符串、颜色、尺寸等资源。
-
-项目运行后的界面是一个单页面应用，首页 `Index.ets` 中依次展示四个文字特效模块：
-
-| 序号 | 展示模块 | 对应组件文件 | 主要技术 |
-|---|---|---|---|
-| 1 | 文字渐变效果 | `TextGradientView.ets` | `Text` + `linearGradient` + `blendMode` |
-| 2 | 歌词滚动效果 | `TextScrollingView.ets` | `linearGradient` + `blendMode` + `animateTo` |
-| 3 | 文字倒影效果 | `TextReflectionView.ets` | `Stack` + `rotate` + `linearGradient` |
-| 4 | 跑马灯渐变效果 | `TextMarqueeView.ets` | `textOverflow` + `linearGradient` + `blendMode` |
+> 将原来“固定展示多个文字特效示例”的页面，改造成一个“用户可选择文字特效、可输入文字、可查看处理结果”的交互式文字特效处理界面。
 
 ---
 
-## 2. 顶层目录结构总览
+## 2. 原工程功能分析
 
-项目根目录大致如下：
-
-```text
-text-effects-master/
-├── AppScope/
-├── entry/
-├── hvigor/
-├── screenshots/
-├── .hvigor/
-├── .idea/
-├── build-profile.json5
-├── hvigorfile.ts
-├── oh-package.json5
-├── README.md
-├── README.en.md
-└── LICENSE
-```
-
-各目录和文件的作用如下：
-
-| 路径 | 类型 | 作用 |
-|---|---|---|
-| `AppScope/` | 应用级配置目录 | 存放整个应用级别的配置和资源，例如应用名称、图标等。 |
-| `entry/` | 主模块目录 | 项目的核心模块，包含 ArkTS 页面、组件、Ability、资源文件和模块配置。 |
-| `hvigor/` | 构建工具配置目录 | Hvigor 构建系统配置，类似前端工程中的构建配置目录。 |
-| `screenshots/` | 截图目录 | 存放示例运行效果图，README 中引用这些图片。 |
-| `.hvigor/` | 构建缓存目录 | DevEco / Hvigor 生成的缓存、构建日志、依赖映射等，一般不需要手动修改。 |
-| `.idea/` | IDE 配置目录 | DevEco Studio / IntelliJ 系 IDE 的工程配置，一般不需要手动修改。 |
-| `build-profile.json5` | 应用级构建配置 | 定义产品、SDK 版本、模块列表、构建模式等。 |
-| `hvigorfile.ts` | 应用级 Hvigor 脚本 | 引入应用级构建任务 `appTasks`。 |
-| `oh-package.json5` | 应用级包配置 | 定义工程级依赖，目前为空。 |
-| `README.md` | 中文说明文档 | 简要介绍项目功能、目录、实现方式和运行限制。 |
-| `README.en.md` | 英文说明文档 | README 的英文版本。 |
-| `LICENSE` | 开源协议 | 项目的开源许可文件。 |
-
----
-
-## 3. 重点目录：entry 模块
-
-`entry` 是整个项目最重要的模块。HarmonyOS 应用通常至少有一个入口模块，常见名称就是 `entry`。本项目的所有业务 UI 代码都在这个模块中。
-
-`entry` 目录结构如下：
-
-```text
-entry/
-├── build-profile.json5
-├── hvigorfile.ts
-├── obfuscation-rules.txt
-├── oh-package.json5
-└── src/
-    └── main/
-        ├── ets/
-        │   ├── constants/
-        │   │   └── Constants.ets
-        │   ├── entryability/
-        │   │   └── EntryAbility.ets
-        │   ├── pages/
-        │   │   └── Index.ets
-        │   └── view/
-        │       ├── TextGradientView.ets
-        │       ├── TextScrollingView.ets
-        │       ├── TextReflectionView.ets
-        │       └── TextMarqueeView.ets
-        ├── module.json5
-        └── resources/
-            ├── base/
-            │   ├── element/
-            │   │   ├── color.json
-            │   │   ├── float.json
-            │   │   └── string.json
-            │   ├── media/
-            │   │   ├── background.png
-            │   │   ├── foreground.png
-            │   │   ├── layered_image.json
-            │   │   └── startIcon.png
-            │   └── profile/
-            │       └── main_pages.json
-            ├── en_US/
-            │   └── element/
-            │       └── string.json
-            └── zh_CN/
-                └── element/
-                    └── string.json
-```
-
-`entry` 模块内部可以分成五类内容：
-
-1. **模块构建配置**：`entry/build-profile.json5`、`entry/hvigorfile.ts`、`entry/oh-package.json5`。
-2. **模块声明配置**：`entry/src/main/module.json5`。
-3. **ArkTS 代码**：`entry/src/main/ets/`。
-4. **资源文件**：`entry/src/main/resources/`。
-5. **混淆配置**：`entry/obfuscation-rules.txt`。
-
----
-
-## 4. 程序启动流程
-
-该项目的启动过程可以理解为下面这条链路：
-
-```text
-DevEco Studio 点击运行
-        ↓
-读取根目录 build-profile.json5
-        ↓
-识别 entry 模块
-        ↓
-读取 entry/src/main/module.json5
-        ↓
-找到 mainElement: EntryAbility
-        ↓
-启动 EntryAbility.ets
-        ↓
-EntryAbility.onWindowStageCreate()
-        ↓
-windowStage.loadContent('pages/Index')
-        ↓
-加载 pages/Index.ets
-        ↓
-Index 页面引入并展示四个 view 组件
-```
-
-对应代码关系如下：
-
-```text
-module.json5
-  └── mainElement: EntryAbility
-        └── EntryAbility.ets
-              └── windowStage.loadContent('pages/Index')
-                    └── Index.ets
-                          ├── TextGradientView.ets
-                          ├── TextScrollingView.ets
-                          ├── TextReflectionView.ets
-                          └── TextMarqueeView.ets
-```
-
-这是整个项目最核心的文件关系。
-
----
-
-## 5. 应用级配置文件解析
-
-### 5.1 `build-profile.json5`
-
-路径：
-
-```text
-build-profile.json5
-```
-
-作用：
-
-该文件是整个 HarmonyOS 工程的应用级构建配置，用来告诉 DevEco / Hvigor：
-
-1. 当前应用有哪些产品形态。
-2. 使用什么 SDK 版本。
-3. 目标运行系统是什么。
-4. 工程包含哪些模块。
-5. 支持哪些构建模式。
-
-项目中的关键内容如下：
-
-```json5
-{
-  "app": {
-    "products": [
-      {
-        "name": "default",
-        "signingConfig": "default",
-        "compatibleSdkVersion": "5.0.5(17)",
-        "targetSdkVersion": "5.0.5(17)",
-        "runtimeOS": "HarmonyOS"
-      }
-    ],
-    "buildModeSet": [
-      { "name": "debug" },
-      { "name": "release" }
-    ]
-  },
-  "modules": [
-    {
-      "name": "entry",
-      "srcPath": "./entry"
-    }
-  ]
-}
-```
-
-重点字段说明：
-
-| 字段 | 含义 |
-|---|---|
-| `products` | 产品配置。这里只有一个默认产品 `default`。 |
-| `compatibleSdkVersion` | 最低兼容 SDK 版本。 |
-| `targetSdkVersion` | 目标 SDK 版本。 |
-| `runtimeOS` | 目标运行系统，这里是 HarmonyOS。 |
-| `buildModeSet` | 构建模式，包含 `debug` 和 `release`。 |
-| `modules` | 工程包含的模块列表。此项目只有 `entry` 一个模块。 |
-| `srcPath` | 模块路径，指向 `./entry`。 |
-
-这个文件和 `entry/` 目录之间的关系是：
-
-```text
-build-profile.json5
-  └── modules[0].srcPath = ./entry
-        └── entry 模块
-```
-
-也就是说，DevEco 打开工程后，是通过这个文件知道 `entry` 是一个需要参与构建的模块。
-
----
-
-### 5.2 根目录 `oh-package.json5`
-
-路径：
-
-```text
-oh-package.json5
-```
-
-作用：
-
-该文件是工程级包配置文件，用于声明工程级依赖。当前项目中依赖为空：
-
-```json5
-{
-  "modelVersion": "5.0.0",
-  "description": "Please describe the basic information.",
-  "dependencies": {},
-  "devDependencies": {}
-}
-```
-
-说明：
-
-1. 当前示例没有引入第三方库。
-2. 所有功能都基于 HarmonyOS 自带 ArkUI 组件和系统 API 实现。
-3. 如果后续要引入第三方包，一般会修改这里或模块级 `oh-package.json5`。
-
----
-
-### 5.3 根目录 `hvigorfile.ts`
-
-路径：
-
-```text
-hvigorfile.ts
-```
-
-内容：
-
-```ts
-import { appTasks } from '@ohos/hvigor-ohos-plugin';
-
-export default {
-    system: appTasks,
-    plugins: []
-}
-```
-
-作用：
-
-这是应用级 Hvigor 构建脚本。
-
-| 内容 | 说明 |
-|---|---|
-| `appTasks` | 应用级构建任务集合。 |
-| `system: appTasks` | 表示使用 HarmonyOS 默认应用构建任务。 |
-| `plugins: []` | 当前没有自定义插件。 |
-
-可以把它理解成：
-
-```text
-告诉构建系统：这个工程是 HarmonyOS 应用工程，请使用默认应用构建流程。
-```
-
----
-
-### 5.4 `hvigor/hvigor-config.json5`
-
-路径：
-
-```text
-hvigor/hvigor-config.json5
-```
-
-作用：
-
-这是 Hvigor 构建系统的全局配置文件。项目中大部分配置都处于注释状态，使用默认值。
-
-它可以控制：
-
-1. 是否开启增量编译。
-2. 是否开启并行编译。
-3. 是否开启类型检查。
-4. 日志级别。
-5. Node 最大内存。
-6. 构建调试选项。
-
-当前项目没有进行特殊配置，因此属于比较标准的示例工程配置。
-
----
-
-## 6. AppScope 应用级资源解析
-
-目录：
-
-```text
-AppScope/
-├── app.json5
-└── resources/
-    └── base/
-        ├── element/
-        │   └── string.json
-        └── media/
-            └── app_icon.png
-```
-
-### 6.1 `AppScope/app.json5`
-
-作用：
-
-该文件通常用于配置应用级信息，例如应用包名、应用标签、版本信息等。它属于整个 App 的范围，不是某一个模块独有。
-
-和 `entry/src/main/module.json5` 的区别是：
-
-| 文件 | 级别 | 作用 |
-|---|---|---|
-| `AppScope/app.json5` | 应用级 | 描述整个应用。 |
-| `entry/src/main/module.json5` | 模块级 | 描述 entry 模块、Ability、页面、设备类型等。 |
-
-### 6.2 `AppScope/resources/`
-
-该目录放的是应用级资源，例如应用图标、应用名称字符串等。模块也可以有自己的资源目录，即 `entry/src/main/resources/`。
-
----
-
-## 7. 模块级配置文件解析
-
-### 7.1 `entry/build-profile.json5`
-
-路径：
-
-```text
-entry/build-profile.json5
-```
-
-作用：
-
-这是 `entry` 模块自己的构建配置，主要定义：
-
-1. 模块使用 Stage 模型。
-2. release 模式下的混淆配置。
-3. 模块构建目标。
-
-关键内容：
-
-```json5
-{
-  "apiType": "stageMode",
-  "buildOption": {},
-  "buildOptionSet": [
-    {
-      "name": "release",
-      "arkOptions": {
-        "obfuscation": {
-          "ruleOptions": {
-            "enable": true,
-            "files": [
-              "./obfuscation-rules.txt"
-            ]
-          }
-        }
-      }
-    }
-  ],
-  "targets": [
-    {
-      "name": "default"
-    }
-  ]
-}
-```
-
-重点字段说明：
-
-| 字段 | 说明 |
-|---|---|
-| `apiType: stageMode` | 使用 HarmonyOS Stage 模型。 |
-| `buildOptionSet` | 不同构建模式的配置集合。 |
-| `release` | 发布模式配置。 |
-| `obfuscation.enable` | release 模式下开启混淆。 |
-| `obfuscation-rules.txt` | 混淆规则文件。 |
-| `targets` | 模块构建目标。 |
-
----
-
-### 7.2 `entry/oh-package.json5`
-
-路径：
-
-```text
-entry/oh-package.json5
-```
-
-作用：
-
-这是 `entry` 模块自己的包配置文件。当前内容为：
-
-```json5
-{
-  "name": "entry",
-  "version": "1.0.0",
-  "description": "Please describe the basic information.",
-  "main": "",
-  "author": "",
-  "license": "",
-  "dependencies": {}
-}
-```
-
-说明：
-
-1. 模块名为 `entry`。
-2. 版本为 `1.0.0`。
-3. 没有引入第三方依赖。
-4. 所有组件都直接使用 ArkUI / HarmonyOS 基础能力。
-
----
-
-### 7.3 `entry/hvigorfile.ts`
-
-路径：
-
-```text
-entry/hvigorfile.ts
-```
-
-内容：
-
-```ts
-import { hapTasks } from '@ohos/hvigor-ohos-plugin';
-
-export default {
-    system: hapTasks,
-    plugins: []
-}
-```
-
-作用：
-
-这是模块级 Hvigor 构建脚本。
-
-| 内容 | 说明 |
-|---|---|
-| `hapTasks` | HAP 模块构建任务。 |
-| `system: hapTasks` | 表示该模块按照 HAP 包方式构建。 |
-| `plugins: []` | 当前没有自定义插件。 |
-
-与根目录 `hvigorfile.ts` 的区别：
-
-| 文件 | 使用任务 | 级别 |
-|---|---|---|
-| 根目录 `hvigorfile.ts` | `appTasks` | 应用级 |
-| `entry/hvigorfile.ts` | `hapTasks` | 模块级 HAP |
-
----
-
-### 7.4 `entry/src/main/module.json5`
-
-路径：
-
-```text
-entry/src/main/module.json5
-```
-
-这是 `entry` 模块非常关键的配置文件。它决定了模块的名称、类型、设备支持、入口 Ability、图标、标签、页面列表等。
-
-关键内容：
-
-```json5
-{
-  "module": {
-    "name": "entry",
-    "type": "entry",
-    "description": "$string:module_desc",
-    "mainElement": "EntryAbility",
-    "deviceTypes": [
-      "phone"
-    ],
-    "deliveryWithInstall": true,
-    "installationFree": false,
-    "pages": "$profile:main_pages",
-    "abilities": [
-      {
-        "name": "EntryAbility",
-        "srcEntry": "./ets/entryability/EntryAbility.ets",
-        "description": "$string:EntryAbility_desc",
-        "icon": "$media:layered_image",
-        "label": "$string:EntryAbility_label",
-        "startWindowIcon": "$media:startIcon",
-        "startWindowBackground": "$color:start_window_background",
-        "exported": true,
-        "skills": [
-          {
-            "entities": [
-              "entity.system.home"
-            ],
-            "actions": [
-              "action.system.home"
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-字段解释：
-
-| 字段 | 说明 |
-|---|---|
-| `module.name` | 模块名称，当前是 `entry`。 |
-| `module.type` | 模块类型，当前是入口模块。 |
-| `description` | 模块描述，引用字符串资源 `$string:module_desc`。 |
-| `mainElement` | 主入口元素，当前是 `EntryAbility`。 |
-| `deviceTypes` | 支持设备类型，当前只支持 `phone`。 |
-| `deliveryWithInstall` | 是否随应用安装一起分发，当前为 true。 |
-| `installationFree` | 是否免安装，当前为 false。 |
-| `pages` | 页面路由配置，引用 `$profile:main_pages`。 |
-| `abilities` | Ability 列表。 |
-| `srcEntry` | Ability 的源码入口文件。 |
-| `icon` | 应用图标资源。 |
-| `label` | 应用显示名称。 |
-| `startWindowIcon` | 启动窗口图标。 |
-| `startWindowBackground` | 启动窗口背景颜色。 |
-| `exported` | 是否可被外部拉起。 |
-| `skills` | 启动入口声明，包含 home 图标入口能力。 |
-
-它和代码文件之间的关系非常重要：
-
-```text
-module.json5
-  ├── mainElement: EntryAbility
-  ├── abilities[0].srcEntry: ./ets/entryability/EntryAbility.ets
-  └── pages: $profile:main_pages
-```
-
-也就是说：
-
-1. 系统先读取 `module.json5`。
-2. 确认主 Ability 是 `EntryAbility`。
-3. 根据 `srcEntry` 找到 `EntryAbility.ets`。
-4. 根据 `pages` 找到页面路由配置 `main_pages.json`。
-
----
-
-## 8. 页面路由资源解析
-
-### 8.1 `main_pages.json`
-
-路径：
-
-```text
-entry/src/main/resources/base/profile/main_pages.json
-```
-
-内容：
-
-```json
-{
-  "src": [
-    "pages/Index"
-  ]
-}
-```
-
-作用：
-
-该文件声明了模块中可被路由加载的页面。当前只有一个页面：
-
-```text
-pages/Index
-```
-
-它对应的源码文件是：
+原始工程主要是一个文字特效展示 Demo。它的页面入口文件是：
 
 ```text
 entry/src/main/ets/pages/Index.ets
 ```
 
-两者关系：
+原始工程中包含 4 个文字特效组件：
 
 ```text
-main_pages.json
-  └── pages/Index
-        └── entry/src/main/ets/pages/Index.ets
+entry/src/main/ets/view/TextGradientView.ets
+entry/src/main/ets/view/TextScrollingView.ets
+entry/src/main/ets/view/TextReflectionView.ets
+entry/src/main/ets/view/TextMarqueeView.ets
 ```
 
-`EntryAbility.ets` 中也正是通过这个路径加载页面：
-
-```ts
-windowStage.loadContent('pages/Index', ...)
-```
-
-因此 `main_pages.json` 和 `EntryAbility.ets` 的页面路径需要保持一致。
-
----
-
-## 9. ArkTS 源码目录总体结构
-
-源码主目录：
+原来的页面结构大致是：
 
 ```text
-entry/src/main/ets/
-├── constants/
-│   └── Constants.ets
-├── entryability/
-│   └── EntryAbility.ets
-├── pages/
-│   └── Index.ets
-└── view/
-    ├── TextGradientView.ets
-    ├── TextScrollingView.ets
-    ├── TextReflectionView.ets
-    └── TextMarqueeView.ets
+标题：渐变文字
+显示：固定文字内容的渐变特效
+
+标题：滚动文字
+显示：固定文字内容的滚动特效
+
+标题：倒影文字
+显示：固定文字内容的倒影特效
+
+标题：跑马灯文字
+显示：固定长文字内容的跑马灯特效
 ```
 
-这个目录可以分成四层职责：
+也就是说，原工程的主要特点是：
 
-| 目录 | 职责 | 说明 |
-|---|---|---|
-| `constants/` | 常量层 | 存放可复用常量，避免魔法数字和重复字符串。 |
-| `entryability/` | 应用入口层 | 负责 Ability 生命周期和加载首页。 |
-| `pages/` | 页面层 | 负责页面整体布局和组织子组件。 |
-| `view/` | 组件层 | 负责具体文字特效的独立 UI 实现。 |
+1. 页面一次性展示所有文字特效。
+2. 用户不能输入文本。
+3. 用户不能选择只显示某一种特效。
+4. 特效组件显示的文字来自资源文件中的固定字符串。
+5. 页面更接近“效果展示页”，不是“交互处理页”。
 
-整体架构关系：
-
-```text
-EntryAbility.ets
-  ↓ 加载
-Index.ets
-  ↓ 组合
-TextGradientView.ets
-TextScrollingView.ets
-TextReflectionView.ets
-TextMarqueeView.ets
-  ↑ 使用
-Constants.ets
-  ↑ 使用
-resources/base/element/*.json
-```
-
----
-
-## 10. `Constants.ets` 常量文件解析
-
-路径：
-
-```text
-entry/src/main/ets/constants/Constants.ets
-```
-
-作用：
-
-该文件定义了一组项目中复用的常量，避免在多个组件中反复写相同的值。
-
-代码结构：
-
-```ts
-export default class Constants {
-  static readonly FULL_PERCENT: string = '100%';
-  static readonly TEXT_SCROLL_DURATION: number = 5000;
-  static readonly ANGLE_DEGREE: number = 180;
-  static readonly FIFTY_PERCENT: string = '50%';
-  static readonly ANGLE_DEGREE_HORIZONTAL: number = 90;
-  static readonly FONT_WEIGHT_500: number = 500;
-}
-```
-
-常量说明：
-
-| 常量名 | 值 | 用途 |
-|---|---:|---|
-| `FULL_PERCENT` | `'100%'` | 宽度、高度、旋转中心等场景表示 100%。 |
-| `TEXT_SCROLL_DURATION` | `5000` | 歌词滚动动画持续时间，单位通常按毫秒理解。 |
-| `ANGLE_DEGREE` | `180` | 文字倒影中用于上下翻转文本。 |
-| `FIFTY_PERCENT` | `'50%'` | 倒影旋转中心 X 坐标。 |
-| `ANGLE_DEGREE_HORIZONTAL` | `90` | 跑马灯渐变的线性渐变角度。 |
-| `FONT_WEIGHT_500` | `500` | 首页标题字体粗细。 |
-
-被哪些文件使用：
-
-```text
-Constants.ets
-├── Index.ets
-├── TextScrollingView.ets
-├── TextReflectionView.ets
-└── TextMarqueeView.ets
-```
-
-没有使用它的组件：
-
-```text
-TextGradientView.ets
-```
-
-因为文字渐变组件中没有复用这些常量。
-
----
-
-## 11. `EntryAbility.ets` 入口文件解析
-
-路径：
-
-```text
-entry/src/main/ets/entryability/EntryAbility.ets
-```
-
-作用：
-
-`EntryAbility` 是应用的主 Ability。它负责接收系统生命周期回调，并在窗口创建时加载主页面 `pages/Index`。
-
-### 11.1 导入模块
-
-```ts
-import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
-import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
-```
-
-说明：
-
-| 导入内容 | 来源 | 用途 |
-|---|---|---|
-| `UIAbility` | `@kit.AbilityKit` | 定义应用 Ability。 |
-| `AbilityConstant` | `@kit.AbilityKit` | Ability 启动参数相关类型。 |
-| `Want` | `@kit.AbilityKit` | Ability 启动意图对象。 |
-| `hilog` | `@kit.PerformanceAnalysisKit` | 日志输出。 |
-| `window` | `@kit.ArkUI` | 窗口阶段相关类型。 |
-
-### 11.2 生命周期函数
-
-`EntryAbility` 中包含以下生命周期函数：
-
-| 函数 | 触发时机 | 当前作用 |
-|---|---|---|
-| `onCreate()` | Ability 创建时 | 打印日志。 |
-| `onDestroy()` | Ability 销毁时 | 打印日志。 |
-| `onWindowStageCreate()` | 窗口创建时 | 加载主页面。 |
-| `onWindowStageDestroy()` | 窗口销毁时 | 打印日志。 |
-| `onForeground()` | 应用进入前台时 | 打印日志。 |
-| `onBackground()` | 应用进入后台时 | 打印日志。 |
-
-### 11.3 核心代码：加载页面
-
-最关键代码是：
-
-```ts
-windowStage.loadContent('pages/Index', (err) => {
-  if (err.code) {
-    hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-    return;
-  }
-  hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-});
-```
-
-这段代码的作用是：
-
-1. 在应用窗口创建完成后，加载页面 `pages/Index`。
-2. 如果加载失败，输出错误日志。
-3. 如果加载成功，输出成功日志。
-
-该路径对应文件：
-
-```text
-pages/Index
-  ↓
-entry/src/main/ets/pages/Index.ets
-```
-
-因此，如果未来你把 `Index.ets` 移动或改名，必须同步修改：
-
-1. `EntryAbility.ets` 中的 `loadContent('pages/Index')`。
-2. `main_pages.json` 中的页面路径。
-
----
-
-## 12. `Index.ets` 首页文件解析
-
-路径：
-
-```text
-entry/src/main/ets/pages/Index.ets
-```
-
-作用：
-
-`Index.ets` 是整个应用的主页面。它本身不直接实现复杂文字特效，而是：
-
-1. 定义页面导航容器。
-2. 定义每个模块标题样式。
-3. 定义每个特效展示区域样式。
-4. 引入四个文字特效组件并逐个展示。
-
-### 12.1 文件导入关系
-
-```ts
-import Constants from '../constants/Constants';
-import TextGradientView from '../view/TextGradientView';
-import TextMarqueeView from '../view/TextMarqueeView';
-import TextReflectionView from '../view/TextReflectionView';
-import TextScrollingView from '../view/TextScrollingView';
-```
-
-这说明 `Index.ets` 依赖五个文件：
-
-```text
-Index.ets
-├── Constants.ets
-├── TextGradientView.ets
-├── TextMarqueeView.ets
-├── TextReflectionView.ets
-└── TextScrollingView.ets
-```
-
-### 12.2 组件声明
-
-```ts
-@Entry
-@Component
-struct Index {
-  ...
-}
-```
-
-说明：
-
-| 装饰器 | 作用 |
-|---|---|
-| `@Entry` | 表示这是一个页面入口组件。 |
-| `@Component` | 表示这是一个 ArkUI 自定义组件。 |
-
-### 12.3 状态变量
+原来的 `Index.ets` 中存在如下状态变量：
 
 ```ts
 @State message: ResourceStr = $r('app.string.text_content');
@@ -881,37 +67,284 @@ struct Index {
 @State value: number = 0;
 ```
 
-说明：
+其中：
 
-| 变量 | 类型 | 作用 |
+- `message`：普通文字特效使用的固定文本。
+- `messageLong`：跑马灯特效使用的固定长文本。
+- `value`：在原 `Index.ets` 中基本没有承担核心交互作用。
+
+原来的调用方式类似：
+
+```ts
+TextGradientView({ message: this.message })
+TextScrollingView({ message: this.message })
+TextReflectionView({ message: this.message })
+TextMarqueeView({ message: this.messageLong })
+```
+
+这说明原工程是把固定文字传入每个组件，然后分别展示。
+
+---
+
+## 3. 本次升级后新增的功能
+
+本次升级后，页面从“特效展示 Demo”升级为“文字特效处理界面”。
+
+新增功能主要包括以下几个方面。
+
+### 3.1 新增三行式功能界面
+
+页面现在分成三行：
+
+```text
+第一行：文字特效选择
+第二行：输入需要处理的文本
+第三行：文字特效处理结果
+```
+
+这三行分别承担不同职责：
+
+| 行数 | 功能 | 用户是否可交互 | 作用 |
+|---|---|---|---|
+| 第一行 | 文字特效选择 | 是 | 用户选择使用哪一种文字特效 |
+| 第二行 | 文本输入 | 是 | 用户输入需要被处理的文字 |
+| 第三行 | 处理结果展示 | 否 | 根据用户选择的特效和输入文本显示处理后的效果 |
+
+也就是说，升级后用户的操作流程变为：
+
+```text
+选择特效 → 输入文字 → 查看处理结果
+```
+
+---
+
+### 3.2 新增文字特效选择功能
+
+第一行新增了四个按钮：
+
+```text
+渐变
+滚动
+倒影
+跑马灯
+```
+
+每个按钮对应一个文字特效组件：
+
+| 按钮名称 | 对应组件文件 | 显示效果 |
 |---|---|---|
-| `message` | `ResourceStr` | 短文本，传给前三个特效组件。 |
-| `messageLong` | `ResourceStr` | 长文本，传给跑马灯组件。 |
-| `value` | `number` | 当前页面中声明但没有实际使用。 |
+| 渐变 | `TextGradientView.ets` | 渐变文字 |
+| 滚动 | `TextScrollingView.ets` | 扫光 / 滚动文字效果 |
+| 倒影 | `TextReflectionView.ets` | 文字倒影效果 |
+| 跑马灯 | `TextMarqueeView.ets` | 超出区域后的跑马灯滚动效果 |
 
-`message` 的资源来源：
+原工程是同时显示所有效果，本次升级改成了：
+
+> 用户选择一个特效后，第三行只显示当前选择的特效结果。
+
+---
+
+### 3.3 新增用户输入文本功能
+
+第二行新增了 `TextInput` 输入框。
+
+用户可以在输入框中输入任意文本，例如：
 
 ```text
-$r('app.string.text_content')
-  ↓
-resources/base/element/string.json
-resources/zh_CN/element/string.json
-resources/en_US/element/string.json
+Hello HarmonyOS
+文字特效测试
+DevEco Studio
+这是我输入的内容
 ```
 
-`messageLong` 的资源来源：
+输入内容会实时保存到页面状态变量：
+
+```ts
+@State inputText: string = '这是一段文字示例';
+```
+
+当用户输入发生变化时，会触发：
+
+```ts
+.onChange((value: string) => {
+  this.inputText = value;
+})
+```
+
+这段代码的作用是：
 
 ```text
-$r('app.string.text_content_long')
-  ↓
-resources/base/element/string.json
-resources/zh_CN/element/string.json
-resources/en_US/element/string.json
+用户输入框内容变化
+        ↓
+触发 onChange 回调
+        ↓
+把最新输入内容赋值给 this.inputText
+        ↓
+页面状态发生变化
+        ↓
+第三行特效显示内容自动更新
 ```
 
-根据系统语言不同，会选择不同语言目录下的字符串资源。
+---
 
-### 12.4 公共样式 `fancy()`
+### 3.4 新增处理结果实时展示功能
+
+第三行用于展示处理后的文字特效结果。
+
+它不再显示固定资源字符串，而是显示用户在第二行输入的内容。
+
+第三行展示逻辑由 `effectPreview()` 控制：
+
+```ts
+@Builder
+effectPreview() {
+  if (this.selectedEffect === 0) {
+    TextGradientView({ message: this.inputText })
+  } else if (this.selectedEffect === 1) {
+    TextScrollingView({ message: this.inputText })
+  } else if (this.selectedEffect === 2) {
+    TextReflectionView({ message: this.inputText })
+  } else {
+    TextMarqueeView({ message: this.inputText })
+  }
+}
+```
+
+这段代码的核心含义是：
+
+```text
+如果 selectedEffect 是 0 → 显示渐变文字
+如果 selectedEffect 是 1 → 显示滚动文字
+如果 selectedEffect 是 2 → 显示倒影文字
+否则 → 显示跑马灯文字
+```
+
+也就是说，第三行显示什么内容，取决于两个状态：
+
+```text
+selectedEffect：决定使用哪一种特效
+inputText：决定特效处理的文本内容
+```
+
+---
+
+### 3.5 新增按钮选中状态提示
+
+为了让用户知道当前选择的是哪一种特效，按钮增加了选中状态颜色变化。
+
+核心代码：
+
+```ts
+.backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF')
+.fontColor(this.selectedEffect === index ? Color.White : '#333333')
+```
+
+含义是：
+
+```text
+当前按钮 index 等于 selectedEffect
+        ↓
+说明该按钮是当前选中的按钮
+        ↓
+按钮背景变成紫色，文字变成白色
+
+当前按钮 index 不等于 selectedEffect
+        ↓
+说明该按钮不是当前选中的按钮
+        ↓
+按钮背景变成浅灰色，文字变成深灰色
+```
+
+这样用户能直接看出当前正在使用哪个文字特效。
+
+---
+
+## 4. 本次修改的文件清单
+
+本次主要修改了 5 个 ArkTS 文件。
+
+```text
+entry/src/main/ets/pages/Index.ets
+entry/src/main/ets/view/TextGradientView.ets
+entry/src/main/ets/view/TextScrollingView.ets
+entry/src/main/ets/view/TextReflectionView.ets
+entry/src/main/ets/view/TextMarqueeView.ets
+```
+
+其中：
+
+| 文件 | 修改程度 | 主要作用 |
+|---|---|---|
+| `Index.ets` | 修改最多 | 页面结构、状态管理、输入框、按钮选择、结果预览 |
+| `TextGradientView.ets` | 小幅修改 | 支持接收父组件传入的动态文本 |
+| `TextScrollingView.ets` | 小幅修改 | 支持接收父组件传入的动态文本 |
+| `TextReflectionView.ets` | 小幅修改 | 支持接收父组件传入的动态文本 |
+| `TextMarqueeView.ets` | 小幅修改 | 支持接收父组件传入的动态文本 |
+
+---
+
+## 5. `Index.ets` 修改详解
+
+`Index.ets` 是整个页面的入口，也是本次升级的核心文件。
+
+它承担了以下职责：
+
+1. 保存用户输入的文本。
+2. 保存当前选择的文字特效类型。
+3. 绘制三行式页面结构。
+4. 处理按钮点击事件。
+5. 处理输入框内容变化事件。
+6. 根据状态决定第三行显示哪个特效组件。
+
+---
+
+### 5.1 状态变量修改
+
+#### 原来的状态变量
+
+原工程中是：
+
+```ts
+@State message: ResourceStr = $r('app.string.text_content');
+@State messageLong: ResourceStr = $r('app.string.text_content_long');
+@State value: number = 0;
+```
+
+这些变量主要用于展示固定文字，没有用户输入逻辑。
+
+#### 升级后的状态变量
+
+现在改成：
+
+```ts
+@State inputText: string = '这是一段文字示例';
+@State selectedEffect: number = 0;
+```
+
+两个变量的含义如下：
+
+| 状态变量 | 类型 | 默认值 | 作用 |
+|---|---|---|---|
+| `inputText` | `string` | `这是一段文字示例` | 保存用户输入的文本 |
+| `selectedEffect` | `number` | `0` | 保存当前选择的文字特效编号 |
+
+这两个状态变量是本次升级的核心。
+
+页面所有交互都围绕它们展开：
+
+```text
+用户输入内容 → 修改 inputText
+用户点击按钮 → 修改 selectedEffect
+第三行展示结果 → 同时读取 inputText 和 selectedEffect
+```
+
+---
+
+### 5.2 页面样式函数从 `fancy()` 改为 `cardStyle()`
+
+#### 原来的样式函数
+
+原工程中有：
 
 ```ts
 @Styles
@@ -926,339 +359,468 @@ fancy() {
 }
 ```
 
-作用：
+它主要用于给每个特效展示行添加圆角、背景和上下内边距。
 
-该样式用于四个展示卡片区域，统一设置：
+#### 升级后的样式函数
 
-1. 圆角。
-2. 白色背景。
-3. 上下内边距。
-4. 宽度 100%。
+现在改成：
 
-资源引用关系：
-
-```text
-fancy()
-├── $r('app.float.row_border_radius') → float.json
-├── $r('app.float.row_padding') → float.json
-└── Constants.FULL_PERCENT → Constants.ets
+```ts
+@Styles
+cardStyle() {
+  .borderRadius($r('app.float.row_border_radius'))
+  .backgroundColor(Color.White)
+  .padding($r('app.float.row_padding'))
+  .width(Constants.FULL_PERCENT)
+  .margin({ bottom: 16 })
+}
 ```
 
-### 12.5 标题构造器 `textBuilder()`
+相比原来的 `fancy()`，新的 `cardStyle()` 有几个变化：
+
+1. 名字更符合现在的页面结构，因为三行现在更像三个卡片区块。
+2. `padding` 从只设置上下内边距，改成四周统一内边距。
+3. 增加了底部间距 `margin({ bottom: 16 })`，让三行之间有明显分隔。
+4. 仍然保留白色背景、圆角和全宽布局。
+
+---
+
+### 5.3 新增 `sectionTitle()` 标题构建器
+
+新增代码：
 
 ```ts
 @Builder
-textBuilder(value: ResourceStr) {
+sectionTitle(title: string) {
   Row() {
-    Text(value)
-      .fontSize($r("app.float.title_font_size"))
+    Text(title)
+      .fontSize($r('app.float.title_font_size'))
       .fontColor($r('app.color.title_font_color'))
       .fontWeight(Constants.FONT_WEIGHT_500)
-      .margin({ top: $r('app.float.title_margin_bottom') })
-      .lineHeight($r('app.float.title_line_height'))
   }
   .width(Constants.FULL_PERCENT)
-  .height($r('app.float.title_row_height'))
-  .margin({ bottom: $r('app.float.title_row_margin_bottom') })
+  .margin({ bottom: 8 })
 }
 ```
 
-作用：
+这个函数用于统一绘制每一行的标题。
 
-这是一个可复用的标题区域构造函数，用来生成每个特效模块上方的小标题。
-
-被调用四次：
+比如：
 
 ```ts
-this.textBuilder($r('app.string.text_gradient'))
-this.textBuilder($r('app.string.text_scrolling'))
-this.textBuilder($r('app.string.text_reflection'))
-this.textBuilder($r('app.string.text_marquee'))
+this.sectionTitle('第一行：文字特效选择')
+this.sectionTitle('第二行：输入需要处理的文本')
+this.sectionTitle('第三行：文字特效处理结果')
 ```
 
-资源关系：
+这样做的好处是：
 
-```text
-textBuilder()
-├── 文本内容 → string.json
-├── 字体大小 → float.json
-├── 字体颜色 → color.json
-├── 字体粗细 → Constants.ets
-├── 行高 → float.json
-└── 标题区域尺寸 → float.json
-```
+1. 避免每一行重复写标题样式。
+2. 如果以后想修改标题颜色、大小或间距，只需要改 `sectionTitle()` 一处。
+3. 页面结构更清晰。
 
-### 12.6 页面布局 `build()`
+---
 
-`Index.ets` 的主布局结构如下：
+### 5.4 新增 `effectButton()` 特效按钮构建器
 
-```text
-Navigation
-└── Column
-    ├── 标题：文字渐变效果
-    ├── Row 卡片
-    │   └── TextGradientView
-    ├── 标题：歌词滚动效果
-    ├── Row 卡片
-    │   └── TextScrollingView
-    ├── 标题：文字倒影效果
-    ├── Row 卡片
-    │   └── TextReflectionView
-    ├── 标题：跑马灯渐变效果
-    └── Row 卡片
-        └── TextMarqueeView
-```
-
-页面中四个组件的调用方式：
+新增代码：
 
 ```ts
-TextGradientView({ message: this.message })
-TextScrollingView({ message: this.message })
-TextReflectionView({ message: this.message })
-TextMarqueeView({ message: this.messageLong })
-```
-
-这说明：
-
-1. 前三个组件使用短文本。
-2. 跑马灯组件使用长文本，因为跑马灯必须有足够长的内容才能看到滚动效果。
-
-### 12.7 Navigation 配置
-
-```ts
-Navigation() {
-  ...
+@Builder
+effectButton(title: string, index: number) {
+  Button(title)
+    .fontSize(14)
+    .fontWeight(FontWeight.Medium)
+    .backgroundColor(this.selectedEffect === index ? '#623AA2' : '#E9ECEF')
+    .fontColor(this.selectedEffect === index ? Color.White : '#333333')
+    .borderRadius(18)
+    .height(36)
+    .padding({ left: 14, right: 14 })
+    .onClick(() => {
+      this.selectedEffect = index;
+    })
 }
-.height(Constants.FULL_PERCENT)
-.width(Constants.FULL_PERCENT)
-.title($r('app.string.title'))
-.backgroundColor($r('app.color.page_background_color'))
-.mode(NavigationMode.Stack)
 ```
 
-说明：
+这个构建器用于创建特效选择按钮。
 
-| 属性 | 作用 |
-|---|---|
-| `height('100%')` | 页面高度占满屏幕。 |
-| `width('100%')` | 页面宽度占满屏幕。 |
-| `title()` | 顶部标题，来自字符串资源。 |
-| `backgroundColor()` | 页面背景色，来自颜色资源。 |
-| `mode(NavigationMode.Stack)` | 使用栈式导航模式。 |
+它有两个参数：
+
+| 参数 | 类型 | 作用 |
+|---|---|---|
+| `title` | `string` | 按钮上显示的文字 |
+| `index` | `number` | 按钮对应的特效编号 |
+
+当前使用方式是：
+
+```ts
+this.effectButton('渐变', 0)
+this.effectButton('滚动', 1)
+this.effectButton('倒影', 2)
+this.effectButton('跑马灯', 3)
+```
+
+按钮和特效编号的对应关系如下：
+
+```text
+0 → 渐变
+1 → 滚动
+2 → 倒影
+3 → 跑马灯
+```
+
+当用户点击按钮时，会执行：
+
+```ts
+this.selectedEffect = index;
+```
+
+例如用户点击“倒影”按钮：
+
+```text
+倒影按钮的 index 是 2
+        ↓
+点击按钮
+        ↓
+this.selectedEffect = 2
+        ↓
+页面重新渲染
+        ↓
+effectPreview() 判断 selectedEffect === 2
+        ↓
+第三行显示 TextReflectionView
+```
 
 ---
 
-## 13. 四个文字特效组件详细解析
+### 5.5 新增 `effectPreview()` 结果预览构建器
+
+新增代码：
+
+```ts
+@Builder
+effectPreview() {
+  if (this.selectedEffect === 0) {
+    TextGradientView({ message: this.inputText })
+  } else if (this.selectedEffect === 1) {
+    TextScrollingView({ message: this.inputText })
+  } else if (this.selectedEffect === 2) {
+    TextReflectionView({ message: this.inputText })
+  } else {
+    TextMarqueeView({ message: this.inputText })
+  }
+}
+```
+
+这是第三行结果显示的核心逻辑。
+
+它会根据 `selectedEffect` 的值动态选择组件。
+
+详细逻辑如下：
+
+| `selectedEffect` 值 | 调用组件 | 传入文本 |
+|---|---|---|
+| `0` | `TextGradientView` | `this.inputText` |
+| `1` | `TextScrollingView` | `this.inputText` |
+| `2` | `TextReflectionView` | `this.inputText` |
+| 其他值 | `TextMarqueeView` | `this.inputText` |
+
+注意：无论用户选择哪一个特效，传入的文本都是：
+
+```ts
+this.inputText
+```
+
+这就保证了：
+
+```text
+第二行输入什么
+第三行就用什么内容做文字特效
+```
 
 ---
 
-### 13.1 `TextGradientView.ets`：文字渐变效果
+### 5.6 第一行：文字特效选择区域
 
-路径：
+升级后的第一行代码：
+
+```ts
+Column() {
+  this.sectionTitle('第一行：文字特效选择')
+  Row({ space: 8 }) {
+    this.effectButton('渐变', 0)
+    this.effectButton('滚动', 1)
+    this.effectButton('倒影', 2)
+    this.effectButton('跑马灯', 3)
+  }
+  .width(Constants.FULL_PERCENT)
+  .justifyContent(FlexAlign.Start)
+}
+.cardStyle()
+```
+
+结构解释：
+
+```text
+Column
+ ├─ sectionTitle：显示“第一行：文字特效选择”
+ └─ Row
+     ├─ 渐变按钮
+     ├─ 滚动按钮
+     ├─ 倒影按钮
+     └─ 跑马灯按钮
+```
+
+这里使用 `Row({ space: 8 })` 让按钮之间保持 8 的间距。
+
+`.cardStyle()` 给整个第一行加上卡片样式。
+
+---
+
+### 5.7 第二行：文本输入区域
+
+升级后的第二行代码：
+
+```ts
+Column() {
+  this.sectionTitle('第二行：输入需要处理的文本')
+  TextInput({ placeholder: '请输入文字内容', text: this.inputText })
+    .width(Constants.FULL_PERCENT)
+    .height(48)
+    .fontSize(16)
+    .backgroundColor('#F8F9FA')
+    .borderRadius(12)
+    .padding({ left: 12, right: 12 })
+    .onChange((value: string) => {
+      this.inputText = value;
+    })
+}
+.cardStyle()
+```
+
+结构解释：
+
+```text
+Column
+ ├─ sectionTitle：显示“第二行：输入需要处理的文本”
+ └─ TextInput：用户输入框
+```
+
+关键点是：
+
+```ts
+TextInput({ placeholder: '请输入文字内容', text: this.inputText })
+```
+
+这表示输入框初始显示 `this.inputText` 的值。
+
+当用户修改输入内容时：
+
+```ts
+.onChange((value: string) => {
+  this.inputText = value;
+})
+```
+
+`value` 就是输入框里的最新内容。
+
+例如：
+
+```text
+用户输入：HarmonyOS文字特效
+        ↓
+onChange 获取 value = 'HarmonyOS文字特效'
+        ↓
+this.inputText = 'HarmonyOS文字特效'
+        ↓
+第三行自动使用新文本重新显示特效
+```
+
+---
+
+### 5.8 第三行：文字特效处理结果区域
+
+升级后的第三行代码：
+
+```ts
+Column() {
+  this.sectionTitle('第三行：文字特效处理结果')
+  Row() {
+    this.effectPreview()
+  }
+  .width(Constants.FULL_PERCENT)
+  .minHeight(96)
+  .justifyContent(FlexAlign.Center)
+  .alignItems(VerticalAlign.Center)
+  .backgroundColor('#F8F9FA')
+  .borderRadius(12)
+  .padding(12)
+}
+.cardStyle()
+```
+
+结构解释：
+
+```text
+Column
+ ├─ sectionTitle：显示“第三行：文字特效处理结果”
+ └─ Row
+     └─ effectPreview：根据当前选择显示对应特效组件
+```
+
+这里的 `Row` 设置了：
+
+```ts
+.justifyContent(FlexAlign.Center)
+.alignItems(VerticalAlign.Center)
+```
+
+作用是让处理结果在结果区域中居中显示。
+
+---
+
+## 6. 四个文字特效组件修改详解
+
+本次对四个特效组件的修改非常小，但非常关键。
+
+修改前，组件内部是：
+
+```ts
+@State message: ResourceStr = '';
+```
+
+修改后，变成：
+
+```ts
+@Prop message: ResourceStr = '';
+```
+
+这个变化是本次“用户输入内容能够传给特效组件”的关键。
+
+---
+
+### 6.1 为什么要把 `@State` 改成 `@Prop`
+
+在 ArkUI 中，可以简单理解为：
+
+| 装饰器 | 主要含义 | 适合场景 |
+|---|---|---|
+| `@State` | 组件自己的内部状态 | 组件自己管理、自己修改的数据 |
+| `@Prop` | 父组件传给子组件的数据 | 子组件接收外部传入内容并显示 |
+
+原来的写法：
+
+```ts
+@State message: ResourceStr = '';
+```
+
+表示 `message` 更像是组件自己的内部状态。
+
+升级后的写法：
+
+```ts
+@Prop message: ResourceStr = '';
+```
+
+表示 `message` 是父组件传入的属性。
+
+现在 `Index.ets` 作为父组件，会这样传值：
+
+```ts
+TextGradientView({ message: this.inputText })
+```
+
+子组件中使用：
+
+```ts
+Text(this.message)
+```
+
+完整数据流是：
+
+```text
+Index.ets 中的 inputText
+        ↓
+通过 message 属性传给 TextGradientView / TextScrollingView / TextReflectionView / TextMarqueeView
+        ↓
+子组件内部用 Text(this.message) 显示文字
+        ↓
+文字被对应特效样式处理后显示出来
+```
+
+---
+
+### 6.2 `TextGradientView.ets` 修改说明
+
+文件路径：
 
 ```text
 entry/src/main/ets/view/TextGradientView.ets
 ```
 
-作用：
-
-实现“文字颜色渐变”效果。
-
-核心代码：
+修改点：
 
 ```ts
-@Component
-export default struct TextGradientView {
-  @State message: ResourceStr = '';
-
-  build() {
-    Row() {
-      Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
-    }
-    .linearGradient({
-      direction: GradientDirection.Right,
-      colors: [[$r('app.color.gradient_start_color'), 0.0], [$r('app.color.gradient_end_color'), 1]]
-    })
-    .blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN)
-  }
-}
+@Prop message: ResourceStr = '';
 ```
 
-#### 13.1.1 输入数据
-
-该组件接收一个状态变量：
+它的核心显示代码：
 
 ```ts
-@State message: ResourceStr = '';
-```
-
-它由首页传入：
-
-```ts
-TextGradientView({ message: this.message })
-```
-
-数据流如下：
-
-```text
-string.json 中的 text_content
-  ↓
-Index.ets 的 message
-  ↓
-TextGradientView 的 message
-  ↓
 Text(this.message)
+  .fontSize($r('app.float.content_font_size'))
+  .fontWeight(FontWeight.Bold)
+  .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
 ```
 
-#### 13.1.2 实现原理
+外层通过：
 
-文字渐变的核心思路是：
+```ts
+.linearGradient({
+  direction: GradientDirection.Right,
+  colors: [[$r('app.color.gradient_start_color'), 0.0], [$r('app.color.gradient_end_color'), 1]]
+})
+```
+
+实现渐变文字效果。
+
+升级后的作用是：
 
 ```text
-先给 Row 设置渐变背景
-        ↓
-再用 Text 的形状作为遮罩
-        ↓
-最终只在文字区域显示渐变颜色
+用户输入的文字 → 传入 TextGradientView → 使用渐变效果显示
 ```
-
-关键属性：
-
-| 属性 | 作用 |
-|---|---|
-| `linearGradient` | 给 Row 设置从左到右的渐变。 |
-| `blendMode(BlendMode.DST_IN)` | 让文本区域作为遮罩，使渐变只显示在文字轮廓内。 |
-| `BlendApplyType.OFFSCREEN` | 使用离屏混合，避免混合影响外部组件。 |
-
-渐变颜色来源：
-
-```text
-$r('app.color.gradient_start_color') → #F97794
-$r('app.color.gradient_end_color') → #623AA2
-```
-
-#### 13.1.3 与其他文件的关系
-
-```text
-TextGradientView.ets
-├── 被 Index.ets 导入和调用
-├── 使用 float.json 中 content_font_size
-└── 使用 color.json 中 gradient_start_color / gradient_end_color
-```
-
-它没有依赖 `Constants.ets`。
 
 ---
 
-### 13.2 `TextScrollingView.ets`：歌词滚动效果
+### 6.3 `TextScrollingView.ets` 修改说明
 
-路径：
+文件路径：
 
 ```text
 entry/src/main/ets/view/TextScrollingView.ets
 ```
 
-作用：
-
-实现类似“KTV 歌词逐渐变色”的滚动高亮效果。
-
-核心代码：
+修改点：
 
 ```ts
-@Component
-export default struct TextScrollingView {
-  @State message: ResourceStr = '';
-  @State value: number = 0;
-
-  build() {
-    Row() {
-      Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
-        .fontColor(Color.Black)
-        .fontWeight(FontWeight.Bold)
-        .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
-    }
-    .linearGradient({
-      direction: GradientDirection.Right,
-      colors: [[Color.Red, 0.0], [Color.Red, this.value], [Color.Black, this.value], [Color.Black, 1.0]]
-    })
-    .blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN)
-    .backgroundImageSize({
-      width: 0,
-      height: 0
-    })
-    .onAppear(() => {
-      this.getUIContext().animateTo({
-        duration: Constants.TEXT_SCROLL_DURATION,
-        finishCallbackType: FinishCallbackType.LOGICALLY,
-        curve: Curve.Linear,
-        iterations: -1,
-        onFinish: () => {
-          this.value = 0
-        }
-      }, () => {
-        this.value = 1
-      });
-    })
-  }
-}
+@Prop message: ResourceStr = '';
 ```
 
-#### 13.2.1 输入数据
-
-```ts
-@State message: ResourceStr = '';
-```
-
-由首页传入：
-
-```ts
-TextScrollingView({ message: this.message })
-```
-
-#### 13.2.2 动画状态变量
+它仍然保留自己的动画状态：
 
 ```ts
 @State value: number = 0;
 ```
 
-`value` 是歌词滚动的关键变量。
+这里的 `value` 是滚动 / 扫光动画使用的内部状态，不需要父组件传入，所以仍然保留 `@State`。
 
-它在渐变中被使用：
-
-```ts
-colors: [[Color.Red, 0.0], [Color.Red, this.value], [Color.Black, this.value], [Color.Black, 1.0]]
-```
-
-当 `value = 0` 时：
-
-```text
-红色区域几乎没有，文字主要是黑色。
-```
-
-当 `value = 0.5` 时：
-
-```text
-左半部分红色，右半部分黑色。
-```
-
-当 `value = 1` 时：
-
-```text
-红色覆盖全部文字。
-```
-
-#### 13.2.3 动画逻辑
-
-在组件出现时触发：
+核心动画逻辑：
 
 ```ts
 .onAppear(() => {
   this.getUIContext().animateTo({
     duration: Constants.TEXT_SCROLL_DURATION,
+    finishCallbackType: FinishCallbackType.LOGICALLY,
     curve: Curve.Linear,
     iterations: -1,
     onFinish: () => {
@@ -1270,1304 +832,599 @@ colors: [[Color.Red, 0.0], [Color.Red, this.value], [Color.Black, this.value], [
 })
 ```
 
-含义：
-
-1. 组件出现后执行动画。
-2. 动画时间为 `Constants.TEXT_SCROLL_DURATION`，即 5000ms。
-3. 动画曲线为线性 `Curve.Linear`。
-4. `iterations: -1` 表示无限循环。
-5. 动画目标是把 `value` 从 `0` 变成 `1`。
-6. 每次动画结束后，把 `value` 重置为 `0`。
-
-动画流程：
+含义是：
 
 ```text
-value = 0
-  ↓ animateTo 5秒
-value 逐渐变为 1
-  ↓ onFinish
-value = 0
-  ↓ 下一轮动画
-无限循环
+组件出现
+        ↓
+启动动画
+        ↓
+value 从 0 变化到 1
+        ↓
+linearGradient 根据 value 改变颜色分界位置
+        ↓
+形成文字扫光 / 滚动效果
+        ↓
+iterations: -1 表示循环播放
 ```
 
-#### 13.2.4 实现原理
-
-歌词滚动效果可以理解为：
+升级后的作用是：
 
 ```text
-文本形状作为遮罩
-        ↓
-底层是红黑分界的线性渐变
-        ↓
-动画不断移动红黑分界线
-        ↓
-形成文字逐渐变红的效果
-```
-
-这里并不是文字本身移动，而是“颜色边界”在移动。
-
-#### 13.2.5 与其他文件的关系
-
-```text
-TextScrollingView.ets
-├── 被 Index.ets 导入和调用
-├── 引入 Constants.ets
-│   └── 使用 TEXT_SCROLL_DURATION
-└── 使用 float.json 中 content_font_size
+用户输入的文字 → 传入 TextScrollingView → 使用滚动扫光效果显示
 ```
 
 ---
 
-### 13.3 `TextReflectionView.ets`：文字倒影效果
+### 6.4 `TextReflectionView.ets` 修改说明
 
-路径：
+文件路径：
 
 ```text
 entry/src/main/ets/view/TextReflectionView.ets
 ```
 
-作用：
-
-实现文字本体加下方倒影的效果。
-
-核心代码：
+修改点：
 
 ```ts
-@Component
-export default struct TextRefectionView {
-  @State message: ResourceStr = '';
+@Prop message: ResourceStr = '';
+```
 
-  build() {
-    Stack() {
-      Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
-        .fontColor(Color.Red)
-        .fontWeight(FontWeight.Bold)
-      Text(this.message)
-        .fontSize($r('app.float.content_font_size'))
-        .fontColor(Color.Red)
-        .fontWeight(FontWeight.Bold)
-        .rotate({
-          x: 1,
-          y: 0,
-          z: 0,
-          angle: Constants.ANGLE_DEGREE,
-          centerX: Constants.FIFTY_PERCENT,
-          centerY: Constants.FULL_PERCENT
-        })
-        .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
-    }
-    .linearGradient({
-      direction: GradientDirection.Bottom,
-      colors: [[Color.Transparent, 0], [Color.Transparent, 0.50],
-        [Color.Red, 0.50], [$r('app.color.text_reflection_color'), 1]]
-    })
-    .height($r('app.float.text_refection_height'))
-    .alignContent(Alignment.Top)
-    .blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN)
-  }
+它的核心结构是：
+
+```ts
+Stack() {
+  Text(this.message)
+  Text(this.message)
+    .rotate({...})
+    .blendMode(BlendMode.DST_IN, BlendApplyType.OFFSCREEN)
 }
 ```
 
-#### 13.3.1 输入数据
+这里使用了两个相同的 `Text(this.message)`：
 
-```ts
-@State message: ResourceStr = '';
-```
+1. 第一个显示正常文字。
+2. 第二个进行旋转和渐变遮罩，形成倒影。
 
-由首页传入：
-
-```ts
-TextReflectionView({ message: this.message })
-```
-
-#### 13.3.2 结构设计
-
-组件使用 `Stack()`：
+升级后的作用是：
 
 ```text
-Stack
-├── Text：原始文字
-└── Text：旋转后的倒影文字
-```
-
-`Stack` 的特点是子组件叠放，而不是像 `Column` 或 `Row` 那样线性排列。因此它适合做图层叠加。
-
-#### 13.3.3 倒影生成原理
-
-第二个 `Text` 通过 `rotate()` 旋转：
-
-```ts
-.rotate({
-  x: 1,
-  y: 0,
-  z: 0,
-  angle: Constants.ANGLE_DEGREE,
-  centerX: Constants.FIFTY_PERCENT,
-  centerY: Constants.FULL_PERCENT
-})
-```
-
-含义：
-
-| 参数 | 值 | 说明 |
-|---|---:|---|
-| `x` | 1 | 绕 X 轴旋转。 |
-| `y` | 0 | 不绕 Y 轴旋转。 |
-| `z` | 0 | 不绕 Z 轴旋转。 |
-| `angle` | 180 | 旋转 180 度。 |
-| `centerX` | 50% | 旋转中心在水平中点。 |
-| `centerY` | 100% | 旋转中心在文字底部。 |
-
-这会让第二个文本上下翻转，形成倒影。
-
-#### 13.3.4 渐隐效果
-
-倒影不是直接显示完整红色文字，而是结合线性渐变：
-
-```ts
-.linearGradient({
-  direction: GradientDirection.Bottom,
-  colors: [[Color.Transparent, 0], [Color.Transparent, 0.50],
-    [Color.Red, 0.50], [$r('app.color.text_reflection_color'), 1]]
-})
-```
-
-意思是：
-
-1. 上半部分透明，避免影响原始文字区域。
-2. 从 50% 位置开始出现红色。
-3. 越往下越接近透明色，形成倒影逐渐消失的效果。
-
-`text_reflection_color` 定义为：
-
-```json
-{
-  "name": "text_reflection_color",
-  "value": "#00F3C8C8"
-}
-```
-
-其中 `#00` 表示透明度为 0，因此这是一个透明色。
-
-#### 13.3.5 需要注意的命名问题
-
-文件名是：
-
-```text
-TextReflectionView.ets
-```
-
-但组件导出名是：
-
-```ts
-export default struct TextRefectionView
-```
-
-这里 `Refection` 少了一个 `l`，正确拼写应为 `Reflection`。
-
-由于它是 `export default`，外部导入时可以命名为：
-
-```ts
-import TextReflectionView from '../view/TextReflectionView';
-```
-
-所以目前不影响运行。但是从代码规范角度，建议改为：
-
-```ts
-export default struct TextReflectionView
-```
-
-同时还存在资源名拼写：
-
-```text
-text_refection_height
-```
-
-也少了一个 `l`，建议改成：
-
-```text
-text_reflection_height
-```
-
-不过如果修改资源名，代码中对应引用也要同步修改。
-
-#### 13.3.6 与其他文件的关系
-
-```text
-TextReflectionView.ets
-├── 被 Index.ets 导入和调用
-├── 引入 Constants.ets
-│   ├── ANGLE_DEGREE
-│   ├── FIFTY_PERCENT
-│   └── FULL_PERCENT
-├── 使用 float.json 中 content_font_size
-├── 使用 float.json 中 text_refection_height
-└── 使用 color.json 中 text_reflection_color
+用户输入的文字 → 传入 TextReflectionView → 同时生成正常文字和倒影文字
 ```
 
 ---
 
-### 13.4 `TextMarqueeView.ets`：跑马灯渐变效果
+### 6.5 `TextMarqueeView.ets` 修改说明
 
-路径：
+文件路径：
 
 ```text
 entry/src/main/ets/view/TextMarqueeView.ets
 ```
 
-作用：
-
-实现长文本的跑马灯滚动，并在左右两侧添加透明渐隐效果。
-
-核心代码：
+修改点：
 
 ```ts
-import Constants from '../constants/Constants';
-
-@Component
-export default struct TextGradientView {
-  @State message: ResourceStr = '';
-
-  build() {
-    Row() {
-      Column() {
-        Text(this.message)
-          .width($r('app.string.ninety_percent'))
-          .fontColor(Color.Black)
-          .fontSize($r('app.float.content_font_size'))
-          .fontWeight(FontWeight.Bold)
-          .textOverflow({ overflow: TextOverflow.MARQUEE })
-      }
-      .blendMode(BlendMode.SRC_IN, BlendApplyType.OFFSCREEN)
-      .backgroundColor(Color.Transparent)
-      .width(Constants.FULL_PERCENT)
-    }
-    .width(Constants.FULL_PERCENT)
-    .linearGradient({
-      angle: Constants.ANGLE_DEGREE_HORIZONTAL,
-      colors: [[Color.Transparent, 0], [Color.Black, 0.2],
-        [Color.Black, 0.8], [Color.Transparent, 1]]
-    })
-    .blendMode(BlendMode.SRC_OVER, BlendApplyType.OFFSCREEN)
-  }
-}
+@Prop message: ResourceStr = '';
 ```
 
-#### 13.4.1 输入数据
-
-该组件接收长文本：
-
-```ts
-TextMarqueeView({ message: this.messageLong })
-```
-
-`messageLong` 来自资源：
-
-```text
-$r('app.string.text_content_long')
-```
-
-中文资源为：
-
-```text
-这是一段文字示例 这是一段文字示例 这是一段文字示例
-```
-
-英文资源为：
-
-```text
-This is a text example. This is a text example. This is a text example.
-```
-
-#### 13.4.2 跑马灯核心属性
+它的核心跑马灯设置是：
 
 ```ts
 .textOverflow({ overflow: TextOverflow.MARQUEE })
 ```
 
-作用：
-
-当文字内容超过可显示区域时，以跑马灯方式滚动展示。
-
-为了让超出效果出现，文本宽度设置为：
-
-```ts
-.width($r('app.string.ninety_percent'))
-```
-
-其中 `ninety_percent` 的值是：
+含义是：
 
 ```text
-90%
+当文字内容超过显示区域时
+        ↓
+使用 MARQUEE 方式滚动显示
 ```
 
-#### 13.4.3 左右渐隐效果
+升级后的作用是：
 
-外层 Row 使用线性渐变：
+```text
+用户输入较长文本 → 传入 TextMarqueeView → 超出区域后以跑马灯方式显示
+```
+
+---
+
+## 7. 新旧工程对比总结
+
+### 7.1 功能层面对比
+
+| 对比项 | 原工程 | 升级后工程 |
+|---|---|---|
+| 页面定位 | 文字特效展示 Demo | 文字特效处理工具 |
+| 用户输入 | 不支持 | 支持 |
+| 特效选择 | 不支持，全部同时显示 | 支持，通过按钮选择 |
+| 结果展示 | 固定文本分别展示 | 根据输入文本和选择特效动态展示 |
+| 页面结构 | 多个特效展示区 | 三行式交互区 |
+| 状态管理 | 固定资源字符串 | `inputText` + `selectedEffect` |
+| 组件通信 | 父组件传固定资源字符串 | 父组件传用户输入字符串 |
+| 可扩展性 | 增加新特效需要直接添加展示区 | 增加新按钮和判断分支即可 |
+
+---
+
+### 7.2 代码层面对比
+
+| 修改位置 | 原来 | 现在 |
+|---|---|---|
+| `Index.ets` 状态 | `message`、`messageLong` | `inputText`、`selectedEffect` |
+| `Index.ets` 页面 | 四个特效全部展示 | 三行式布局，只展示选中特效 |
+| 特效组件参数 | `@State message` | `@Prop message` |
+| 输入框 | 无 | 新增 `TextInput` |
+| 按钮选择 | 无 | 新增 `effectButton()` |
+| 动态预览 | 无 | 新增 `effectPreview()` |
+
+---
+
+## 8. 完整代码关联关系
+
+本工程本次升级后的核心代码关联关系如下：
+
+```text
+Index.ets
+│
+├── 保存状态
+│   ├── inputText：用户输入的文本
+│   └── selectedEffect：当前选择的特效编号
+│
+├── 第一行：文字特效选择
+│   └── effectButton(title, index)
+│       └── 点击后修改 selectedEffect
+│
+├── 第二行：文本输入
+│   └── TextInput
+│       └── onChange 修改 inputText
+│
+└── 第三行：特效结果展示
+    └── effectPreview()
+        ├── selectedEffect === 0 → TextGradientView({ message: inputText })
+        ├── selectedEffect === 1 → TextScrollingView({ message: inputText })
+        ├── selectedEffect === 2 → TextReflectionView({ message: inputText })
+        └── selectedEffect 其他值 → TextMarqueeView({ message: inputText })
+```
+
+四个子组件内部统一通过：
 
 ```ts
-.linearGradient({
-  angle: Constants.ANGLE_DEGREE_HORIZONTAL,
-  colors: [[Color.Transparent, 0], [Color.Black, 0.2],
-    [Color.Black, 0.8], [Color.Transparent, 1]]
+@Prop message: ResourceStr = '';
+```
+
+接收父组件传入的数据。
+
+然后通过：
+
+```ts
+Text(this.message)
+```
+
+将文本显示出来，并叠加各自的特效样式。
+
+---
+
+## 9. 运行流程详细说明
+
+下面以用户操作为例，说明升级后页面的完整运行流程。
+
+### 9.1 页面初次打开
+
+页面打开时：
+
+```ts
+@State inputText: string = '这是一段文字示例';
+@State selectedEffect: number = 0;
+```
+
+因此默认状态是：
+
+```text
+输入框默认文字：这是一段文字示例
+默认选择特效：渐变
+第三行默认显示：这是一段文字示例 的渐变效果
+```
+
+---
+
+### 9.2 用户输入文字
+
+假设用户输入：
+
+```text
+欢迎使用文字特效工具
+```
+
+触发流程：
+
+```text
+用户在 TextInput 中输入内容
+        ↓
+TextInput 的 onChange 被触发
+        ↓
+value = '欢迎使用文字特效工具'
+        ↓
+this.inputText = value
+        ↓
+inputText 状态更新
+        ↓
+页面重新渲染
+        ↓
+effectPreview() 重新执行
+        ↓
+当前选中的特效组件收到新的 message
+        ↓
+第三行显示新文字的特效结果
+```
+
+---
+
+### 9.3 用户切换特效
+
+假设用户点击“倒影”按钮。
+
+触发流程：
+
+```text
+用户点击“倒影”按钮
+        ↓
+effectButton('倒影', 2) 的 onClick 被触发
+        ↓
+this.selectedEffect = 2
+        ↓
+selectedEffect 状态更新
+        ↓
+页面重新渲染
+        ↓
+effectPreview() 判断 selectedEffect === 2
+        ↓
+调用 TextReflectionView({ message: this.inputText })
+        ↓
+第三行显示当前输入文字的倒影效果
+```
+
+---
+
+### 9.4 用户同时修改输入和特效
+
+如果用户先输入文字，再切换特效，流程是：
+
+```text
+输入文字改变 inputText
+        ↓
+点击按钮改变 selectedEffect
+        ↓
+effectPreview() 同时读取 inputText 和 selectedEffect
+        ↓
+显示最新文字 + 最新特效
+```
+
+因此，页面最终结果始终由下面两个变量决定：
+
+```text
+最终显示结果 = 当前输入文本 inputText + 当前选中特效 selectedEffect
+```
+
+---
+
+## 10. 关键代码片段说明
+
+### 10.1 状态定义
+
+```ts
+@State inputText: string = '这是一段文字示例';
+@State selectedEffect: number = 0;
+```
+
+作用：
+
+```text
+inputText 控制显示什么文字
+selectedEffect 控制使用什么特效
+```
+
+---
+
+### 10.2 输入框更新状态
+
+```ts
+TextInput({ placeholder: '请输入文字内容', text: this.inputText })
+  .onChange((value: string) => {
+    this.inputText = value;
+  })
+```
+
+作用：
+
+```text
+把用户输入内容实时写入 inputText
+```
+
+---
+
+### 10.3 按钮更新状态
+
+```ts
+.onClick(() => {
+  this.selectedEffect = index;
 })
 ```
 
-含义：
+作用：
 
 ```text
-最左侧透明
-  ↓
-中间黑色不透明
-  ↓
-最右侧透明
-```
-
-再结合：
-
-```ts
-.blendMode(BlendMode.SRC_IN, BlendApplyType.OFFSCREEN)
-```
-
-使文字内容在左右边缘逐渐淡出。
-
-#### 13.4.4 需要注意的命名问题
-
-文件名是：
-
-```text
-TextMarqueeView.ets
-```
-
-但组件导出名写成了：
-
-```ts
-export default struct TextGradientView
-```
-
-这与 `TextGradientView.ets` 里的组件名重复。从运行角度看，因为是默认导出，`Index.ets` 中导入时命名为 `TextMarqueeView`，通常仍然可以工作：
-
-```ts
-import TextMarqueeView from '../view/TextMarqueeView';
-```
-
-但从可读性和维护性来说，建议改为：
-
-```ts
-export default struct TextMarqueeView
-```
-
-否则后续调试时容易混淆。
-
-#### 13.4.5 与其他文件的关系
-
-```text
-TextMarqueeView.ets
-├── 被 Index.ets 导入和调用
-├── 引入 Constants.ets
-│   ├── FULL_PERCENT
-│   └── ANGLE_DEGREE_HORIZONTAL
-├── 使用 string.json 中 ninety_percent
-└── 使用 float.json 中 content_font_size
+用户点击哪个按钮，就把 selectedEffect 改成对应编号
 ```
 
 ---
 
-## 14. 资源文件结构详细解析
-
-资源目录：
-
-```text
-entry/src/main/resources/
-├── base/
-│   ├── element/
-│   │   ├── color.json
-│   │   ├── float.json
-│   │   └── string.json
-│   ├── media/
-│   │   ├── background.png
-│   │   ├── foreground.png
-│   │   ├── layered_image.json
-│   │   └── startIcon.png
-│   └── profile/
-│       └── main_pages.json
-├── en_US/
-│   └── element/
-│       └── string.json
-└── zh_CN/
-    └── element/
-        └── string.json
-```
-
-HarmonyOS 中，资源通常通过 `$r()` 引用。例如：
+### 10.4 根据状态切换组件
 
 ```ts
-$r('app.string.title')
-$r('app.float.content_font_size')
-$r('app.color.page_background_color')
-```
-
----
-
-### 14.1 `color.json`
-
-路径：
-
-```text
-entry/src/main/resources/base/element/color.json
-```
-
-定义项目颜色资源。
-
-| 资源名 | 值 | 使用位置 | 说明 |
-|---|---|---|---|
-| `start_window_background` | `#FFFFFF` | `module.json5` | 启动窗口背景色。 |
-| `title_font_color` | `#99000000` | `Index.ets` | 每个模块标题颜色，半透明黑。 |
-| `gradient_start_color` | `#F97794` | `TextGradientView.ets` | 文字渐变起始颜色。 |
-| `gradient_end_color` | `#623AA2` | `TextGradientView.ets` | 文字渐变结束颜色。 |
-| `text_reflection_color` | `#00F3C8C8` | `TextReflectionView.ets` | 倒影底部透明色。 |
-| `page_background_color` | `#F1F3F5` | `Index.ets` | 页面背景色。 |
-
-颜色资源引用关系：
-
-```text
-color.json
-├── module.json5
-│   └── start_window_background
-├── Index.ets
-│   ├── title_font_color
-│   └── page_background_color
-├── TextGradientView.ets
-│   ├── gradient_start_color
-│   └── gradient_end_color
-└── TextReflectionView.ets
-    └── text_reflection_color
-```
-
----
-
-### 14.2 `float.json`
-
-路径：
-
-```text
-entry/src/main/resources/base/element/float.json
-```
-
-定义尺寸、字体大小、间距等资源。
-
-| 资源名 | 值 | 使用位置 | 说明 |
-|---|---:|---|---|
-| `title_font_size` | `18fp` | `Index.ets` | 模块标题字体大小。 |
-| `title_margin_bottom` | `18vp` | `Index.ets` | 标题顶部 margin。 |
-| `content_font_size` | `30fp` | 四个 view 组件 | 特效文字字体大小。 |
-| `text_refection_height` | `74vp` | `TextReflectionView.ets` | 倒影组件高度。 |
-| `row_border_radius` | `16vp` | `Index.ets` | 白色卡片圆角。 |
-| `row_padding` | `14vp` | `Index.ets` | 白色卡片上下内边距。 |
-| `title_line_height` | `22fp` | `Index.ets` | 标题行高。 |
-| `title_row_height` | `50vp` | `Index.ets` | 标题行高度。 |
-| `title_row_margin_bottom` | `6vp` | `Index.ets` | 标题行底部 margin。 |
-| `area_padding_left` | `16vp` | `Index.ets` | 页面左右边距。 |
-
-尺寸资源引用关系：
-
-```text
-float.json
-├── Index.ets
-│   ├── title_font_size
-│   ├── title_margin_bottom
-│   ├── row_border_radius
-│   ├── row_padding
-│   ├── title_line_height
-│   ├── title_row_height
-│   ├── title_row_margin_bottom
-│   └── area_padding_left
-├── TextGradientView.ets
-│   └── content_font_size
-├── TextScrollingView.ets
-│   └── content_font_size
-├── TextReflectionView.ets
-│   ├── content_font_size
-│   └── text_refection_height
-└── TextMarqueeView.ets
-    └── content_font_size
-```
-
----
-
-### 14.3 `string.json`
-
-项目有三套字符串资源：
-
-```text
-entry/src/main/resources/base/element/string.json
-entry/src/main/resources/en_US/element/string.json
-entry/src/main/resources/zh_CN/element/string.json
-```
-
-其中：
-
-| 目录 | 作用 |
-|---|---|
-| `base/element/string.json` | 默认字符串资源。 |
-| `en_US/element/string.json` | 英文环境字符串资源。 |
-| `zh_CN/element/string.json` | 中文环境字符串资源。 |
-
-主要字符串资源如下：
-
-| 资源名 | 中文值 | 英文值 | 使用位置 |
-|---|---|---|---|
-| `module_desc` | 模块描述 | module description | `module.json5` |
-| `EntryAbility_desc` | description | description | `module.json5` |
-| `EntryAbility_label` | 文字特效 | TextEffects | `module.json5` |
-| `text_content` | 这是一段文字示例 | This is a text example. | `Index.ets` |
-| `text_content_long` | 这是一段文字示例... | This is a text example... | `Index.ets` |
-| `ninety_percent` | 90% | 90% | `TextMarqueeView.ets` |
-| `text_gradient` | 文字渐变效果 | Text gradient effect. | `Index.ets` |
-| `text_scrolling` | 歌词滚动效果 | Lyrics scrolling effect. | `Index.ets` |
-| `text_reflection` | 文字倒影效果 | Text reflection effect. | `Index.ets` |
-| `text_marquee` | 跑马灯渐变效果 | The scrolling light gradient effect. | `Index.ets` |
-| `title` | 文字特效合集 | Text Effect Collection | `Index.ets` |
-
-字符串资源引用关系：
-
-```text
-string.json
-├── module.json5
-│   ├── module_desc
-│   ├── EntryAbility_desc
-│   └── EntryAbility_label
-├── Index.ets
-│   ├── title
-│   ├── text_content
-│   ├── text_content_long
-│   ├── text_gradient
-│   ├── text_scrolling
-│   ├── text_reflection
-│   └── text_marquee
-└── TextMarqueeView.ets
-    └── ninety_percent
-```
-
----
-
-### 14.4 `media/` 图片资源
-
-路径：
-
-```text
-entry/src/main/resources/base/media/
-```
-
-文件包括：
-
-```text
-background.png
-foreground.png
-layered_image.json
-startIcon.png
+if (this.selectedEffect === 0) {
+  TextGradientView({ message: this.inputText })
+} else if (this.selectedEffect === 1) {
+  TextScrollingView({ message: this.inputText })
+} else if (this.selectedEffect === 2) {
+  TextReflectionView({ message: this.inputText })
+} else {
+  TextMarqueeView({ message: this.inputText })
+}
 ```
 
 作用：
 
-| 文件 | 作用 |
-|---|---|
-| `background.png` | 分层图标背景图。 |
-| `foreground.png` | 分层图标前景图。 |
-| `layered_image.json` | 分层图标配置文件。 |
-| `startIcon.png` | 启动窗口图标。 |
-
-与 `module.json5` 的关系：
-
-```json5
-"icon": "$media:layered_image",
-"startWindowIcon": "$media:startIcon"
-```
-
-即：
-
 ```text
-module.json5
-├── 应用图标 → layered_image.json
-└── 启动图标 → startIcon.png
+根据 selectedEffect 选择具体特效组件，并把 inputText 传进去
 ```
 
 ---
 
-## 15. 文件之间的完整依赖关系图
-
-### 15.1 构建层依赖关系
-
-```text
-DevEco Studio / Hvigor
-    ↓
-build-profile.json5
-    ↓
-entry 模块
-    ↓
-entry/build-profile.json5
-    ↓
-entry/hvigorfile.ts
-    ↓
-entry/src/main/module.json5
-```
-
-### 15.2 运行层依赖关系
-
-```text
-module.json5
-    ↓ srcEntry
-EntryAbility.ets
-    ↓ loadContent('pages/Index')
-Index.ets
-    ↓ imports
-四个文字特效组件
-```
-
-### 15.3 UI 组件依赖关系
-
-```text
-Index.ets
-├── Constants.ets
-├── TextGradientView.ets
-│   ├── color.json
-│   └── float.json
-├── TextScrollingView.ets
-│   ├── Constants.ets
-│   └── float.json
-├── TextReflectionView.ets
-│   ├── Constants.ets
-│   ├── color.json
-│   └── float.json
-└── TextMarqueeView.ets
-    ├── Constants.ets
-    ├── string.json
-    └── float.json
-```
-
-### 15.4 资源层依赖关系
-
-```text
-resources/
-├── base/element/color.json
-│   ├── Index.ets
-│   ├── TextGradientView.ets
-│   ├── TextReflectionView.ets
-│   └── module.json5
-├── base/element/float.json
-│   ├── Index.ets
-│   ├── TextGradientView.ets
-│   ├── TextScrollingView.ets
-│   ├── TextReflectionView.ets
-│   └── TextMarqueeView.ets
-├── base/element/string.json
-│   ├── module.json5
-│   ├── Index.ets
-│   └── TextMarqueeView.ets
-├── base/profile/main_pages.json
-│   ├── module.json5
-│   └── EntryAbility.ets 的页面路径需要保持一致
-└── base/media/
-    └── module.json5
-```
-
----
-
-## 16. 数据流分析
-
-该项目没有网络请求、数据库、文件读写、用户输入等复杂业务数据流。主要数据流是“资源字符串 → 页面状态 → 组件显示”。
-
-### 16.1 短文本数据流
-
-```text
-resources/*/element/string.json
-  └── text_content
-        ↓ $r('app.string.text_content')
-Index.ets
-  └── @State message
-        ↓ 组件参数传递
-TextGradientView / TextScrollingView / TextReflectionView
-        ↓
-Text(this.message)
-```
-
-### 16.2 长文本数据流
-
-```text
-resources/*/element/string.json
-  └── text_content_long
-        ↓ $r('app.string.text_content_long')
-Index.ets
-  └── @State messageLong
-        ↓ 组件参数传递
-TextMarqueeView
-        ↓
-Text(this.message)
-        ↓
-textOverflow({ overflow: TextOverflow.MARQUEE })
-```
-
-### 16.3 样式数据流
-
-```text
-resources/base/element/color.json
-resources/base/element/float.json
-Constants.ets
-        ↓
-Index.ets 和 view 组件
-        ↓
-ArkUI 组件属性
-        ↓
-最终界面效果
-```
-
----
-
-## 17. 页面渲染结构分析
-
-`Index.ets` 的实际渲染层级可以写成如下伪结构：
-
-```text
-Navigation(title = 文字特效合集)
-└── Column(padding-left/right = 16vp)
-    ├── Row(title = 文字渐变效果)
-    ├── Row(card)
-    │   └── TextGradientView
-    │       └── Row(linearGradient)
-    │           └── Text(message)
-    │
-    ├── Row(title = 歌词滚动效果)
-    ├── Row(card)
-    │   └── TextScrollingView
-    │       └── Row(animated linearGradient)
-    │           └── Text(message)
-    │
-    ├── Row(title = 文字倒影效果)
-    ├── Row(card)
-    │   └── TextReflectionView
-    │       └── Stack(linearGradient)
-    │           ├── Text(message)
-    │           └── Text(message rotated 180deg)
-    │
-    ├── Row(title = 跑马灯渐变效果)
-    └── Row(card)
-        └── TextMarqueeView
-            └── Row(linearGradient mask)
-                └── Column
-                    └── Text(long message, MARQUEE)
-```
-
-这个结构说明：
-
-1. 首页负责“大布局”。
-2. 每个 view 组件负责“单一特效”。
-3. 特效组件之间互不依赖。
-4. 常量和资源文件为所有 UI 提供统一配置。
-
----
-
-## 18. 四个特效的实现对比
-
-| 特效 | 组件 | 是否动画 | 是否文本移动 | 是否使用渐变 | 是否使用混合模式 | 核心变量 |
-|---|---|---|---|---|---|---|
-| 文字渐变 | `TextGradientView` | 否 | 否 | 是 | 是 | 无 |
-| 歌词滚动 | `TextScrollingView` | 是 | 否 | 是 | 是 | `value` |
-| 文字倒影 | `TextReflectionView` | 否 | 否 | 是 | 是 | 旋转角度 |
-| 跑马灯渐变 | `TextMarqueeView` | 系统内置滚动 | 是 | 是 | 是 | `TextOverflow.MARQUEE` |
-
-其中最容易混淆的是：
-
-1. **歌词滚动效果**：文字不移动，只是颜色分界线移动。
-2. **跑马灯渐变效果**：文字本身会横向滚动。
-
----
-
-## 19. 程序运行时的生命周期顺序
-
-运行应用后，大致生命周期如下：
-
-```text
-1. 系统创建 EntryAbility
-2. 调用 EntryAbility.onCreate()
-3. 创建窗口 WindowStage
-4. 调用 EntryAbility.onWindowStageCreate()
-5. 执行 windowStage.loadContent('pages/Index')
-6. Index 页面开始构建
-7. Index.build() 被调用
-8. 四个子组件依次构建
-9. TextScrollingView 出现后触发 onAppear()
-10. TextScrollingView 开始无限循环动画
-11. 应用进入后台时调用 onBackground()
-12. 应用回到前台时调用 onForeground()
-13. 应用关闭时调用 onWindowStageDestroy() 和 onDestroy()
-```
-
----
-
-## 20. 关键代码关系逐行级说明
-
-### 20.1 `Index.ets` 为什么能调用四个组件？
-
-因为顶部写了：
+### 10.5 子组件接收父组件数据
 
 ```ts
-import TextGradientView from '../view/TextGradientView';
-import TextMarqueeView from '../view/TextMarqueeView';
-import TextReflectionView from '../view/TextReflectionView';
-import TextScrollingView from '../view/TextScrollingView';
+@Prop message: ResourceStr = '';
 ```
 
-所以在 `build()` 里可以直接使用：
+作用：
+
+```text
+允许父组件 Index.ets 把 inputText 传入子组件
+```
+
+---
+
+## 11. 为什么本次修改能实现用户输入后实时显示结果
+
+核心原因是 ArkUI 的状态驱动机制。
+
+页面中 `inputText` 和 `selectedEffect` 都使用了 `@State`：
 
 ```ts
-TextGradientView({ message: this.message })
+@State inputText: string = '这是一段文字示例';
+@State selectedEffect: number = 0;
 ```
 
-这里的 `{ message: this.message }` 是父组件向子组件传参。
-
-### 20.2 为什么子组件都有 `@State message`？
+当它们发生变化时，ArkUI 会重新构建相关 UI。
 
 例如：
 
 ```ts
-@State message: ResourceStr = '';
+this.inputText = value;
 ```
 
-这使组件可以接收并保存外部传入的文本资源。父组件传入后，子组件用：
+或者：
 
 ```ts
-Text(this.message)
+this.selectedEffect = index;
 ```
 
-进行显示。
+都会导致页面刷新。
 
-### 20.3 为什么大量使用 `$r()`？
+刷新时，`effectPreview()` 会重新根据最新状态选择组件并传入最新文字。
 
-例如：
+因此可以实现：
 
-```ts
-.fontSize($r('app.float.content_font_size'))
+```text
+输入框一改，结果区马上变化
+按钮一切换，结果区马上切换特效
 ```
 
-这是 HarmonyOS 的资源引用写法。好处是：
-
-1. 样式参数统一管理。
-2. 支持多语言。
-3. 修改颜色、尺寸时不必逐个改代码。
-4. 方便适配不同设备和主题。
-
-### 20.4 为什么使用 `BlendApplyType.OFFSCREEN`？
-
-多个组件都使用：
-
-```ts
-.blendMode(..., BlendApplyType.OFFSCREEN)
-```
-
-它的作用是让混合效果在离屏缓冲区中完成，避免影响页面中其他组件。对于渐变文字、透明遮罩、倒影等效果，离屏混合更安全。
+这就是本次升级的主要技术实现思路。
 
 ---
 
-## 21. 当前项目中值得注意的问题与优化建议
+## 12. 后续扩展新文字特效的方法
 
-### 21.1 组件命名不一致
+如果以后要增加新的文字特效，例如“阴影文字”或“发光文字”，可以按下面步骤扩展。
 
-存在两个命名问题：
+### 12.1 新增一个特效组件
 
-| 文件 | 当前导出名 | 建议导出名 |
-|---|---|---|
-| `TextReflectionView.ets` | `TextRefectionView` | `TextReflectionView` |
-| `TextMarqueeView.ets` | `TextGradientView` | `TextMarqueeView` |
-
-虽然默认导出不一定影响运行，但不利于维护。
-
-建议修改：
-
-```ts
-// TextReflectionView.ets
-export default struct TextReflectionView {
-```
-
-```ts
-// TextMarqueeView.ets
-export default struct TextMarqueeView {
-```
-
-### 21.2 资源名拼写错误
-
-当前资源名：
-
-```text
-text_refection_height
-```
-
-建议改为：
-
-```text
-text_reflection_height
-```
-
-同步修改代码：
-
-```ts
-.height($r('app.float.text_reflection_height'))
-```
-
-### 21.3 `Index.ets` 中 `value` 状态未使用
-
-当前代码：
-
-```ts
-@State value: number = 0;
-```
-
-在 `Index.ets` 中没有实际用途，可以删除，避免误导。
-
-### 21.4 `TextMarqueeView` 中宽度使用字符串资源不太合适
-
-当前代码：
-
-```ts
-.width($r('app.string.ninety_percent'))
-```
-
-虽然可以表达 `90%`，但从语义上说，宽度属于尺寸，不属于普通字符串。更规范的做法是放入 `float.json` 或直接使用常量。
-
-可以考虑：
-
-```ts
-.width('90%')
-```
-
-或者新增常量：
-
-```ts
-static readonly NINETY_PERCENT: string = '90%';
-```
-
-然后写：
-
-```ts
-.width(Constants.NINETY_PERCENT)
-```
-
-### 21.5 `.hvigor` 和 `.idea` 一般不建议提交到普通源码包
-
-当前压缩包里包含：
-
-```text
-.hvigor/
-.idea/
-entry/.preview/
-```
-
-这些一般是构建缓存和 IDE 配置。正式上传 GitHub 时，可以考虑在 `.gitignore` 中忽略它们，保持项目干净。
-
-建议忽略：
-
-```gitignore
-.hvigor/
-.idea/
-entry/.preview/
-**/build/
-**/.preview/
-```
-
-具体是否忽略要结合 DevEco 工程要求和团队规范决定。
-
----
-
-## 22. 如果要修改页面标题或文字内容，应该改哪里？
-
-如果要修改顶部标题“文字特效合集”：
-
-```text
-entry/src/main/resources/zh_CN/element/string.json
-  └── title
-```
-
-如果要修改每个模块标题：
-
-```text
-text_gradient
-text_scrolling
-text_reflection
-text_marquee
-```
-
-如果要修改示例文字：
-
-```text
-text_content
-text_content_long
-```
-
-不要直接在 `Index.ets` 里写死中文文本，推荐继续使用资源文件，这样方便多语言适配。
-
----
-
-## 23. 如果要新增一个文字特效，应该怎么做？
-
-假设要新增一个“文字阴影效果”，推荐步骤如下。
-
-### 第一步：新增组件文件
-
-在目录中新增：
+例如创建文件：
 
 ```text
 entry/src/main/ets/view/TextShadowView.ets
 ```
 
-示例结构：
+组件结构建议保持一致：
 
 ```ts
 @Component
 export default struct TextShadowView {
-  @State message: ResourceStr = '';
+  @Prop message: ResourceStr = '';
 
   build() {
     Text(this.message)
       .fontSize($r('app.float.content_font_size'))
       .fontWeight(FontWeight.Bold)
       .fontColor(Color.Black)
-      .shadow({
-        radius: 8,
-        color: Color.Gray,
-        offsetX: 4,
-        offsetY: 4
-      })
   }
 }
 ```
 
-### 第二步：在 `Index.ets` 中导入
+### 12.2 在 `Index.ets` 中导入组件
 
 ```ts
 import TextShadowView from '../view/TextShadowView';
 ```
 
-### 第三步：新增标题资源
-
-在 `string.json` 中添加：
-
-```json
-{
-  "name": "text_shadow",
-  "value": "文字阴影效果"
-}
-```
-
-英文资源中也添加：
-
-```json
-{
-  "name": "text_shadow",
-  "value": "Text shadow effect."
-}
-```
-
-### 第四步：在 `Index.ets` 的 `build()` 中加入展示区域
+### 12.3 第一行增加按钮
 
 ```ts
-this.textBuilder($r('app.string.text_shadow'))
-Row() {
-  TextShadowView({ message: this.message })
+this.effectButton('阴影', 4)
+```
+
+### 12.4 `effectPreview()` 增加判断分支
+
+```ts
+} else if (this.selectedEffect === 4) {
+  TextShadowView({ message: this.inputText })
 }
-.fancy()
-.justifyContent(FlexAlign.Center)
 ```
 
-新增后的关系：
+这样就可以把新特效接入当前三行式交互界面。
+
+---
+
+## 13. 注意事项
+
+### 13.1 当前特效编号要保持一致
+
+按钮编号和 `effectPreview()` 中的判断编号必须一致。
+
+例如：
+
+```ts
+this.effectButton('滚动', 1)
+```
+
+那么 `effectPreview()` 中也必须有：
+
+```ts
+this.selectedEffect === 1
+```
+
+否则按钮点击后可能无法显示正确特效。
+
+---
+
+### 13.2 子组件应继续使用 `@Prop`
+
+如果某个特效组件需要显示用户输入的文字，就应该使用：
+
+```ts
+@Prop message: ResourceStr = '';
+```
+
+不要再改回：
+
+```ts
+@State message: ResourceStr = '';
+```
+
+因为 `@State` 更适合组件内部自己维护的数据，而本项目中文本内容来自父组件。
+
+---
+
+### 13.3 跑马灯适合长文本
+
+`TextMarqueeView` 的跑马灯效果通常在文字较长、超出显示区域时更明显。
+
+如果输入内容很短，可能看起来和普通文本差别不大。
+
+---
+
+### 13.4 滚动效果依赖动画启动
+
+`TextScrollingView` 的动画在组件出现时通过 `onAppear()` 启动。
+
+如果切换到滚动效果后没有立即看到明显变化，可以关注：
+
+1. 动画时长 `Constants.TEXT_SCROLL_DURATION`。
+2. 渐变颜色分界是否明显。
+3. 设备或模拟器是否正常渲染动画。
+
+---
+
+## 14. 本次升级后的页面逻辑总图
 
 ```text
-Index.ets
-  ├── 原四个组件
-  └── TextShadowView.ets
-        └── string.json / float.json
+页面打开
+  ↓
+初始化状态
+  ├── inputText = '这是一段文字示例'
+  └── selectedEffect = 0
+  ↓
+渲染三行界面
+  ├── 第一行：特效选择按钮
+  ├── 第二行：文本输入框
+  └── 第三行：结果展示区
+  ↓
+用户操作
+  ├── 输入文字 → 修改 inputText
+  └── 点击按钮 → 修改 selectedEffect
+  ↓
+ArkUI 状态驱动重新渲染
+  ↓
+effectPreview() 根据 selectedEffect 选择组件
+  ↓
+把 inputText 作为 message 传给子组件
+  ↓
+子组件使用 Text(this.message) 显示文字
+  ↓
+叠加对应文字特效
+  ↓
+第三行显示最终结果
 ```
 
 ---
 
-## 24. 如果要调试这个项目，重点看哪些文件？
+## 15. 总结
 
-### 24.1 页面不显示
+本次升级将原来的文字特效展示工程改造成了一个更接近实际应用的小工具。
 
-重点检查：
-
-```text
-entry/src/main/ets/entryability/EntryAbility.ets
-entry/src/main/resources/base/profile/main_pages.json
-entry/src/main/ets/pages/Index.ets
-```
-
-检查：
-
-1. `loadContent('pages/Index')` 路径是否正确。
-2. `main_pages.json` 是否包含 `pages/Index`。
-3. `Index.ets` 是否存在语法错误。
-
-### 24.2 应用图标或名称不对
-
-重点检查：
+原工程只是展示：
 
 ```text
-entry/src/main/module.json5
-entry/src/main/resources/base/media/
-entry/src/main/resources/*/element/string.json
+固定文字 + 固定特效
 ```
 
-### 24.3 某个文字特效不显示
-
-重点检查对应组件：
-
-| 效果 | 检查文件 |
-|---|---|
-| 文字渐变 | `TextGradientView.ets` |
-| 歌词滚动 | `TextScrollingView.ets` |
-| 文字倒影 | `TextReflectionView.ets` |
-| 跑马灯渐变 | `TextMarqueeView.ets` |
-
-还要检查：
+升级后变成：
 
 ```text
-Index.ets 是否正确导入
-Index.ets 是否正确调用
-资源文件是否有缺失
+用户选择特效 + 用户输入文字 + 实时显示处理结果
 ```
 
-### 24.4 资源报错
+核心修改集中在 `Index.ets`：
 
-如果 DevEco 提示资源找不到，例如：
+1. 新增 `inputText` 保存用户输入。
+2. 新增 `selectedEffect` 保存用户选择的特效。
+3. 新增 `TextInput` 输入框。
+4. 新增特效选择按钮。
+5. 新增 `effectPreview()` 动态选择展示组件。
+6. 将页面改为三行式结构。
+
+同时，四个特效组件统一将：
+
+```ts
+@State message
+```
+
+改为：
+
+```ts
+@Prop message
+```
+
+使它们可以接收父组件传入的动态文字。
+
+最终实现了一个清晰的交互流程：
 
 ```text
-app.float.xxx not found
-app.string.xxx not found
-app.color.xxx not found
+第一行选择文字特效
+第二行输入待处理文本
+第三行显示处理后的文字特效结果
 ```
 
-检查：
-
-```text
-entry/src/main/resources/base/element/color.json
-entry/src/main/resources/base/element/float.json
-entry/src/main/resources/base/element/string.json
-entry/src/main/resources/zh_CN/element/string.json
-entry/src/main/resources/en_US/element/string.json
-```
-
----
-
-## 25. 开发者视角下的代码分层总结
-
-这个项目采用的是非常典型的 HarmonyOS 示例工程分层：
-
-```text
-应用级配置层
-├── AppScope/
-├── build-profile.json5
-├── oh-package.json5
-└── hvigorfile.ts
-
-模块配置层
-├── entry/build-profile.json5
-├── entry/oh-package.json5
-├── entry/hvigorfile.ts
-└── entry/src/main/module.json5
-
-Ability 入口层
-└── entry/src/main/ets/entryability/EntryAbility.ets
-
-页面组织层
-└── entry/src/main/ets/pages/Index.ets
-
-功能组件层
-├── TextGradientView.ets
-├── TextScrollingView.ets
-├── TextReflectionView.ets
-└── TextMarqueeView.ets
-
-公共配置层
-├── Constants.ets
-└── resources/
-```
-
-这种分层的优点是：
-
-1. 入口逻辑和页面 UI 分离。
-2. 页面布局和具体特效组件分离。
-3. 组件之间互不干扰。
-4. 样式资源集中管理。
-5. 多语言支持清晰。
-6. 后续新增特效比较方便。
-
----
-
-## 26. 总结
-
-该项目的核心并不复杂，可以用一句话概括：
-
-```text
-EntryAbility 加载 Index 页面，Index 页面组合四个独立文字特效组件，组件通过 Text、linearGradient、blendMode、rotate、animateTo、textOverflow 等 ArkUI 能力实现不同视觉效果。
-```
-
-最重要的文件是：
-
-```text
-entry/src/main/ets/entryability/EntryAbility.ets
-entry/src/main/ets/pages/Index.ets
-entry/src/main/ets/view/TextGradientView.ets
-entry/src/main/ets/view/TextScrollingView.ets
-entry/src/main/ets/view/TextReflectionView.ets
-entry/src/main/ets/view/TextMarqueeView.ets
-entry/src/main/ets/constants/Constants.ets
-entry/src/main/resources/base/element/color.json
-entry/src/main/resources/base/element/float.json
-entry/src/main/resources/base/element/string.json
-```
-
-其中，最核心的运行链路是：
-
-```text
-module.json5
-  → EntryAbility.ets
-  → pages/Index
-  → Index.ets
-  → 四个 view 组件
-  → resources 与 Constants
-```
-
-如果你要继续开发这个项目，建议优先掌握：
-
-1. `EntryAbility.ets` 如何加载页面。
-2. `Index.ets` 如何组织页面结构。
-3. `$r()` 如何引用资源。
-4. `@Component` 和 `@State` 如何传递数据。
-5. `linearGradient + blendMode` 如何实现文字特效。
-6. 每个 view 组件如何保持单一职责。
-
----
-
-## 27. 推荐阅读顺序
-
-为了快速理解该项目，建议按下面顺序读代码：
-
-```text
-1. README.md
-2. build-profile.json5
-3. entry/src/main/module.json5
-4. entry/src/main/ets/entryability/EntryAbility.ets
-5. entry/src/main/resources/base/profile/main_pages.json
-6. entry/src/main/ets/pages/Index.ets
-7. entry/src/main/ets/constants/Constants.ets
-8. entry/src/main/ets/view/TextGradientView.ets
-9. entry/src/main/ets/view/TextScrollingView.ets
-10. entry/src/main/ets/view/TextReflectionView.ets
-11. entry/src/main/ets/view/TextMarqueeView.ets
-12. entry/src/main/resources/base/element/*.json
-13. entry/src/main/resources/zh_CN/element/string.json
-14. entry/src/main/resources/en_US/element/string.json
-```
-
-这样可以从“项目整体”逐步进入“入口逻辑”“页面组织”“具体组件”“资源配置”。
+这就是本次优化升级的主要功能、实现方式和代码关联关系。
