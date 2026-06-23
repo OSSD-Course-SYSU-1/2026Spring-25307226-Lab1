@@ -7,6 +7,16 @@ const FLOW_SOURCE_KEY: string = 'textEffects.flowSource';
 type FlowListener = (state: TextEffectFlowState, status: string) => void;
 type ContinuationStarter = () => Promise<void>;
 
+class FlowPayload {
+  inputText: string = '';
+  selectedEffect: number = 0;
+
+  constructor(inputText: string, selectedEffect: number) {
+    this.inputText = inputText;
+    this.selectedEffect = selectedEffect;
+  }
+}
+
 export default class FlowManager {
   private static state: TextEffectFlowState = new TextEffectFlowState();
   private static status: string = 'Free flow is ready. Choose a target device to continue.';
@@ -15,67 +25,67 @@ export default class FlowManager {
   private static continuationToken: number = -1;
 
   static getState(): TextEffectFlowState {
-    return new TextEffectFlowState(this.state.inputText, this.state.selectedEffect);
+    return new TextEffectFlowState(FlowManager.state.inputText, FlowManager.state.selectedEffect);
   }
 
   static getStatus(): string {
-    return this.status;
+    return FlowManager.status;
   }
 
   static getContinuationToken(): number {
-    return this.continuationToken;
+    return FlowManager.continuationToken;
   }
 
   static setContinuationToken(token: number): void {
-    this.continuationToken = token;
+    FlowManager.continuationToken = token;
   }
 
   static setContinuationStarter(starter: ContinuationStarter): void {
-    this.starter = starter;
+    FlowManager.starter = starter;
   }
 
   static clearContinuationStarter(): void {
-    this.starter = undefined;
+    FlowManager.starter = undefined;
   }
 
   static subscribe(listener: FlowListener): void {
-    this.listeners.push(listener);
-    listener(this.getState(), this.status);
+    FlowManager.listeners.push(listener);
+    listener(FlowManager.getState(), FlowManager.status);
   }
 
   static unsubscribe(listener: FlowListener): void {
-    this.listeners = this.listeners.filter((item: FlowListener) => item !== listener);
+    FlowManager.listeners = FlowManager.listeners.filter((item: FlowListener) => item !== listener);
   }
 
   static updateInputText(value: string): void {
-    this.state.inputText = value;
-    this.notify();
+    FlowManager.state.inputText = value;
+    FlowManager.notify();
   }
 
   static updateSelectedEffect(value: number): void {
-    this.state.selectedEffect = value;
-    this.notify();
+    FlowManager.state.selectedEffect = value;
+    FlowManager.notify();
   }
 
   static setStatus(message: string): void {
-    this.status = message;
-    this.notify();
+    FlowManager.status = message;
+    FlowManager.notify();
   }
 
   static async requestContinuation(): Promise<void> {
-    if (!this.starter) {
-      this.setStatus('Free flow is unavailable in the current context.');
+    if (!FlowManager.starter) {
+      FlowManager.setStatus('Free flow is unavailable in the current context.');
       return;
     }
 
-    await this.starter();
+    await FlowManager.starter();
   }
 
   static writeToWantParam(wantParam: Record<string, Object>): void {
-    const payload: Record<string, Object> = {
-      inputText: this.state.inputText as Object,
-      selectedEffect: this.state.selectedEffect as Object
-    };
+    const payload: FlowPayload = new FlowPayload(
+      FlowManager.state.inputText,
+      FlowManager.state.selectedEffect
+    );
 
     wantParam[FLOW_PAYLOAD_KEY] = JSON.stringify(payload) as Object;
     wantParam[FLOW_SOURCE_KEY] = 'TextEffectsFreeFlow' as Object;
@@ -91,24 +101,24 @@ export default class FlowManager {
       return false;
     }
 
-    return this.restoreFromPayload(payload);
+    return FlowManager.restoreFromPayload(payload);
   }
 
   static restoreFromPayload(payload: string): boolean {
     try {
-      const parsed: Record<string, Object> = JSON.parse(payload) as Record<string, Object>;
-      const inputText: Object | undefined = parsed.inputText;
-      const selectedEffect: Object | undefined = parsed.selectedEffect;
+      const parsed: FlowPayload = JSON.parse(payload) as FlowPayload;
+      const inputText: string = parsed.inputText;
+      const selectedEffect: number = parsed.selectedEffect;
 
       if (typeof inputText !== 'string' || typeof selectedEffect !== 'number') {
         return false;
       }
 
-      this.state = new TextEffectFlowState(inputText, selectedEffect);
-      this.setStatus('State restored from free flow continuation.');
+      FlowManager.state = new TextEffectFlowState(inputText, selectedEffect);
+      FlowManager.setStatus('State restored from free flow continuation.');
       return true;
     } catch (_) {
-      this.setStatus('Failed to restore free flow state.');
+      FlowManager.setStatus('Failed to restore free flow state.');
       return false;
     }
   }
@@ -122,9 +132,9 @@ export default class FlowManager {
   }
 
   private static notify(): void {
-    const state: TextEffectFlowState = this.getState();
-    this.listeners.forEach((listener: FlowListener) => {
-      listener(state, this.status);
+    const state: TextEffectFlowState = FlowManager.getState();
+    FlowManager.listeners.forEach((listener: FlowListener) => {
+      listener(state, FlowManager.status);
     });
   }
 }

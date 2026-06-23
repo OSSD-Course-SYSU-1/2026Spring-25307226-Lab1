@@ -1,6 +1,7 @@
 string EntryAbility_desc 0x01000002
 string EntryAbility_label 0x01000003
 string app_name 0x01000000
+string distributed_permission_reason 0x01000022
 string module_desc 0x01000004
 string ninety_percent 0x01000005
 string text_content 0x01000006

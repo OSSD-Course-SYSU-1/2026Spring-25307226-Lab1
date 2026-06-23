@@ -26,6 +26,15 @@
 		"description":	"$string:module_desc",
 		"mainElement":	"EntryAbility",
 		"deviceTypes":	["phone", "tablet", "2in1"],
+		"requestPermissions":	[{
+				"name":	"ohos.permission.DISTRIBUTED_DATASYNC",
+				"reason":	"$string:distributed_permission_reason",
+				"usedScene":	{
+					"abilities":	["EntryAbility"],
+					"when":	"inuse"
+				},
+				"reasonId":	16777250
+			}],
 		"deliveryWithInstall":	true,
 		"installationFree":	false,
 		"pages":	"$profile:main_pages",
@@ -35,6 +44,7 @@
 				"description":	"$string:EntryAbility_desc",
 				"icon":	"$media:layered_image",
 				"label":	"$string:EntryAbility_label",
+				"continuable":	true,
 				"startWindowIcon":	"$media:startIcon",
 				"startWindowBackground":	"$color:start_window_background",
 				"exported":	true,

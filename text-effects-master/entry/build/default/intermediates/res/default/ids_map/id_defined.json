@@ -135,5 +135,9 @@
 			"type":	"profile",
 			"name":	"main_pages",
 			"id":	"0x01000021"
+		}, {
+			"type":	"string",
+			"name":	"distributed_permission_reason",
+			"id":	"0x01000022"
 		}]
 }

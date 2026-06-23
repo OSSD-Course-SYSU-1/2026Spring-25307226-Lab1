@@ -2,26 +2,26 @@
   "version": 1,
   "ohos-module-entry": {
     "SELECT_TARGET": "default",
-    "MODULE_BUILD_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build",
+    "MODULE_BUILD_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build",
     "TARGETS": {
       "default": {
-        "SOURCE_ROOT": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main",
+        "SOURCE_ROOT": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main",
         "RESOURCES_PATH": [
-          "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\resources"
+          "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\resources"
         ],
         "BUILD_PATH": {
-          "OUTPUT_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\outputs\\default",
-          "INTERMEDIA_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates",
-          "JS_ASSETS_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\loader_out\\default",
-          "JS_LITE_ASSETS_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\loader_out_lite\\default",
-          "RES_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\res\\default",
-          "RES_PROFILE_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\res\\default\\resources\\base\\profile",
-          "ETS_SUPER_VISUAL_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\cache\\default\\default@CompileArkTS\\esmodule",
-          "JS_SUPER_VISUAL_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\cache\\default\\default@CompileJS\\jsbundle",
-          "WORKER_LOADER": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\loader\\default\\loader.json",
-          "MANIFEST_JSON": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\manifest\\default",
-          "OUTPUT_METADATA_JSON": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\hap_metadata\\default\\output_metadata.json",
-          "SOURCE_MAP_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\build\\default\\intermediates\\source_map\\default"
+          "OUTPUT_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\outputs\\default",
+          "INTERMEDIA_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates",
+          "JS_ASSETS_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\loader_out\\default",
+          "JS_LITE_ASSETS_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\loader_out_lite\\default",
+          "RES_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\res\\default",
+          "RES_PROFILE_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\res\\default\\resources\\base\\profile",
+          "ETS_SUPER_VISUAL_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\cache\\default\\default@CompileArkTS\\esmodule",
+          "JS_SUPER_VISUAL_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\cache\\default\\default@CompileJS\\jsbundle",
+          "WORKER_LOADER": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\loader\\default\\loader.json",
+          "MANIFEST_JSON": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\manifest\\default",
+          "OUTPUT_METADATA_JSON": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\hap_metadata\\default\\output_metadata.json",
+          "SOURCE_MAP_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\build\\default\\intermediates\\source_map\\default"
         },
         "BUILD_OPTION": {
           "debuggable": true
@@ -69,17 +69,17 @@
   },
   "ohos-project": {
     "SELECT_PRODUCT_NAME": "default",
-    "MODULE_BUILD_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\build",
+    "MODULE_BUILD_DIR": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\build",
     "BUNDLE_NAME": "com.example.texteffects",
     "VERSION_CODE": 1000000,
     "VERSION_NAME": "1.0.0",
     "BUILD_PATH": {
-      "OUTPUT_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\build\\outputs\\default"
+      "OUTPUT_PATH": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\build\\outputs\\default"
     },
     "MODULES": [
       {
         "name": "entry",
-        "srcPath": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry",
+        "srcPath": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry",
         "targets": [
           {
             "name": "default",
@@ -88,7 +88,7 @@
             ]
           }
         ],
-        "belongProjectPath": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice"
+        "belongProjectPath": "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow"
       }
     ],
     "PROFILE_OPT": {
@@ -133,7 +133,7 @@
       "hvigor.keepDependency": true
     },
     "OVERALL_PROJECT_PATHS": [
-      "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice"
+      "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow"
     ],
     "BUILD_CACHE_DIR": ""
   }

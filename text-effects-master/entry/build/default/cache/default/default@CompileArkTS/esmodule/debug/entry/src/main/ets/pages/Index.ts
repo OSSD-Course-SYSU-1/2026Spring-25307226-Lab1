@@ -5,8 +5,12 @@ interface Index_Params {
     inputText?: string;
     selectedEffect?: number;
     containerWidth?: number;
+    flowStatus?: string;
+    flowListener?;
 }
 import Constants from "@bundle:com.example.texteffects/entry/ets/constants/Constants";
+import FlowManager from "@bundle:com.example.texteffects/entry/ets/manager/FlowManager";
+import type TextEffectFlowState from '../model/TextEffectFlowState';
 import TextGradientView from "@bundle:com.example.texteffects/entry/ets/view/TextGradientView";
 import TextMarqueeView from "@bundle:com.example.texteffects/entry/ets/view/TextMarqueeView";
 import TextReflectionView from "@bundle:com.example.texteffects/entry/ets/view/TextReflectionView";
@@ -17,9 +21,15 @@ class Index extends ViewPU {
         if (typeof paramsLambda === "function") {
             this.paramsGenerator_ = paramsLambda;
         }
-        this.__inputText = new ObservedPropertySimplePU('This is a text example.', this, "inputText");
-        this.__selectedEffect = new ObservedPropertySimplePU(0, this, "selectedEffect");
+        this.__inputText = new ObservedPropertySimplePU(FlowManager.getState().inputText, this, "inputText");
+        this.__selectedEffect = new ObservedPropertySimplePU(FlowManager.getState().selectedEffect, this, "selectedEffect");
         this.__containerWidth = new ObservedPropertySimplePU(0, this, "containerWidth");
+        this.__flowStatus = new ObservedPropertySimplePU(FlowManager.getStatus(), this, "flowStatus");
+        this.flowListener = (state: TextEffectFlowState, status: string): void => {
+            this.inputText = state.inputText;
+            this.selectedEffect = state.selectedEffect;
+            this.flowStatus = status;
+        };
         this.setInitiallyProvidedValue(params);
         this.finalizeConstruction();
     }
@@ -33,6 +43,12 @@ class Index extends ViewPU {
         if (params.containerWidth !== undefined) {
             this.containerWidth = params.containerWidth;
         }
+        if (params.flowStatus !== undefined) {
+            this.flowStatus = params.flowStatus;
+        }
+        if (params.flowListener !== undefined) {
+            this.flowListener = params.flowListener;
+        }
     }
     updateStateVars(params: Index_Params) {
     }
@@ -40,11 +56,13 @@ class Index extends ViewPU {
         this.__inputText.purgeDependencyOnElmtId(rmElmtId);
         this.__selectedEffect.purgeDependencyOnElmtId(rmElmtId);
         this.__containerWidth.purgeDependencyOnElmtId(rmElmtId);
+        this.__flowStatus.purgeDependencyOnElmtId(rmElmtId);
     }
     aboutToBeDeleted() {
         this.__inputText.aboutToBeDeleted();
         this.__selectedEffect.aboutToBeDeleted();
         this.__containerWidth.aboutToBeDeleted();
+        this.__flowStatus.aboutToBeDeleted();
         SubscriberManager.Get().delete(this.id__());
         this.aboutToBeDeletedInternal();
     }
@@ -68,6 +86,20 @@ class Index extends ViewPU {
     }
     set containerWidth(newValue: number) {
         this.__containerWidth.set(newValue);
+    }
+    private __flowStatus: ObservedPropertySimplePU<string>;
+    get flowStatus() {
+        return this.__flowStatus.get();
+    }
+    set flowStatus(newValue: string) {
+        this.__flowStatus.set(newValue);
+    }
+    private flowListener;
+    aboutToAppear(): void {
+        FlowManager.subscribe(this.flowListener);
+    }
+    aboutToDisappear(): void {
+        FlowManager.unsubscribe(this.flowListener);
     }
     private isDesktopLayout(): boolean {
         return this.containerWidth >= Constants.DESKTOP_BREAKPOINT;
@@ -209,6 +241,7 @@ class Index extends ViewPU {
             Button.fontColor(this.selectedEffect === index ? Color.White : '#233142');
             Button.onClick(() => {
                 this.selectedEffect = index;
+                FlowManager.updateSelectedEffect(index);
             });
         }, Button);
         Button.pop();
@@ -224,7 +257,7 @@ class Index extends ViewPU {
                                 let componentCall = new TextGradientView(this, {
                                     message: this.getPreviewText(),
                                     fontSize: this.getContentFontSize()
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 187, col: 7 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 205, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -253,7 +286,7 @@ class Index extends ViewPU {
                                     message: this.getPreviewText(),
                                     fontSize: this.getContentFontSize(),
                                     duration: this.getScrollDuration()
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 192, col: 7 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 210, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -284,7 +317,7 @@ class Index extends ViewPU {
                                     message: this.getPreviewText(),
                                     fontSize: this.getContentFontSize(),
                                     reflectionHeight: this.getReflectionHeight()
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 198, col: 7 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 216, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -315,7 +348,7 @@ class Index extends ViewPU {
                                     message: this.getPreviewText(),
                                     fontSize: this.getContentFontSize(),
                                     textWidth: this.getMarqueeTextWidth()
-                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 204, col: 7 });
+                                }, undefined, elmtId, () => { }, { page: "entry/src/main/ets/pages/Index.ets", line: 222, col: 7 });
                                 ViewPU.create(componentCall);
                                 let paramsLambda = () => {
                                     return {
@@ -389,8 +422,42 @@ class Index extends ViewPU {
             TextInput.padding({ left: 14, right: 14 });
             TextInput.onChange((value: string) => {
                 this.inputText = value;
+                FlowManager.updateInputText(value);
             });
         }, TextInput);
+        Column.pop();
+    }
+    freeFlowCard(parent = null) {
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Column.create({ space: 16 });
+            Column.width(Constants.FULL_PERCENT);
+            Column.padding(this.getCardPadding());
+            Column.borderRadius({ "id": 16777237, "type": 10002, params: [], "bundleName": "com.example.texteffects", "moduleName": "entry" });
+            Column.backgroundColor(Color.White);
+        }, Column);
+        this.sectionTitle.bind(this)('Free flow', 'Continue the current text effect session on another HarmonyOS device.');
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Text.create(this.flowStatus);
+            Text.width(Constants.FULL_PERCENT);
+            Text.fontSize(14);
+            Text.fontColor('#4A5563');
+            Text.lineHeight(20);
+        }, Text);
+        Text.pop();
+        this.observeComponentCreation2((elmtId, isInitialRender) => {
+            Button.createWithLabel('Start Free Flow');
+            Button.width(Constants.FULL_PERCENT);
+            Button.height(this.getButtonHeight() + 2);
+            Button.fontSize(this.getButtonFontSize());
+            Button.fontWeight(FontWeight.Medium);
+            Button.type(ButtonType.Capsule);
+            Button.backgroundColor('#122B7A');
+            Button.fontColor(Color.White);
+            Button.onClick(() => {
+                FlowManager.requestContinuation();
+            });
+        }, Button);
+        Button.pop();
         Column.pop();
     }
     previewCard(parent = null) {
@@ -462,6 +529,7 @@ class Index extends ViewPU {
                     }, Column);
                     this.selectorCard.bind(this)();
                     this.inputCard.bind(this)();
+                    this.freeFlowCard.bind(this)();
                     Column.pop();
                     this.observeComponentCreation2((elmtId, isInitialRender) => {
                         Column.create();
@@ -480,6 +548,7 @@ class Index extends ViewPU {
                     }, Column);
                     this.selectorCard.bind(this)();
                     this.inputCard.bind(this)();
+                    this.freeFlowCard.bind(this)();
                     this.previewCard.bind(this)();
                     Column.pop();
                 });

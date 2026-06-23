@@ -24,38 +24,24 @@
     "IS_HVIGORFILE_TYPE_CHECK": false,
     "TASK_TIME": {
       "923fe53966c6cd9343e11af776cd4b05be315ea4b200b02e4d5dfb0f929b73bf": {
-        "PreBuild": 217318500,
-        "CreateModuleInfo": 1136500,
-        "GenerateMetadata": 3755300,
-        "ConfigureCmake": 376300,
-        "MergeProfile": 19637300,
-        "CreateBuildProfile": 2787500,
-        "PreCheckSyscap": 1622200,
-        "GeneratePkgContextInfo": 11830200,
-        "ProcessIntegratedHsp": 1823500,
-        "BuildNativeWithCmake": 943800,
-        "MakePackInfo": 2742500,
-        "SyscapTransform": 3760500,
-        "ProcessProfile": 277274500,
-        "ProcessRouterMap": 3260700,
-        "ProcessShareConfig": 2198600,
-        "ProcessStartupConfig": 1741300,
-        "BuildNativeWithNinja": 859700,
-        "ProcessResource": 20806300,
-        "GenerateLoaderJson": 15582700,
-        "ProcessLibs": 11410100,
-        "CompileResource": 735839000,
-        "DoNativeStrip": 3335400,
-        "BuildJS": 6256600,
-        "CacheNativeLibs": 2244636100,
-        "CompileArkTS": 36748694500,
-        "GeneratePkgModuleJson": 5368200,
-        "ProcessCompiledResources": 1090700,
-        "PackageHap": 535267600,
-        "PackingCheck": 11744700,
-        "SignHap": 4953200,
-        "CollectDebugSymbol": 3245900,
-        "assembleHap": 756400
+        "CreateModuleInfo": 4411100,
+        "ConfigureCmake": 4184100,
+        "PreCheckSyscap": 2435100,
+        "GeneratePkgContextInfo": 28435400,
+        "ProcessIntegratedHsp": 8405800,
+        "BuildNativeWithCmake": 3505700,
+        "SyscapTransform": 30982100,
+        "ProcessStartupConfig": 11509300,
+        "BuildNativeWithNinja": 3909800,
+        "BuildJS": 7185600,
+        "CompileArkTS": 35385246800,
+        "GeneratePkgModuleJson": 24464300,
+        "ProcessCompiledResources": 5520700,
+        "PackageHap": 1781963900,
+        "PackingCheck": 84347500,
+        "SignHap": 7561300,
+        "CollectDebugSymbol": 3343600,
+        "assembleHap": 816200
       }
     },
     "APIS": [
@@ -66,7 +52,7 @@
       "ENABLE_CPP_FUNCTION_LEVEL_INCREMENTAL": false
     },
     "CONFIG_PROPERTIES": {},
-    "BUILD_ID": "202606021725372290",
-    "TOTAL_TIME": 41926486300
+    "BUILD_ID": "202606231556566950",
+    "TOTAL_TIME": 69434814500
   }
 }

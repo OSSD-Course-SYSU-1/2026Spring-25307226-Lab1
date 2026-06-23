@@ -43,6 +43,10 @@
     {
       "name": "title",
       "value": "Text Effect Collection"
+    },
+    {
+      "name": "distributed_permission_reason",
+      "value": "Used to continue the current text effect session on another HarmonyOS device."
     }
   ]
 }

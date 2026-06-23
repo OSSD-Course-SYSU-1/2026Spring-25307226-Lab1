@@ -13,7 +13,8 @@
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.Ability.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\application\\UIAbilityContext.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.EnvironmentCallback.d.ts",
-        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
       ],
       "error": false
     },
@@ -31,7 +32,8 @@
         "C:\\Users\\31293\\Desktop\\text-effects-master\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\application\\UIAbilityContext.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.AbilityLifecycleCallback.d.ts",
-        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
       ],
       "error": false
     },
@@ -55,7 +57,8 @@
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.bundle.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\application\\AppServiceExtensionContext.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\build-tools\\ets-loader\\declarations\\embedded_component.d.ts",
-        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
       ],
       "error": false
     },
@@ -64,7 +67,8 @@
       "children": [],
       "parent": [
         "C:\\Users\\31293\\Desktop\\text-effects-master\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
-        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
       ],
       "error": false
     },
@@ -90,7 +94,8 @@
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\build-tools\\ets-loader\\declarations\\folder_stack.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\build-tools\\ets-loader\\declarations\\nav_destination.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\build-tools\\ets-loader\\declarations\\navigation.d.ts",
-        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets"
       ],
       "error": false
     },
@@ -162,7 +167,8 @@
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.web.webview.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.security.cert.d.ts",
         "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.security.cryptoFramework.d.ts",
-        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.print.d.ts"
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.print.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts"
       ],
       "error": false
     },
@@ -2094,6 +2100,141 @@
         "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\view\\TextMarqueeView.ets",
         "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\view\\TextReflectionView.ets",
         "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice\\entry\\src\\main\\ets\\view\\TextScrollingView.ets"
+      ],
+      "parent": [],
+      "error": false
+    },
+    "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts": {
+      "mtimeMs": 1774582692000,
+      "children": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.base.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.base.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\continuation\\continuationResult.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\continuation\\continuationExtraParams.d.ts"
+      ],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\continuation\\continuationExtraParams.d.ts",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\manager\\FlowManager.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\manager\\FlowManager.ets": {
+      "mtimeMs": 1782201347513.6704,
+      "children": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\model\\TextEffectFlowState.ets"
+      ],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\entryability\\EntryAbility.ets": {
+      "mtimeMs": 1782201362584.6995,
+      "children": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.AbilityConstant.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.UIAbility.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.app.ability.Want.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.hilog.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.window.d.ts",
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\manager\\FlowManager.ets"
+      ],
+      "parent": [],
+      "error": true,
+      "errorCodes": [
+        28007,
+        28040
+      ]
+    },
+    "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\continuation\\continuationResult.d.ts": {
+      "mtimeMs": 1774582692000,
+      "children": [],
+      "parent": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts"
+      ],
+      "error": false
+    },
+    "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\continuation\\continuationExtraParams.d.ts": {
+      "mtimeMs": 1774582692000,
+      "children": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts"
+      ],
+      "parent": [
+        "C:\\Program Files\\Huawei\\DevEco Studio\\sdk\\default\\openharmony\\ets\\api\\@ohos.continuation.continuationManager.d.ts"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\model\\TextEffectFlowState.ets": {
+      "mtimeMs": 1780393177282.83,
+      "children": [],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\manager\\FlowManager.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\constants\\Constants.ets": {
+      "mtimeMs": 1780391134821.318,
+      "children": [],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextMarqueeView.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextReflectionView.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextScrollingView.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextGradientView.ets": {
+      "mtimeMs": 1780391140823.552,
+      "children": [],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextMarqueeView.ets": {
+      "mtimeMs": 1780391166125.601,
+      "children": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\constants\\Constants.ets"
+      ],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextReflectionView.ets": {
+      "mtimeMs": 1780391157028.7285,
+      "children": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\constants\\Constants.ets"
+      ],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextScrollingView.ets": {
+      "mtimeMs": 1780391148325.16,
+      "children": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\constants\\Constants.ets"
+      ],
+      "parent": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets"
+      ],
+      "error": false
+    },
+    "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\pages\\Index.ets": {
+      "mtimeMs": 1780393287341.3423,
+      "children": [
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\constants\\Constants.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\manager\\FlowManager.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\model\\TextEffectFlowState.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextGradientView.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextMarqueeView.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextReflectionView.ets",
+        "C:\\Users\\31293\\Desktop\\workplace\\text-effects-master-upgraded-multidevice-freeflow\\entry\\src\\main\\ets\\view\\TextScrollingView.ets"
       ],
       "parent": [],
       "error": false

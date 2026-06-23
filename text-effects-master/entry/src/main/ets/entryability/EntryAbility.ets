@@ -91,9 +91,8 @@ export default class EntryAbility extends UIAbility {
           FlowManager.getContinuationOptions(this.context.abilityInfo.bundleName)
         );
         FlowManager.setStatus('Device chooser opened. Continue on the selected device.');
-      } catch (error) {
-        const message: string = JSON.stringify(error) ?? 'Unknown continuation error.';
-        FlowManager.setStatus(`Unable to open device chooser: ${message}`);
+      } catch (_) {
+        FlowManager.setStatus('Unable to open device chooser on the current device.');
       }
     });
 
@@ -106,18 +105,16 @@ export default class EntryAbility extends UIAbility {
         FlowManager.setStatus(`Selected ${deviceName}. Confirm continuation on that device.`);
       });
       FlowManager.setStatus('Free flow is registered. You can continue to another device now.');
-    }).catch((error) => {
-      const message: string = JSON.stringify(error) ?? 'Unknown registration error.';
-      FlowManager.setStatus(`Free flow registration failed: ${message}`);
+    }).catch(() => {
+      FlowManager.setStatus('Free flow registration failed on the current device.');
     });
   }
 
   private activateContinuation(): void {
     this.context.setMissionContinueState(AbilityConstant.ContinueState.ACTIVE).then(() => {
       FlowManager.setStatus('Free flow is active for the current mission.');
-    }).catch((error) => {
-      const message: string = JSON.stringify(error) ?? 'Unknown activation error.';
-      FlowManager.setStatus(`Free flow activation failed: ${message}`);
+    }).catch(() => {
+      FlowManager.setStatus('Free flow activation failed on the current device.');
     });
   }
 
